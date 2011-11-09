@@ -19,6 +19,11 @@ public class Cursor {
 
   public void moveBy(int dy, int dx) {
     this.point = point.offset(dy, dx);
+    if (dx == 0) {
+      this.point = new Point(point.getY(), defaultX);
+    } else {
+      defaultX = point.getX();
+    }
   }
 
   public int getY() {

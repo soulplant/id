@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -53,7 +52,11 @@ public class App extends JPanel {
 
     File file = new File();
     for (int i = 0; i < 10; i++) {
-      file.insertLine(0, i + "alsdfklajslkaj");
+      StringBuffer buffer = new StringBuffer();
+      for (int j = 0; j < i; j++) {
+        buffer.append('a');
+      }
+      file.insertLine(0, buffer.toString());
     }
     FileView fileView = new FileView(file, 0, 9);
     final Editor editor = new Editor(fileView, null);

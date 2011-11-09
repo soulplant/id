@@ -59,7 +59,7 @@ public class App extends JPanel {
       file.insertLine(0, buffer.toString());
     }
     FileView fileView = new FileView(file, 0, 9);
-    final Editor editor = new Editor(fileView, null);
+    final Editor editor = new Editor(fileView);
 
     frame.getContentPane().add(new FileListPanel(), BorderLayout.LINE_START);
     final EditorPanel spotlight = new EditorPanel(editor);

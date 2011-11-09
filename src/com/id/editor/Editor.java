@@ -10,12 +10,10 @@ public class Editor {
 
   private final FileView file;
   private final Cursor cursor = new Cursor();
-  private final Context context;
   private boolean inInsertMode = false;
 
-  public Editor(FileView fileView, Context context) {
+  public Editor(FileView fileView) {
     this.file = fileView;
-    this.context = context;
   }
 
   public String getLine(int y) {

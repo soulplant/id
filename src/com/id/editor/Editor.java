@@ -72,7 +72,11 @@ public class Editor {
   }
 
   public void escape() {
-    inInsertMode = false;
+    if (isInInsertMode()) {
+      inInsertMode = false;
+      file.breakPatch();
+      cursor.moveBy(0, -1);
+    }
   }
 
   public void onLetterTyped(char keyChar) {
@@ -87,5 +91,21 @@ public class Editor {
 
   private void startPatch() {
     file.startPatchAt(cursor.getY(), cursor.getX());
+  }
+
+  public void undo() {
+    Point position = file.undo();
+    if (position == null) {
+      return;
+    }
+    cursor.moveTo(position.getY(), position.getX());
+  }
+
+  public void redo() {
+    Point position = file.redo();
+    if (position == null) {
+      return;
+    }
+    cursor.moveTo(position.getY(), position.getX());
   }
 }

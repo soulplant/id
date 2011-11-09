@@ -52,28 +52,30 @@ public class Patchwork implements File.Listener {
     unmodifiedAtDepth = pastPatches.size();
   }
 
-  public void undo(File file) {
+  public Point undo(File file) {
     if (inPatch()) {
       throw new IllegalStateException("discarding info in undo");
     }
     if (pastPatches.isEmpty()) {
-      return;
+      return null;
     }
     Patch patch = pastPatches.pop();
     futurePatches.push(patch);
     patch.applyInverse(file);
+    return patch.getPosition();
   }
 
-  public void redo(File file) {
+  public Point redo(File file) {
     if (inPatch()) {
       throw new IllegalStateException("discarding info in redo");
     }
     if (futurePatches.isEmpty()) {
-      return;
+      return null;
     }
     Patch patch = futurePatches.pop();
     pastPatches.push(patch);
     patch.apply(file);
+    return patch.getPosition();
   }
 
   @Override

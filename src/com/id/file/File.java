@@ -84,12 +84,12 @@ public class File {
     return patchwork.isModified();
   }
 
-  public void undo() {
-    patchwork.undo(this);
+  public Point undo() {
+    return patchwork.undo(this);
   }
 
-  public void redo() {
-    patchwork.redo(this);
+  public Point redo() {
+    return patchwork.redo(this);
   }
 
   public Tombstone.Status getStatus(int y) {

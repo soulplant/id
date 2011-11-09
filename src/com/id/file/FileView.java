@@ -1,5 +1,7 @@
 package com.id.file;
 
+import com.id.editor.Point;
+
 public class FileView implements File.Listener {
   private final File file;
   private final int start;
@@ -50,5 +52,17 @@ public class FileView implements File.Listener {
 
   public void insertText(int y, int x, String text) {
     file.insertText(start + y, x, text);
+  }
+
+  public void breakPatch() {
+    file.breakPatch();
+  }
+
+  public Point undo() {
+    return file.undo();
+  }
+
+  public Point redo() {
+    return file.redo();
   }
 }

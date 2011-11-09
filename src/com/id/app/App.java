@@ -106,6 +106,12 @@ public class App extends JPanel {
         case KeyEvent.VK_I:
           editor.insert();
           break;
+        case KeyEvent.VK_U:
+          editor.undo();
+          break;
+        case KeyEvent.VK_R:
+          editor.redo();
+          break;
         case KeyEvent.VK_ESCAPE:
           editor.escape();
           break;

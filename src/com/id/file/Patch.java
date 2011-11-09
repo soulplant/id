@@ -73,10 +73,10 @@ public class Patch implements File.Listener {
   }
 
   private final Stack<Change> changes = new Stack<Change>();
-  private final Point point;
+  private final Point position;
 
-  public Patch(Point point) {
-    this.point = point;
+  public Patch(Point position) {
+    this.position = position;
   }
 
   @Override
@@ -109,10 +109,14 @@ public class Patch implements File.Listener {
   }
 
   private Patch invert() {
-    Patch result = new Patch(point);
+    Patch result = new Patch(position);
     for (int i = changes.size() - 1; i >= 0; i--) {
       result.changes.push(changes.get(i).invert());
     }
     return result;
+  }
+
+  public Point getPosition() {
+    return position;
   }
 }

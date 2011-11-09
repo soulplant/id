@@ -25,6 +25,15 @@ public class File {
     listeners.add(graveyard);
   }
 
+  public File(String... lines) {
+    this();
+    for (String line : lines) {
+      insertLine(getLineCount(), line);
+    }
+    graveyard.reset();
+    patchwork.reset();
+  }
+
   // Lines
   public String getLine(int y) {
     return lines.get(y);
@@ -104,5 +113,16 @@ public class File {
     String line = getLine(y);
     String newLine = line.substring(0, x) + text + line.substring(x);
     changeLine(y, newLine);
+  }
+
+  public void removeText(int y, int x, int length) {
+    String line = getLine(y);
+    int substringMax = Math.min(line.length(), x + length);
+    String newLine = line.substring(0, x - 1) + line.substring(substringMax);
+    changeLine(y, newLine);
+  }
+
+  public void addListener(Listener listener) {
+    this.listeners.add(listener);
   }
 }

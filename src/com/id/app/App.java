@@ -86,10 +86,19 @@ public class App extends JPanel {
           System.exit(0);
         }
 
-        if (editor.isInInsertMode() && isKeyCodeForLetter(e.getKeyCode())) {
-          editor.onLetterTyped(e.getKeyChar());
-          spotlight.repaint();
-          return;
+        if (editor.isInInsertMode()) {
+          boolean handled = true;
+          if (isKeyCodeForLetter(e.getKeyCode())) {
+            editor.onLetterTyped(e.getKeyChar());
+          } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            editor.backspace();
+          } else {
+            handled = false;
+          }
+          if (handled) {
+            spotlight.repaint();
+            return;
+          }
         }
 
         boolean redraw = true;
@@ -114,6 +123,23 @@ public class App extends JPanel {
           break;
         case KeyEvent.VK_R:
           editor.redo();
+          break;
+        case KeyEvent.VK_O:
+          if (e.isShiftDown()) {
+            editor.addEmptyLinePrevious();
+          } else {
+            editor.addEmptyLine();
+          }
+          break;
+        case KeyEvent.VK_A:
+          if (e.isShiftDown()) {
+            editor.appendEnd();
+          } else {
+            editor.append();
+          }
+          break;
+        case KeyEvent.VK_BACK_SPACE:
+          editor.backspace();
           break;
         case KeyEvent.VK_ESCAPE:
           editor.escape();

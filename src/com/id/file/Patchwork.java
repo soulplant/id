@@ -99,4 +99,11 @@ public class Patchwork implements File.Listener {
     }
   }
 
+  public void reset() {
+    futurePatches.clear();
+    pastPatches.clear();
+    currentPatch = null;
+    unmodifiedAtDepth = 0;
+  }
+
 }

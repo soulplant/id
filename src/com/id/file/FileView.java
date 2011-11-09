@@ -4,13 +4,18 @@ import com.id.editor.Point;
 
 public class FileView implements File.Listener {
   private final File file;
-  private final int start;
-  private final int end;
+  private int start;
+  private int end;
 
+  public FileView(File file) {
+    this(file, 0, file.getLineCount() - 1);
+  }
   public FileView(File file, int start, int end) {
     this.file = file;
     this.start = start;
     this.end = end;
+    // TODO Make this not leak.
+    file.addListener(this);
   }
 
   public String getLine(int y) {
@@ -23,13 +28,22 @@ public class FileView implements File.Listener {
 
   @Override
   public void onLineInserted(int y, String line) {
-
+    if (y < start) {
+      start++;
+      end++;
+    } else if (start <= y && y <= end + 1) {
+      end++;
+    }
   }
 
   @Override
   public void onLineRemoved(int y, String line) {
-    // TODO Auto-generated method stub
-
+    if (y < start) {
+      start--;
+      end--;
+    } else if (start <= y && y <= end) {
+      end--;
+    }
   }
 
   @Override
@@ -64,5 +78,13 @@ public class FileView implements File.Listener {
 
   public Point redo() {
     return file.redo();
+  }
+
+  public void removeText(int y, int x, int length) {
+    file.removeText(start + y, x, length);
+  }
+
+  public void removeLine(int y) {
+    file.removeLine(start + y);
   }
 }

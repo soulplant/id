@@ -74,6 +74,7 @@ public class Editor {
       inInsertMode = false;
       file.breakPatch();
       cursor.moveBy(0, -1);
+      applyCursorConstraints();
     }
   }
 
@@ -97,6 +98,7 @@ public class Editor {
       return;
     }
     cursor.moveTo(position.getY(), position.getX());
+    applyCursorConstraints();
   }
 
   public void redo() {
@@ -105,5 +107,51 @@ public class Editor {
       return;
     }
     cursor.moveTo(position.getY(), position.getX());
+    applyCursorConstraints();
+  }
+
+  public void addEmptyLine() {
+    startPatch();
+    file.insertLine(cursor.getY() + 1, "");
+    cursor.moveBy(1, 0);
+    applyCursorConstraints();
+    insert();
+  }
+
+  public void addEmptyLinePrevious() {
+    startPatch();
+    file.insertLine(cursor.getY(), "");
+    applyCursorConstraints();
+    insert();
+  }
+
+  public void backspace() {
+    if (!file.isInPatch()) {
+      startPatch();
+    }
+    if (cursor.getX() == 0) {
+      if (cursor.getY() == 0) {
+        return;
+      }
+      String line = getCurrentLine();
+      file.removeLine(cursor.getY());
+      cursor.moveBy(-1, 0);
+      int targetX = getCurrentLine().length();
+      file.insertText(cursor.getY(), targetX, line);
+      cursor.moveTo(cursor.getY(), targetX);
+    } else {
+      file.removeText(cursor.getY(), cursor.getX(), 1);
+      cursor.moveBy(0, -1);
+    }
+  }
+
+  public void append() {
+    cursor.moveBy(0, 1);
+    insert();
+  }
+
+  public void appendEnd() {
+    cursor.moveTo(cursor.getY(), getCurrentLine().length());
+    insert();
   }
 }

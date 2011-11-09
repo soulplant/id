@@ -2,6 +2,8 @@ package com.id.editor;
 
 public class Cursor {
   private Point point;
+  private int defaultX;
+
   public Cursor() {
     this.point = new Point(0, 0);
   }
@@ -10,7 +12,32 @@ public class Cursor {
     return point;
   }
 
-  public void moveTo(Point point) {
-    this.point = point;
+  public void moveTo(int y, int x) {
+    this.point = new Point(y, x);
+    this.defaultX = x;
+  }
+
+  public void moveBy(int dy, int dx) {
+    this.point = point.offset(dy, dx);
+  }
+
+  public int getY() {
+    return point.getY();
+  }
+
+  public int getX() {
+    return point.getX();
+  }
+
+  public void constrainY(int min, int max) {
+    this.point = point.constrainY(min, max);
+  }
+
+  public void constrainX(int min, int max) {
+    this.point = point.constrainX(min, max);
+  }
+
+  public void setDefaultX(int x) {
+    this.defaultX = x;
   }
 }

@@ -76,7 +76,7 @@ public class File {
     patchwork.breakPatch();
   }
 
-  public boolean inPatch() {
+  public boolean isInPatch() {
     return patchwork.inPatch();
   }
 
@@ -94,5 +94,15 @@ public class File {
 
   public Tombstone.Status getStatus(int y) {
     return graveyard.getStatus(y);
+  }
+
+  public void startPatchAt(int y, int x) {
+    patchwork.startPatchAt(new Point(y, x));
+  }
+
+  public void insertText(int y, int x, String text) {
+    String line = getLine(y);
+    String newLine = line.substring(0, x) + text + line.substring(x);
+    changeLine(y, newLine);
   }
 }

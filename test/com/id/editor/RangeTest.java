@@ -31,7 +31,7 @@ public class RangeTest {
     assertTrue(range.contains(new Point(0, 100)));
     assertFalse(range.contains(new Point(1, 0)));
 
-    cursor.moveTo(new Point(5, 0));
+    cursor.moveTo(5, 0);
     assertTrue(range.contains(new Point(5, 0)));
     assertFalse(range.contains(new Point(6, 0)));
   }

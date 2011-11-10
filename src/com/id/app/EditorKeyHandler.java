@@ -22,50 +22,55 @@ public class EditorKeyHandler {
       }
     }
 
-    switch (event.getKeyCode()) {
-    case KeyEvent.VK_J:
-      editor.down();
-      break;
-    case KeyEvent.VK_K:
-      editor.up();
-      break;
-    case KeyEvent.VK_H:
-      editor.left();
-      break;
-    case KeyEvent.VK_L:
-      editor.right();
-      break;
-    case KeyEvent.VK_I:
-      editor.insert();
-      break;
-    case KeyEvent.VK_U:
-      editor.undo();
-      break;
-    case KeyEvent.VK_R:
-      editor.redo();
-      break;
-    case KeyEvent.VK_O:
-      if (event.isShiftDown()) {
+    if (event.isShiftDown()) {
+      switch (event.getKeyCode()) {
+      case KeyEvent.VK_O:
         editor.addEmptyLinePrevious();
-      } else {
-        editor.addEmptyLine();
-      }
-      break;
-    case KeyEvent.VK_A:
-      if (event.isShiftDown()) {
+        break;
+      case KeyEvent.VK_A:
         editor.appendEnd();
-      } else {
-        editor.append();
+        break;
+      default:
+        return false;
       }
-      break;
-    case KeyEvent.VK_BACK_SPACE:
-      editor.backspace();
-      break;
-    case KeyEvent.VK_ESCAPE:
-      editor.escape();
-      break;
-    default:
-      return false;
+    } else {
+      switch (event.getKeyCode()) {
+      case KeyEvent.VK_J:
+        editor.down();
+        break;
+      case KeyEvent.VK_K:
+        editor.up();
+        break;
+      case KeyEvent.VK_H:
+        editor.left();
+        break;
+      case KeyEvent.VK_L:
+        editor.right();
+        break;
+      case KeyEvent.VK_I:
+        editor.insert();
+        break;
+      case KeyEvent.VK_U:
+        editor.undo();
+        break;
+      case KeyEvent.VK_R:
+        editor.redo();
+        break;
+      case KeyEvent.VK_O:
+        editor.addEmptyLine();
+        break;
+      case KeyEvent.VK_A:
+        editor.append();
+        break;
+      case KeyEvent.VK_BACK_SPACE:
+        editor.backspace();
+        break;
+      case KeyEvent.VK_ESCAPE:
+        editor.escape();
+        break;
+      default:
+        return false;
+      }
     }
     return true;
   }

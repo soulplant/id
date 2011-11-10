@@ -38,18 +38,11 @@ public class App implements Listener {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setFont(new Font("Monospaced.plain", Font.PLAIN, 12));
 
-    File file = new File();
-    FileView fileView = new FileView(file);
-    final Editor editor = new Editor(fileView);
-
     frame.getContentPane().add(new FileListPanel(), BorderLayout.LINE_START);
-    final EditorPanel spotlight = new EditorPanel(editor);
-    final EditorPanel stack = new EditorPanel(editor);
-    EditorSwapperPanel editorSwapper = new EditorSwapperPanel();
-    editorSwapper.addEditor(spotlight);
-    editorSwapper.addEditor(makeEditorPanel("a", "b", "c"));
-    editorSwapper.next();
-    editorSwapper.previous();
+    final EditorPanel stack = makeEditorPanel("stack");
+    final EditorSwapperPanel editorSwapper = new EditorSwapperPanel();
+    editorSwapper.addEditor(makeEditorPanel("first"));
+    editorSwapper.addEditor(makeEditorPanel("second", "second"));
     frame.getContentPane().add(editorSwapper, BorderLayout.CENTER);
     frame.getContentPane().add(stack, BorderLayout.LINE_END);
     frame.pack();
@@ -71,7 +64,7 @@ public class App implements Listener {
         if (e.getKeyCode() == KeyEvent.VK_Q && e.isControlDown()) {
           System.exit(0);
         }
-        boolean handled = new EditorKeyHandler().handleKeyPress(e, editor);
+        boolean handled = editorSwapper.handleKeyPress(e);
         if (!handled) {
           switch (e.getKeyCode()) {
           case KeyEvent.VK_T:
@@ -81,7 +74,7 @@ public class App implements Listener {
           }
         }
         if (handled) {
-          spotlight.repaint();
+          frame.pack();
         }
       }
     });

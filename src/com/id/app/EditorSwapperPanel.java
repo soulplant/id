@@ -1,6 +1,7 @@
 package com.id.app;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,5 +34,29 @@ public class EditorSwapperPanel extends JPanel {
     this.focused = Math.max(0, Math.min(editorPanels.size() - 1, focused));
     this.removeAll();
     add(editorPanels.get(this.focused), BorderLayout.CENTER);
+    repaint();
+  }
+
+  public boolean handleKeyPress(KeyEvent e) {
+    boolean handled = editorPanels.get(focused).handleKeyPress(e);
+    if (!handled) {
+      handled = true;
+      if (e.isShiftDown()) {
+        switch (e.getKeyCode()) {
+        case KeyEvent.VK_J:
+          next();
+          break;
+        case KeyEvent.VK_K:
+          previous();
+          break;
+        default:
+          handled = false;
+        }
+      }
+    }
+    if (handled) {
+      repaint();
+    }
+    return handled;
   }
 }

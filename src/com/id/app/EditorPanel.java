@@ -3,6 +3,7 @@ package com.id.app;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
@@ -40,5 +41,9 @@ public class EditorPanel extends JPanel {
       g.drawString(editor.getLine(i), 0, (i + 1) * fontHeightPx - fontDescentPx);
     }
     g.drawRect(0, 0, g.getClipBounds().width - 1, g.getClipBounds().height - 1);
+  }
+
+  public boolean handleKeyPress(KeyEvent e) {
+    return new EditorKeyHandler().handleKeyPress(e, editor);
   }
 }

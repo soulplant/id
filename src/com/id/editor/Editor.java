@@ -58,7 +58,7 @@ public class Editor {
   private void applyCursorConstraints() {
     int isInNormalMode = !isInInsertMode() ? 1 : 0;
     cursor.constrainY(0, file.getLineCount() - 1);
-    cursor.constrainX(0, getCurrentLine().length() - isInNormalMode);
+    cursor.constrainX(0, getCurrentLineLength() - isInNormalMode);
   }
 
   private String getCurrentLine() {
@@ -112,7 +112,7 @@ public class Editor {
 
   public void addEmptyLine() {
     startPatch();
-    file.insertLine(cursor.getY() + 1, "");
+    file.insertLine(Math.min(file.getLineCount(), cursor.getY() + 1), "");
     cursor.moveBy(1, 0);
     applyCursorConstraints();
     insert();
@@ -146,12 +146,20 @@ public class Editor {
   }
 
   public void append() {
-    cursor.moveBy(0, 1);
     insert();
+    cursor.moveBy(0, 1);
+    applyCursorConstraints();
   }
 
   public void appendEnd() {
-    cursor.moveTo(cursor.getY(), getCurrentLine().length());
+    cursor.moveTo(cursor.getY(), getCurrentLineLength());
     insert();
+  }
+
+  private int getCurrentLineLength() {
+    if (file.isEmpty()) {
+      return 0;
+    }
+    return getCurrentLine().length();
   }
 }

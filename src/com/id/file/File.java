@@ -110,6 +110,9 @@ public class File {
   }
 
   public void insertText(int y, int x, String text) {
+    if (isEmpty()) {
+      insertLine(0, "");
+    }
     String line = getLine(y);
     String newLine = line.substring(0, x) + text + line.substring(x);
     changeLine(y, newLine);
@@ -120,6 +123,10 @@ public class File {
     int substringMax = Math.min(line.length(), x + length);
     String newLine = line.substring(0, x - 1) + line.substring(substringMax);
     changeLine(y, newLine);
+  }
+
+  public boolean isEmpty() {
+    return getLineCount() == 0;
   }
 
   public void addListener(Listener listener) {

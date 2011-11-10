@@ -16,14 +16,12 @@ public class EditorPanel extends JPanel {
   public EditorPanel(Editor editor) {
     this.editor = editor;
     setPreferredSize(new Dimension(600, 768));
-    System.out.println(getFont());
     setFont(new Font("system", Font.PLAIN, 14));
   }
 
   @Override
   public void setSize(Dimension d) {
     super.setSize(d);
-    System.out.println("setSize(" + d + ")");
   }
 
   @Override

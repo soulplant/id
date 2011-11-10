@@ -48,8 +48,7 @@ public class FileView implements File.Listener {
 
   @Override
   public void onLineChanged(int y, String oldLine, String newLine) {
-    // TODO Auto-generated methodj stub
-
+    // Do nothing.
   }
 
   public int getLineCount() {
@@ -86,5 +85,9 @@ public class FileView implements File.Listener {
 
   public void removeLine(int y) {
     file.removeLine(start + y);
+  }
+
+  public boolean isEmpty() {
+    return getLineCount() == 0;
   }
 }

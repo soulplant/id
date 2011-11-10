@@ -1,51 +1,30 @@
 package com.id.app;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import com.id.app.FuzzyFinderFrame.Listener;
 import com.id.editor.Editor;
 import com.id.file.File;
 import com.id.file.FileView;
+import com.id.fuzzy.FuzzyFinder;
+import com.id.platform.FileSystem;
+import com.id.platform.RealFileSystem;
 
-@SuppressWarnings("serial")
-public class App extends JPanel {
+public class App implements Listener {
   private static final String APP_NAME = "id";
+  private FuzzyFinder fuzzyFinder;
+  private FileSystem fileSystem;
 
   public App() {
-    setPreferredSize(new Dimension(1024, 768));
-  }
-
-  @Override
-  public void paint(Graphics g) {
-    super.paint(g);
-    g.drawRect(0, 0, (int) g.getClipBounds().getWidth() - 1, (int) g.getClipBounds().getHeight() - 1);
-    g.drawString("hi there", 0, 30);
-  }
-
-  public static void runApp(final App app) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        createAndShowGui(app);
-      }
-    });
-  }
-
-  private static void createAndShowGui(App app) {
-//    GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//    Font[] fonts = e.getAllFonts(); // Get the fonts
-//    for (Font f : fonts) {
-//      System.out.println(f.getFontName());
-//    }
-//    System.exit(0);
+    this.fileSystem = new RealFileSystem();
+    this.fuzzyFinder = new FuzzyFinder(fileSystem);
+    fuzzyFinder.addPathToIndex(".");
     final JFrame frame = new JFrame(APP_NAME);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setFont(new Font("Monospaced.plain", Font.PLAIN, 12));
@@ -58,7 +37,7 @@ public class App extends JPanel {
       }
       file.insertLine(0, buffer.toString());
     }
-    FileView fileView = new FileView(file, 0, 9);
+    FileView fileView = new FileView(file);
     final Editor editor = new Editor(fileView);
 
     frame.getContentPane().add(new FileListPanel(), BorderLayout.LINE_START);
@@ -124,6 +103,9 @@ public class App extends JPanel {
         case KeyEvent.VK_R:
           editor.redo();
           break;
+        case KeyEvent.VK_T:
+          showFuzzyFinder();
+          break;
         case KeyEvent.VK_O:
           if (e.isShiftDown()) {
             editor.addEmptyLinePrevious();
@@ -163,7 +145,33 @@ public class App extends JPanel {
       }
     });
   }
+
+  private void showFuzzyFinder() {
+    FuzzyFinderFrame frame = new FuzzyFinderFrame(fuzzyFinder, this);
+    frame.setVisible(true);
+  }
+
   public static void main(String[] args) {
-    runApp(new App());
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        //    GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        //    Font[] fonts = e.getAllFonts(); // Get the fonts
+        //    for (Font f : fonts) {
+        //      System.out.println(f.getFontName());
+        //    }
+        //    System.exit(0);
+        new App();
+      }
+    });
+  }
+
+  @Override
+  public void onSelected(String item) {
+    openFile(item);
+  }
+
+  private void openFile(String item) {
+    System.out.println("open file " + item);
   }
 }

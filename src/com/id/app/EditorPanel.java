@@ -50,4 +50,8 @@ public class EditorPanel extends JPanel {
   public boolean handleKeyPress(KeyEvent e) {
     return new EditorKeyHandler().handleKeyPress(e, editor);
   }
+
+  public String getFilename() {
+    return editor.getFilename();
+  }
 }

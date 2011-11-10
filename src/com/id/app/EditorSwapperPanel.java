@@ -40,8 +40,8 @@ public class EditorSwapperPanel extends JPanel {
   public boolean handleKeyPress(KeyEvent e) {
     boolean handled = editorPanels.get(focused).handleKeyPress(e);
     if (!handled) {
-      handled = true;
       if (e.isShiftDown()) {
+        handled = true;
         switch (e.getKeyCode()) {
         case KeyEvent.VK_J:
           next();
@@ -58,5 +58,18 @@ public class EditorSwapperPanel extends JPanel {
       repaint();
     }
     return handled;
+  }
+
+  public boolean focusByFilename(String filename) {
+    if (filename == null) {
+      throw new IllegalArgumentException();
+    }
+    for (int i = 0; i < editorPanels.size(); i++) {
+      if (filename.equals(editorPanels.get(i).getFilename())) {
+        setFocused(i);
+        return true;
+      }
+    }
+    return false;
   }
 }

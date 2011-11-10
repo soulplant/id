@@ -185,4 +185,8 @@ public class Editor {
     cursor.moveBy(1, 0);
     cursor.moveTo(cursor.getY(), 0);
   }
+
+  public String getFilename() {
+    return file.getFilename();
+  }
 }

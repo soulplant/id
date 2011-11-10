@@ -17,6 +17,7 @@ public class File {
   private final List<Listener> listeners = new ArrayList<Listener>();
   private final Patchwork patchwork;
   private final Graveyard graveyard;
+  private String filename;
 
   public File() {
     this.patchwork = new Patchwork();
@@ -144,5 +145,13 @@ public class File {
   public void splitLine(int y, int x) {
     String removedText = removeText(y, x);
     insertLine(y + 1, removedText);
+  }
+
+  public void setFilename(String filename) {
+    this.filename = filename;
+  }
+
+  public String getFilename() {
+    return filename;
   }
 }

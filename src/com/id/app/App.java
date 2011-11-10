@@ -20,9 +20,13 @@ public class App implements Listener {
   private static final String APP_NAME = "id";
   private final FuzzyFinder fuzzyFinder;
   private final FileSystem fileSystem;
+  private final EditorSwapperPanel editorSwapper;
 
+  static int filenameIndex = 0;
+  private final JFrame frame;
   private EditorPanel makeEditorPanel(String... contents) {
     File file = new File(contents);
+    file.setFilename("<" + filenameIndex++ + ">");
     FileView fileView = new FileView(file);
     Editor editor = new Editor(fileView);
     EditorPanel panel = new EditorPanel(editor);
@@ -34,13 +38,13 @@ public class App implements Listener {
     this.fuzzyFinder = new FuzzyFinder(fileSystem);
     fuzzyFinder.addPathToIndex(".");
 
-    final JFrame frame = new JFrame(APP_NAME);
+    frame = new JFrame(APP_NAME);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setFont(new Font("Monospaced.plain", Font.PLAIN, 12));
 
     frame.getContentPane().add(new FileListPanel(), BorderLayout.LINE_START);
     final EditorPanel stack = makeEditorPanel("stack");
-    final EditorSwapperPanel editorSwapper = new EditorSwapperPanel();
+    editorSwapper = new EditorSwapperPanel();
     editorSwapper.addEditor(makeEditorPanel("first"));
     editorSwapper.addEditor(makeEditorPanel("second", "second"));
     frame.getContentPane().add(editorSwapper, BorderLayout.CENTER);
@@ -66,6 +70,7 @@ public class App implements Listener {
         }
         boolean handled = editorSwapper.handleKeyPress(e);
         if (!handled) {
+          System.out.println("IH");
           switch (e.getKeyCode()) {
           case KeyEvent.VK_T:
             showFuzzyFinder();
@@ -105,7 +110,21 @@ public class App implements Listener {
     openFile(item);
   }
 
-  private void openFile(String item) {
-    System.out.println("open file " + item);
+  private void openFile(String filename) {
+    if (editorSwapper.focusByFilename(filename)) {
+      frame.pack();
+      return;
+    }
+    File file = fileSystem.getFile(filename);
+    if (!file.getFilename().equals(filename)) {
+      throw new IllegalStateException();
+    }
+    editorSwapper.addEditor(makeEditorPanel(file));
+    editorSwapper.focusByFilename(filename);
+    frame.pack();
+  }
+
+  private EditorPanel makeEditorPanel(File file) {
+    return new EditorPanel(new Editor(new FileView(file)));
   }
 }

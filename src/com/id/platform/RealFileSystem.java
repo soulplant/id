@@ -46,6 +46,7 @@ public class RealFileSystem implements FileSystem {
       e.printStackTrace();
       return null;
     }
+    file.setFilename(filename);
     return file;
   }
 }

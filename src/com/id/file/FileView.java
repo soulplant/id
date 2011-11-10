@@ -94,7 +94,12 @@ public class FileView implements File.Listener {
   public boolean isEmpty() {
     return getLineCount() == 0;
   }
+
   public void splitLine(int y, int x) {
     file.splitLine(start + y, x);
+  }
+
+  public String getFilename() {
+    return file.getFilename();
   }
 }

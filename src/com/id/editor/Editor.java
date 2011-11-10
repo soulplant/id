@@ -79,9 +79,7 @@ public class Editor {
   }
 
   public void onLetterTyped(char keyChar) {
-    if (!file.isInPatch()) {
-      startPatch();
-    }
+    startPatchIfNecessary();
 
     String text = "" + keyChar;
     file.insertText(cursor.getY(), cursor.getX(), text);
@@ -90,6 +88,12 @@ public class Editor {
 
   private void startPatch() {
     file.startPatchAt(cursor.getY(), cursor.getX());
+  }
+
+  private void startPatchIfNecessary() {
+    if (!file.isInPatch()) {
+      startPatch();
+    }
   }
 
   public void undo() {
@@ -111,9 +115,7 @@ public class Editor {
   }
 
   public void addEmptyLine() {
-    if (!file.isInPatch()) {
-      startPatch();
-    }
+    startPatchIfNecessary();
     file.insertLine(Math.min(file.getLineCount(), cursor.getY() + 1), "");
     cursor.moveBy(1, 0);
     applyCursorConstraints();
@@ -128,9 +130,7 @@ public class Editor {
   }
 
   public void backspace() {
-    if (!file.isInPatch()) {
-      startPatch();
-    }
+    startPatchIfNecessary();
     if (cursor.getX() == 0) {
       if (cursor.getY() == 0) {
         return;
@@ -167,9 +167,7 @@ public class Editor {
 
   public void enter() {
     assert isInInsertMode();
-    if (!file.isInPatch()) {
-      startPatch();
-    }
+    startPatchIfNecessary();
     if (file.isEmpty()) {
       addEmptyLine();
       return;

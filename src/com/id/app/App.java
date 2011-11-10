@@ -28,6 +28,7 @@ public class App implements Listener {
     EditorPanel panel = new EditorPanel(editor);
     return panel;
   }
+
   public App() {
     this.fileSystem = new RealFileSystem();
     this.fuzzyFinder = new FuzzyFinder(fileSystem);
@@ -38,13 +39,6 @@ public class App implements Listener {
     frame.setFont(new Font("Monospaced.plain", Font.PLAIN, 12));
 
     File file = new File();
-    for (int i = 0; i < 10; i++) {
-      StringBuffer buffer = new StringBuffer();
-      for (int j = 0; j < i; j++) {
-        buffer.append('a');
-      }
-      file.insertLine(0, buffer.toString());
-    }
     FileView fileView = new FileView(file);
     final Editor editor = new Editor(fileView);
 

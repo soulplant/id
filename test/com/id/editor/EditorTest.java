@@ -73,7 +73,7 @@ public class EditorTest {
   public void emptyFileAddEmptyLine() {
     editor.addEmptyLine();
     editor.onLetterTyped('a');
-    assertEquals("a", file.getLine(0));
+    assertEquals("a", file.getLine(1));
   }
 
   @Test
@@ -112,5 +112,24 @@ public class EditorTest {
     editor.append();
     editor.enter();
     assertEquals(0, editor.getCursorPosition().getX());
+  }
+
+  @Test
+  public void addEmptyLineOnEmptyFile() {
+    editor.addEmptyLine();
+    assertEquals("", file.getLine(0));
+    assertEquals("", file.getLine(1));
+    assertEquals(1, editor.getCursorPosition().getY());
+    assertEquals(0, editor.getCursorPosition().getX());
+  }
+
+  @Test
+  public void addEmptyLinePreviousOnEmptyFile() {
+    editor.addEmptyLinePrevious();
+    editor.onLetterTyped('a');
+    assertEquals("a", file.getLine(0));
+    assertEquals("", file.getLine(1));
+    assertEquals(0, editor.getCursorPosition().getY());
+    assertEquals(1, editor.getCursorPosition().getX());
   }
 }

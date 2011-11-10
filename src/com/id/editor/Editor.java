@@ -79,6 +79,9 @@ public class Editor {
   }
 
   public void onLetterTyped(char keyChar) {
+    if (!isInInsertMode()) {
+      throw new IllegalStateException("Can't type letters unless in insert mode.");
+    }
     startPatchIfNecessary();
 
     String text = "" + keyChar;
@@ -116,6 +119,9 @@ public class Editor {
 
   public void addEmptyLine() {
     startPatchIfNecessary();
+    if (file.isEmpty()) {
+      file.insertLine(0, "");
+    }
     file.insertLine(Math.min(file.getLineCount(), cursor.getY() + 1), "");
     cursor.moveBy(1, 0);
     applyCursorConstraints();
@@ -124,6 +130,9 @@ public class Editor {
 
   public void addEmptyLinePrevious() {
     startPatch();
+    if (file.isEmpty()) {
+      file.insertLine(0, "");
+    }
     file.insertLine(cursor.getY(), "");
     applyCursorConstraints();
     insert();

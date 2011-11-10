@@ -18,13 +18,21 @@ import com.id.platform.RealFileSystem;
 
 public class App implements Listener {
   private static final String APP_NAME = "id";
-  private FuzzyFinder fuzzyFinder;
-  private FileSystem fileSystem;
+  private final FuzzyFinder fuzzyFinder;
+  private final FileSystem fileSystem;
 
+  private EditorPanel makeEditorPanel(String... contents) {
+    File file = new File(contents);
+    FileView fileView = new FileView(file);
+    Editor editor = new Editor(fileView);
+    EditorPanel panel = new EditorPanel(editor);
+    return panel;
+  }
   public App() {
     this.fileSystem = new RealFileSystem();
     this.fuzzyFinder = new FuzzyFinder(fileSystem);
     fuzzyFinder.addPathToIndex(".");
+
     final JFrame frame = new JFrame(APP_NAME);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setFont(new Font("Monospaced.plain", Font.PLAIN, 12));
@@ -43,7 +51,12 @@ public class App implements Listener {
     frame.getContentPane().add(new FileListPanel(), BorderLayout.LINE_START);
     final EditorPanel spotlight = new EditorPanel(editor);
     final EditorPanel stack = new EditorPanel(editor);
-    frame.getContentPane().add(spotlight, BorderLayout.CENTER);
+    EditorSwapperPanel editorSwapper = new EditorSwapperPanel();
+    editorSwapper.addEditor(spotlight);
+    editorSwapper.addEditor(makeEditorPanel("a", "b", "c"));
+    editorSwapper.next();
+    editorSwapper.previous();
+    frame.getContentPane().add(editorSwapper, BorderLayout.CENTER);
     frame.getContentPane().add(stack, BorderLayout.LINE_END);
     frame.pack();
     frame.setVisible(true);
@@ -64,86 +77,18 @@ public class App implements Listener {
         if (e.getKeyCode() == KeyEvent.VK_Q && e.isControlDown()) {
           System.exit(0);
         }
-
-        if (editor.isInInsertMode()) {
-          boolean handled = true;
-          if (isKeyCodeForLetter(e.getKeyCode())) {
-            editor.onLetterTyped(e.getKeyChar());
-          } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-            editor.backspace();
-          } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            editor.enter();
-          } else {
-            handled = false;
-          }
-          if (handled) {
-            spotlight.repaint();
-            return;
+        boolean handled = new EditorKeyHandler().handleKeyPress(e, editor);
+        if (!handled) {
+          switch (e.getKeyCode()) {
+          case KeyEvent.VK_T:
+            showFuzzyFinder();
+            handled = true;
+            break;
           }
         }
-
-        boolean redraw = true;
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_J:
-          editor.down();
-          break;
-        case KeyEvent.VK_K:
-          editor.up();
-          break;
-        case KeyEvent.VK_H:
-          editor.left();
-          break;
-        case KeyEvent.VK_L:
-          editor.right();
-          break;
-        case KeyEvent.VK_I:
-          editor.insert();
-          break;
-        case KeyEvent.VK_U:
-          editor.undo();
-          break;
-        case KeyEvent.VK_R:
-          editor.redo();
-          break;
-        case KeyEvent.VK_T:
-          showFuzzyFinder();
-          break;
-        case KeyEvent.VK_O:
-          if (e.isShiftDown()) {
-            editor.addEmptyLinePrevious();
-          } else {
-            editor.addEmptyLine();
-          }
-          break;
-        case KeyEvent.VK_A:
-          if (e.isShiftDown()) {
-            editor.appendEnd();
-          } else {
-            editor.append();
-          }
-          break;
-        case KeyEvent.VK_BACK_SPACE:
-          editor.backspace();
-          break;
-        case KeyEvent.VK_ESCAPE:
-          editor.escape();
-          break;
-        default:
-          redraw = false;
-          break;
-        }
-        if (redraw) {
+        if (handled) {
           spotlight.repaint();
         }
-      }
-
-      private boolean isKeyCodeForLetter(int keyCode) {
-        return ('a' <= keyCode && keyCode <= 'z') ||
-            ('A' <= keyCode && keyCode <= 'Z') ||
-            ('0' <= keyCode && keyCode <= '9') ||
-            (" `~!@#$%^&*()-_=+[{]}\\|;:,<.>/?".indexOf(keyCode) != -1) ||
-            keyCode == 39 /* single quote */ ||
-            keyCode == 222 /* double quote */;
       }
     });
   }

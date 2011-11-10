@@ -3,6 +3,8 @@ package com.id.app;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
@@ -29,6 +31,8 @@ public class EditorPanel extends JPanel {
   public void paint(Graphics g) {
     super.paint(g);
     g.setFont(new Font("Monospaced.plain", Font.PLAIN, 14));
+    Graphics2D g2 = (Graphics2D) g;
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     int fontDescentPx = g.getFontMetrics().getDescent();
     int fontWidthPx = g.getFontMetrics().getWidths()[70];
     int fontHeightPx = g.getFontMetrics().getHeight();

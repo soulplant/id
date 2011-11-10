@@ -71,6 +71,8 @@ public class App implements Listener {
             editor.onLetterTyped(e.getKeyChar());
           } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
             editor.backspace();
+          } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            editor.enter();
           } else {
             handled = false;
           }

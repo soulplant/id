@@ -118,11 +118,19 @@ public class File {
     changeLine(y, newLine);
   }
 
-  public void removeText(int y, int x, int length) {
+  public String removeText(int y, int x, int length) {
     String line = getLine(y);
+    if (x >= line.length()) {
+      return "";
+    }
     int substringMax = Math.min(line.length(), x + length);
-    String newLine = line.substring(0, x - 1) + line.substring(substringMax);
+    String newLine = line.substring(0, x) + line.substring(substringMax);
     changeLine(y, newLine);
+    return line.substring(x, substringMax);
+  }
+
+  public String removeText(int y, int x) {
+    return removeText(y, x, getLine(y).length());
   }
 
   public boolean isEmpty() {
@@ -131,5 +139,10 @@ public class File {
 
   public void addListener(Listener listener) {
     this.listeners.add(listener);
+  }
+
+  public void splitLine(int y, int x) {
+    String removedText = removeText(y, x);
+    insertLine(y + 1, removedText);
   }
 }

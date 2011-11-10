@@ -79,8 +79,12 @@ public class FileView implements File.Listener {
     return file.redo();
   }
 
-  public void removeText(int y, int x, int length) {
-    file.removeText(start + y, x, length);
+  public String removeText(int y, int x, int length) {
+    return file.removeText(start + y, x, length);
+  }
+
+  public String removeText(int y, int x) {
+    return file.removeText(start + y, x);
   }
 
   public void removeLine(int y) {
@@ -89,5 +93,8 @@ public class FileView implements File.Listener {
 
   public boolean isEmpty() {
     return getLineCount() == 0;
+  }
+  public void splitLine(int y, int x) {
+    file.splitLine(start + y, x);
   }
 }

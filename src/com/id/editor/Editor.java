@@ -111,7 +111,9 @@ public class Editor {
   }
 
   public void addEmptyLine() {
-    startPatch();
+    if (!file.isInPatch()) {
+      startPatch();
+    }
     file.insertLine(Math.min(file.getLineCount(), cursor.getY() + 1), "");
     cursor.moveBy(1, 0);
     applyCursorConstraints();
@@ -140,7 +142,7 @@ public class Editor {
       file.insertText(cursor.getY(), targetX, line);
       cursor.moveTo(cursor.getY(), targetX);
     } else {
-      file.removeText(cursor.getY(), cursor.getX(), 1);
+      file.removeText(cursor.getY(), cursor.getX() - 1, 1);
       cursor.moveBy(0, -1);
     }
   }
@@ -161,5 +163,19 @@ public class Editor {
       return 0;
     }
     return getCurrentLine().length();
+  }
+
+  public void enter() {
+    assert isInInsertMode();
+    if (!file.isInPatch()) {
+      startPatch();
+    }
+    if (file.isEmpty()) {
+      addEmptyLine();
+      return;
+    }
+    file.splitLine(cursor.getY(), cursor.getX());
+    cursor.moveBy(1, 0);
+    cursor.moveTo(cursor.getY(), 0);
   }
 }

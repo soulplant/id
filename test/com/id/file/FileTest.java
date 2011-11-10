@@ -41,6 +41,30 @@ public class FileTest {
     assertEquals("HI", file.getLine(1));
   }
 
+  @Test
+  public void splitAtEnd() {
+    File file = new File("a");
+    file.splitLine(0, 1);
+    assertEquals("a", file.getLine(0));
+    assertEquals("", file.getLine(1));
+  }
+
+  @Test
+  public void splitInMiddle() {
+    File file = new File("abc");
+    file.splitLine(0, 1);
+    assertEquals("a", file.getLine(0));
+    assertEquals("bc", file.getLine(1));
+  }
+
+  @Test
+  public void removeText() {
+    File file = new File("abc");
+    String removedText = file.removeText(0, 1, 1);
+    assertEquals("b", removedText);
+    assertEquals("ac", file.getLine(0));
+  }
+
   private static boolean isAllStatus(Tombstone.Status status, File file) {
     for (int i = 0; i < file.getLineCount(); i++) {
       if (file.getStatus(i) != status) {

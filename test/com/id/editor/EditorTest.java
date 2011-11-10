@@ -2,29 +2,41 @@ package com.id.editor;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.id.file.File;
 import com.id.file.FileView;
 
 public class EditorTest {
-  // TODO Add a test about empty file behaviour.
+  private File file;
+  private FileView fileView;
+  private Editor editor;
+
+  @Before
+  public void init() {
+    setFileContents();
+  }
+
+  private void setFileContents(String... lines) {
+    file = new File(lines);
+    fileView = new FileView(file);
+    editor = new Editor(fileView);
+  }
+
   @Test
   public void backspaceAtStartOfFile() {
-    File file = new File("a");
-    FileView fileView = new FileView(file);
-    Editor editor = new Editor(fileView);
+    setFileContents("a");
 
     editor.insert();
     editor.backspace();
     assertEquals("a", file.getLine(0));
   }
 
+
   @Test
   public void backspaceOnlyLetter() {
-    File file = new File("a");
-    FileView fileView = new FileView(file);
-    Editor editor = new Editor(fileView);
+    setFileContents("a");
 
     editor.append();
     editor.backspace();
@@ -33,9 +45,7 @@ public class EditorTest {
 
   @Test
   public void undoDoesntPutCursorOutsideCorrectRange() {
-    File file = new File("abcdefg");
-    FileView fileView = new FileView(file);
-    Editor editor = new Editor(fileView);
+    setFileContents("abcdefg");
 
     editor.appendEnd();
     editor.onLetterTyped('a');
@@ -47,10 +57,6 @@ public class EditorTest {
 
   @Test
   public void emptyFileInsert() {
-    File file = new File();
-    FileView fileView = new FileView(file);
-    Editor editor = new Editor(fileView);
-
     editor.insert();
     editor.onLetterTyped('a');
     assertEquals("a", file.getLine(0));
@@ -58,10 +64,6 @@ public class EditorTest {
 
   @Test
   public void emptyFileAppend() {
-    File file = new File();
-    FileView fileView = new FileView(file);
-    Editor editor = new Editor(fileView);
-
     editor.append();
     editor.onLetterTyped('a');
     assertEquals("a", file.getLine(0));
@@ -69,10 +71,6 @@ public class EditorTest {
 
   @Test
   public void emptyFileAddEmptyLine() {
-    File file = new File();
-    FileView fileView = new FileView(file);
-    Editor editor = new Editor(fileView);
-
     editor.addEmptyLine();
     editor.onLetterTyped('a');
     assertEquals("a", file.getLine(0));
@@ -80,12 +78,39 @@ public class EditorTest {
 
   @Test
   public void emptyFileAddEmptyLinePrevious() {
-    File file = new File();
-    FileView fileView = new FileView(file);
-    Editor editor = new Editor(fileView);
-
     editor.addEmptyLinePrevious();
     editor.onLetterTyped('a');
     assertEquals("a", file.getLine(0));
+  }
+
+  @Test
+  public void enter() {
+    editor.insert();
+    editor.onLetterTyped('a');
+    editor.enter();
+    assertEquals("a", file.getLine(0));
+    assertEquals("", file.getLine(1));
+  }
+
+  @Test
+  public void undoEnter() {
+    setFileContents("a", "b");
+    editor.append();
+    editor.enter();
+    assertEquals("a", file.getLine(0));
+    assertEquals("", file.getLine(1));
+    assertEquals("b", file.getLine(2));
+    editor.escape();
+    editor.undo();
+    assertEquals("a", file.getLine(0));
+    assertEquals("b", file.getLine(1));
+  }
+
+  @Test
+  public void enterPutsCursorOnRightLine() {
+    setFileContents("abc");
+    editor.append();
+    editor.enter();
+    assertEquals(0, editor.getCursorPosition().getX());
   }
 }

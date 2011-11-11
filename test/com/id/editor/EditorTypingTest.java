@@ -63,6 +63,13 @@ public class EditorTypingTest {
     assertFileContents("ab");
   }
 
+  @Test
+  public void deleteCursorPosition() {
+    setFileContents("abc");
+    typeString("lD");
+    assertEquals(0, editor.getCursorPosition().getX());
+  }
+
   private void assertFileContents(String... lines) {
     assertArrayEquals(lines, file.getLines());
   }

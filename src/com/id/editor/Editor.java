@@ -216,6 +216,7 @@ public class Editor {
     startPatch();
     file.removeText(cursor.getY(), cursor.getX());
     file.breakPatch();
+    applyCursorConstraints();
   }
 
   public void endOfLine() {

@@ -30,8 +30,12 @@ public class ItemListPanel extends JPanel {
     moveSelection(-1);
   }
 
-  private void moveSelection(int i) {
-    selectedIndex += i;
+  public void moveSelection(int delta) {
+    setSelection(selectedIndex + delta);
+  }
+
+  public void setSelection(int selection) {
+    selectedIndex = selection;
     selectedIndex = Math.max(0, Math.min(items.size() - 1, selectedIndex));
     repaint();
   }

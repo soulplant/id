@@ -42,11 +42,11 @@ public class App implements Listener {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setFont(new Font("Monospaced.plain", Font.PLAIN, 12));
 
-    frame.getContentPane().add(new FileListPanel(), BorderLayout.LINE_START);
-    final EditorPanel stack = makeEditorPanel("stack");
     editorSwapper = new EditorSwapperPanel();
     editorSwapper.addEditor(makeEditorPanel("first"));
     editorSwapper.addEditor(makeEditorPanel("second", "second"));
+    frame.getContentPane().add(new FileListPanel(editorSwapper), BorderLayout.LINE_START);
+    final EditorPanel stack = makeEditorPanel("stack");
     frame.getContentPane().add(editorSwapper, BorderLayout.CENTER);
     frame.getContentPane().add(stack, BorderLayout.LINE_END);
     frame.pack();

@@ -54,4 +54,8 @@ public class EditorPanel extends JPanel {
   public String getFilename() {
     return editor.getFilename();
   }
+
+  public Editor getEditor() {
+    return editor;
+  }
 }

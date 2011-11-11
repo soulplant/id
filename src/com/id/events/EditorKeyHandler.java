@@ -1,4 +1,4 @@
-package com.id.app;
+package com.id.events;
 
 import java.awt.event.KeyEvent;
 

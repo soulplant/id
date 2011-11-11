@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import com.id.editor.Editor;
 import com.id.editor.Point;
+import com.id.events.EditorKeyHandler;
 
 @SuppressWarnings("serial")
 public class EditorPanel extends JPanel {

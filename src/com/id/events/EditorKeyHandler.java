@@ -3,6 +3,7 @@ package com.id.events;
 import java.awt.event.KeyEvent;
 
 import com.id.editor.Editor;
+import com.id.editor.Visual;
 
 public class EditorKeyHandler {
   public boolean handleKeyPress(KeyEvent event, Editor editor) {
@@ -29,6 +30,9 @@ public class EditorKeyHandler {
         break;
       case KeyEvent.VK_A:
         editor.appendEnd();
+        break;
+      case KeyEvent.VK_V:
+        editor.toggleVisual(Visual.Mode.LINE);
         break;
       default:
         return false;
@@ -61,6 +65,9 @@ public class EditorKeyHandler {
         break;
       case KeyEvent.VK_A:
         editor.append();
+        break;
+      case KeyEvent.VK_V:
+        editor.toggleVisual(Visual.Mode.CHAR);
         break;
       case KeyEvent.VK_BACK_SPACE:
         editor.backspace();

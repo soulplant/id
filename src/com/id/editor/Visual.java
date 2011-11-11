@@ -1,17 +1,17 @@
 package com.id.editor;
 
-public class Range {
+public class Visual {
   public enum Mode {
     NONE,
     CHAR,
     LINE,
     BLOCK ;
-    public boolean contains(Range range, Point point) {
+    public boolean contains(Visual range, Point point) {
       switch (this) {
       case NONE:
         return false;
       case CHAR:
-        return range.getStartPoint().before(point) && !range.getEndPoint().before(point);
+        return range.getStartPoint().beforeOrEqual(point) && !range.getEndPoint().before(point);
       case LINE:
         return range.getStartPoint().getY() <= point.getY() && point.getY() <= range.getEndPoint().getY();
       case BLOCK:
@@ -31,7 +31,7 @@ public class Range {
   private Mode mode = Mode.NONE;
   private Point anchor;
 
-  public Range(Cursor cursor) {
+  public Visual(Cursor cursor) {
     this.cursor = cursor;
   }
 
@@ -43,7 +43,6 @@ public class Range {
       this.mode = Mode.NONE;
     } else {
       this.mode = mode;
-      reset();
     }
   }
 

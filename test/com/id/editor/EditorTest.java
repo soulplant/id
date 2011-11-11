@@ -1,6 +1,8 @@
 package com.id.editor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -131,5 +133,28 @@ public class EditorTest {
     assertEquals("", file.getLine(1));
     assertEquals(0, editor.getCursorPosition().getY());
     assertEquals(1, editor.getCursorPosition().getX());
+  }
+
+  @Test
+  public void range() {
+    setFileContents("abc", "d", "efg");
+    editor.toggleVisual(Visual.Mode.LINE);
+    assertTrue(editor.isInVisual(0, 0));
+    editor.toggleVisual(Visual.Mode.LINE);
+    assertFalse(editor.isInVisual(0, 0));
+    editor.toggleVisual(Visual.Mode.LINE);
+    assertTrue(editor.isInVisual(0, 0));
+    editor.escape();
+    assertFalse(editor.isInVisual(0, 0));
+  }
+
+  @Test
+  public void toggleBetweenLineAndChar() {
+    setFileContents("abc");
+    editor.right();
+    editor.toggleVisual(Visual.Mode.LINE);
+    editor.right();
+    editor.toggleVisual(Visual.Mode.CHAR);
+    assertTrue(editor.isInVisual(0, 1));
   }
 }

@@ -1,5 +1,6 @@
 package com.id.editor;
 
+import com.id.editor.Visual.Mode;
 import com.id.file.FileView;
 
 public class Editor {
@@ -9,11 +10,14 @@ public class Editor {
   }
 
   private final FileView file;
-  private final Cursor cursor = new Cursor();
+  private final Cursor cursor;
+  private final Visual visual;
   private boolean inInsertMode = false;
 
   public Editor(FileView fileView) {
     this.file = fileView;
+    this.cursor = new Cursor();
+    this.visual = new Visual(this.cursor);
   }
 
   public String getLine(int y) {
@@ -70,6 +74,10 @@ public class Editor {
   }
 
   public void escape() {
+    if (visual.isOn()) {
+      visual.toggleMode(Mode.NONE);
+      return;
+    }
     if (isInInsertMode()) {
       inInsertMode = false;
       file.breakPatch();
@@ -188,5 +196,13 @@ public class Editor {
 
   public String getFilename() {
     return file.getFilename();
+  }
+
+  public void toggleVisual(Mode mode) {
+    visual.toggleMode(mode);
+  }
+
+  public boolean isInVisual(int y, int x) {
+    return visual.contains(new Point(y, x));
   }
 }

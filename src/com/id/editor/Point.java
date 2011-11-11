@@ -27,6 +27,22 @@ public class Point {
     }
   }
 
+  public boolean beforeOrEqual(Point other) {
+    if (before(other)) {
+      return true;
+    }
+    return equals(other);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Point)) {
+      return false;
+    }
+    Point other = (Point) obj;
+    return this.y == other.y && this.x == other.x;
+  }
+
   public Point offset(int dy, int dx) {
     return new Point(y + dy, x + dx);
   }

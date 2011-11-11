@@ -70,7 +70,6 @@ public class App implements Listener {
         }
         boolean handled = editorSwapper.handleKeyPress(e);
         if (!handled) {
-          System.out.println("IH");
           switch (e.getKeyCode()) {
           case KeyEvent.VK_T:
             showFuzzyFinder();

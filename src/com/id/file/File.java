@@ -154,4 +154,9 @@ public class File {
   public String getFilename() {
     return filename;
   }
+
+  public String[] getLines() {
+    String[] result = new String[getLineCount()];
+    return lines.toArray(result);
+  }
 }

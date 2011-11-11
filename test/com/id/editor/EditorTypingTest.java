@@ -42,10 +42,29 @@ public class EditorTypingTest {
   public void deleteLine() {
     setFileContents("abc");
     typeString("D");
-    assertEquals("", file.getLine(0));
+    assertFileContents("");
     assertFalse(editor.isInInsertMode());
     typeString("u");
-    assertEquals("abc", file.getLine(0));
+    assertFileContents("abc");
+  }
+
+  @Test
+  public void deleteAndRetype() {
+    setFileContents("abc", "def");
+    typeString("Dadefg");
+    type(handler.escape());
+    assertFileContents("defg", "def");
+  }
+
+  @Test
+  public void dollars() {
+    setFileContents("abc");
+    typeString("$D");
+    assertFileContents("ab");
+  }
+
+  private void assertFileContents(String... lines) {
+    assertArrayEquals(lines, file.getLines());
   }
 
   private void type(KeyEvent event) {

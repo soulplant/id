@@ -1,6 +1,8 @@
 package com.id.events;
 
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 
@@ -9,7 +11,24 @@ import com.id.editor.Visual;
 
 public class EditorKeyHandler {
   static JFrame frame = new JFrame();
+  static Map<Character, Character> shiftSymbols = new HashMap<Character, Character>();
+  static {
+    shiftSymbols.put('!', '1');
+    shiftSymbols.put('@', '2');
+    shiftSymbols.put('#', '3');
+    shiftSymbols.put('$', '4');
+    shiftSymbols.put('%', '5');
+    shiftSymbols.put('^', '6');
+    shiftSymbols.put('&', '7');
+    shiftSymbols.put('*', '8');
+    shiftSymbols.put('(', '9');
+    shiftSymbols.put(')', '0');
+  }
   public KeyEvent makeEventFromChar(char c) {
+    if (shiftSymbols.containsKey(c)) {
+      char keyChar = shiftSymbols.get(c);
+      return new KeyEvent(frame, KeyEvent.KEY_PRESSED, 0L, KeyEvent.SHIFT_DOWN_MASK, keyChar, keyChar);
+    }
     int mask = 0;
     if (Character.isUpperCase(c)) {
       mask = KeyEvent.SHIFT_DOWN_MASK;
@@ -62,6 +81,9 @@ public class EditorKeyHandler {
         break;
       case KeyEvent.VK_D:
         editor.deleteLine();
+        break;
+      case KeyEvent.VK_4:
+        editor.endOfLine();
         break;
       default:
         return false;

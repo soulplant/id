@@ -217,4 +217,11 @@ public class Editor {
     file.removeText(cursor.getY(), cursor.getX());
     file.breakPatch();
   }
+
+  public void endOfLine() {
+    if (isInInsertMode()) {
+      throw new IllegalStateException();
+    }
+    cursor.moveTo(cursor.getY(), getCurrentLineLength() - 1);
+  }
 }

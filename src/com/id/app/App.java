@@ -2,8 +2,13 @@ package com.id.app;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -18,6 +23,7 @@ import com.id.platform.RealFileSystem;
 
 public class App implements Listener {
   private static final String APP_NAME = "id";
+  public static final Font FONT = loadFont();
   private final FuzzyFinder fuzzyFinder;
   private final FileSystem fileSystem;
   private final EditorSwapperPanel editorSwapper;
@@ -33,6 +39,19 @@ public class App implements Listener {
     return panel;
   }
 
+  public static Font loadFont() {
+    Font font = null;
+    try {
+      font = Font.createFont(Font.TRUETYPE_FONT, new java.io.File(
+          "resources/Inconsolata.ttf"));
+    } catch (FontFormatException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return font.deriveFont(12f);
+  }
+
   public App() {
     this.fileSystem = new RealFileSystem();
     this.fuzzyFinder = new FuzzyFinder(fileSystem);
@@ -40,7 +59,6 @@ public class App implements Listener {
 
     frame = new JFrame(APP_NAME);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setFont(new Font("Monospaced.plain", Font.PLAIN, 12));
 
     editorSwapper = new EditorSwapperPanel();
     editorSwapper.addEditor(makeEditorPanel("first"));
@@ -125,5 +143,11 @@ public class App implements Listener {
 
   private EditorPanel makeEditorPanel(File file) {
     return new EditorPanel(new Editor(new FileView(file)));
+  }
+
+  public static void configureFont(Graphics g) {
+    g.setFont(App.FONT);
+    Graphics2D g2 = (Graphics2D) g;
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
   }
 }

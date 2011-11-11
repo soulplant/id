@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
@@ -32,21 +30,19 @@ public class EditorPanel extends JPanel {
   @Override
   public void paint(Graphics g) {
     super.paint(g);
-    g.setFont(new Font("Monospaced.plain", Font.PLAIN, 14));
-    Graphics2D g2 = (Graphics2D) g;
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    App.configureFont(g);
 
     int fontDescentPx = g.getFontMetrics().getDescent();
     int fontWidthPx = g.getFontMetrics().getWidths()[70];
     int fontHeightPx = g.getFontMetrics().getHeight();
-    int height = (int) Math.floor(g.getClipBounds().getHeight() / fontHeightPx);
-    int width = (int) Math.floor(g.getClipBounds().getWidth() / fontWidthPx);
+    int linesHigh = (int) Math.floor(g.getClipBounds().getHeight() / fontHeightPx);
+    int linesWide = (int) Math.floor(g.getClipBounds().getWidth() / fontWidthPx);
 
     Point point = editor.getCursorPosition();
     int cursorWidthPx = editor.isInInsertMode() ? 2 : fontWidthPx;
     g.drawRect(point.getX() * fontWidthPx, point.getY() * fontHeightPx, cursorWidthPx, fontHeightPx);
-    for (int y = 0; y < height && y < editor.getLineCount(); y++) {
-      for (int x = 0; x < width && x < editor.getLine(y).length(); x++) {
+    for (int y = 0; y < linesHigh && y < editor.getLineCount(); y++) {
+      for (int x = 0; x < linesWide && x < editor.getLine(y).length(); x++) {
         if (editor.isInVisual(y, x)) {
           Color color = g.getColor();
           g.setColor(Color.GRAY);

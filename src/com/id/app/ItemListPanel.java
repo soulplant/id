@@ -43,6 +43,7 @@ public class ItemListPanel extends JPanel {
   @Override
   public void paint(Graphics g) {
     super.paint(g);
+    App.configureFont(g);
     int i = 0;
     for (String item : items) {
       g.drawString(item, 0, 30 * (i + 1));

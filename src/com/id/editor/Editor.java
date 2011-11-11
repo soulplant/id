@@ -225,4 +225,8 @@ public class Editor {
     }
     cursor.moveTo(cursor.getY(), getCurrentLineLength() - 1);
   }
+
+  public void startOfLine() {
+    cursor.moveTo(cursor.getY(), 0);
+  }
 }

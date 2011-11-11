@@ -120,6 +120,9 @@ public class EditorKeyHandler {
       case KeyEvent.VK_V:
         editor.toggleVisual(Visual.Mode.CHAR);
         break;
+      case KeyEvent.VK_0:
+        editor.startOfLine();
+        break;
       case KeyEvent.VK_BACK_SPACE:
         editor.backspace();
         break;

@@ -70,6 +70,13 @@ public class EditorTypingTest {
     assertEquals(0, editor.getCursorPosition().getX());
   }
 
+  @Test
+  public void goToStartOfLine() {
+    setFileContents("abc");
+    typeString("$0");
+    assertEquals(0, editor.getCursorPosition().getX());
+  }
+
   private void assertFileContents(String... lines) {
     assertArrayEquals(lines, file.getLines());
   }

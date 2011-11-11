@@ -2,10 +2,33 @@ package com.id.events;
 
 import java.awt.event.KeyEvent;
 
+import javax.swing.JFrame;
+
 import com.id.editor.Editor;
 import com.id.editor.Visual;
 
 public class EditorKeyHandler {
+  static JFrame frame = new JFrame();
+  public KeyEvent makeEventFromChar(char c) {
+    int mask = 0;
+    if (Character.isUpperCase(c)) {
+      mask = KeyEvent.SHIFT_DOWN_MASK;
+    }
+    return new KeyEvent(frame, KeyEvent.KEY_PRESSED, 0L, mask, Character.toUpperCase(c), c);
+  }
+
+  public KeyEvent makeEventFromVKey(int keyCode) {
+    return new KeyEvent(frame, KeyEvent.KEY_PRESSED, 0L, 0, keyCode, (char) keyCode);
+  }
+
+  public KeyEvent escape() {
+    return makeEventFromVKey(KeyEvent.VK_ESCAPE);
+  }
+
+  public boolean handleChar(char c, Editor editor) {
+    return handleKeyPress(makeEventFromChar(c), editor);
+  }
+
   public boolean handleKeyPress(KeyEvent event, Editor editor) {
     if (editor.isInInsertMode()) {
       boolean handled = true;
@@ -33,6 +56,12 @@ public class EditorKeyHandler {
         break;
       case KeyEvent.VK_V:
         editor.toggleVisual(Visual.Mode.LINE);
+        break;
+      case KeyEvent.VK_C:
+        editor.changeLine();
+        break;
+      case KeyEvent.VK_D:
+        editor.deleteLine();
         break;
       default:
         return false;

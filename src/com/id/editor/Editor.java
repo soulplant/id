@@ -205,4 +205,16 @@ public class Editor {
   public boolean isInVisual(int y, int x) {
     return visual.contains(new Point(y, x));
   }
+
+  public void changeLine() {
+    startPatch();
+    file.removeText(cursor.getY(), cursor.getX());
+    append();
+  }
+
+  public void deleteLine() {
+    startPatch();
+    file.removeText(cursor.getY(), cursor.getX());
+    file.breakPatch();
+  }
 }

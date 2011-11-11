@@ -157,4 +157,15 @@ public class EditorTest {
     editor.toggleVisual(Visual.Mode.CHAR);
     assertTrue(editor.isInVisual(0, 1));
   }
+
+  @Test
+  public void changeLine() {
+    setFileContents("abc");
+    editor.right();
+    editor.changeLine();
+    assertEquals("a", file.getLine(0));
+    editor.escape();
+    editor.undo();
+    assertEquals("abc", file.getLine(0));
+  }
 }

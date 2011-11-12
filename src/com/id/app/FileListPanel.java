@@ -25,13 +25,6 @@ public class FileListPanel extends ItemListPanel implements EditorList.Listener 
 
   @Override
   public void onSelectedChanged(int i) {
-    System.out.println("onSelectedChanged(" + i + ")");
     updateView();
   }
-
-//  @Override
-//  public void paint(Graphics g) {
-//    super.paint(g);
-//    g.drawRect(0, 0, g.getClipBounds().width - 1, g.getClipBounds().height - 1);
-//  }
 }

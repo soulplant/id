@@ -15,6 +15,7 @@ public class File {
 
   private final List<String> lines = new ArrayList<String>();
   private final List<Listener> listeners = new ArrayList<Listener>();
+  private final List<ModifiedListener> modifiedListeners = new ArrayList<ModifiedListener>();
   private final Patchwork patchwork;
   private final Graveyard graveyard;
   private String filename;
@@ -24,6 +25,12 @@ public class File {
     this.graveyard = new Graveyard(Arrays.<String>asList());
     listeners.add(patchwork);
     listeners.add(graveyard);
+    patchwork.setListener(new ModifiedListener() {
+      @Override
+      public void onModifiedStateChanged() {
+        fireModifiedStateChanged();
+      }
+    });
   }
 
   public File(String... lines) {
@@ -74,6 +81,12 @@ public class File {
   private void fireLineChanged(int y, String oldLine, String newLine) {
     for (Listener l : listeners) {
       l.onLineChanged(y, oldLine, newLine);
+    }
+  }
+
+  protected void fireModifiedStateChanged() {
+    for (ModifiedListener l : modifiedListeners) {
+      l.onModifiedStateChanged();
     }
   }
 
@@ -140,6 +153,14 @@ public class File {
 
   public void addListener(Listener listener) {
     this.listeners.add(listener);
+  }
+
+  public void addModifiedListener(ModifiedListener listener) {
+    this.modifiedListeners.add(listener);
+  }
+
+  public void removeModifiedListener(ModifiedListener listener) {
+    this.modifiedListeners.remove(listener);
   }
 
   public void splitLine(int y, int x) {

@@ -1,7 +1,9 @@
 package com.id.file;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
@@ -63,6 +65,18 @@ public class FileTest {
     String removedText = file.removeText(0, 1, 1);
     assertEquals("b", removedText);
     assertEquals("ac", file.getLine(0));
+  }
+
+  @Test
+  public void otherTest() {
+    File file = new File("abc");
+    assertFalse(file.isModified());
+    ModifiedListener listener = mock(ModifiedListener.class);
+    file.addModifiedListener(listener);
+    file.startPatchAt(0, 0);
+    file.insertLine(0, "hi");
+    verify(listener).onModifiedStateChanged();
+    assertTrue(file.isModified());
   }
 
   private static boolean isAllStatus(Tombstone.Status status, File file) {

@@ -2,7 +2,7 @@ package com.id.file;
 
 import com.id.editor.Point;
 
-public class FileView implements File.Listener {
+public class FileView implements File.Listener, ModifiedListener {
   private final File file;
   private int start;
   private int end;
@@ -48,6 +48,11 @@ public class FileView implements File.Listener {
 
   @Override
   public void onLineChanged(int y, String oldLine, String newLine) {
+    // Do nothing.
+  }
+
+  @Override
+  public void onModifiedStateChanged() {
     // Do nothing.
   }
 

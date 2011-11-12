@@ -1,4 +1,4 @@
-package com.id.app;
+package com.id.ui.editor;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,15 +8,16 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
+import com.id.app.App;
 import com.id.editor.Editor;
 import com.id.editor.Point;
 import com.id.events.EditorKeyHandler;
 
 @SuppressWarnings("serial")
-public class EditorPanel extends JPanel {
+public class TextPanel extends JPanel {
   private final Editor editor;
 
-  public EditorPanel(Editor editor) {
+  public TextPanel(Editor editor) {
     this.editor = editor;
     setPreferredSize(new Dimension(600, 768));
     setFont(new Font("system", Font.PLAIN, 14));
@@ -57,13 +58,5 @@ public class EditorPanel extends JPanel {
 
   public boolean handleKeyPress(KeyEvent e) {
     return new EditorKeyHandler().handleKeyPress(e, editor);
-  }
-
-  public String getFilename() {
-    return editor.getFilename();
-  }
-
-  public Editor getEditor() {
-    return editor;
   }
 }

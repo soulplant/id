@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import com.id.editor.Editor;
+import com.id.ui.editor.EditorPanel;
 
 @SuppressWarnings("serial")
 public class EditorSwapperPanel extends JPanel implements EditorList {

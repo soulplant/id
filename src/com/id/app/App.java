@@ -20,6 +20,7 @@ import com.id.file.FileView;
 import com.id.fuzzy.FuzzyFinder;
 import com.id.platform.FileSystem;
 import com.id.platform.RealFileSystem;
+import com.id.ui.editor.EditorPanel;
 
 public class App implements Listener {
   private static final String APP_NAME = "id";

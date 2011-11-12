@@ -77,6 +77,15 @@ public class EditorTypingTest {
     assertEquals(0, editor.getCursorPosition().getX());
   }
 
+  @Test
+  public void changesMade() {
+    setFileContents("abc");
+    typeString("D");
+    assertTrue(file.isModified());
+    typeString("u");
+    assertFalse(file.isModified());
+  }
+
   private void assertFileContents(String... lines) {
     assertArrayEquals(lines, file.getLines());
   }

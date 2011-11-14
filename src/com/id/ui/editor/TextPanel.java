@@ -19,7 +19,7 @@ public class TextPanel extends JPanel {
 
   public TextPanel(Editor editor) {
     this.editor = editor;
-    setPreferredSize(new Dimension(600, 768));
+//    setPreferredSize(new Dimension(600, 768));
     setFont(new Font("system", Font.PLAIN, 14));
   }
 

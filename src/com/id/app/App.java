@@ -1,6 +1,6 @@
 package com.id.app;
 
-import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
@@ -62,14 +62,16 @@ public class App implements Listener {
 
     frame = new JFrame(APP_NAME);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setLayout(new AppLayout());
 
     editorSwapper = new EditorSwapperPanel();
     editorSwapper.addEditor(makeEditorPanel("first"));
     editorSwapper.addEditor(makeEditorPanel("second", "second"));
-    frame.getContentPane().add(new FileListPanel(editorSwapper), BorderLayout.LINE_START);
+    frame.getContentPane().add(new FileListPanel(editorSwapper), "filelist");
     final EditorPanel stack = makeEditorPanel("stack");
-    frame.getContentPane().add(editorSwapper, BorderLayout.CENTER);
-    frame.getContentPane().add(stack, BorderLayout.LINE_END);
+    frame.getContentPane().add(editorSwapper, "spotlight");
+    frame.getContentPane().add(stack, "stack");
+    frame.setSize(new Dimension(1024, 768));
     frame.pack();
     frame.setVisible(true);
 
@@ -107,7 +109,7 @@ public class App implements Listener {
     frame.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        System.out.println(e);
+        frame.pack();
       }
     });
   }

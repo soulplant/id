@@ -1,6 +1,10 @@
 package com.id.app;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.LayoutManager;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +21,38 @@ public class EditorSwapperPanel extends JPanel implements EditorList {
   private final List<EditorList.Listener> listeners = new ArrayList<EditorList.Listener>();
 
   public EditorSwapperPanel() {
+    setLayout(new LayoutManager() {
+
+      @Override
+      public void addLayoutComponent(String name, Component comp) {
+        // TODO Auto-generated method stub
+
+      }
+
+      @Override
+      public void layoutContainer(Container parent) {
+        parent.getComponent(0).setSize(parent.getSize());
+      }
+
+      @Override
+      public Dimension minimumLayoutSize(Container parent) {
+        // TODO Auto-generated method stub
+        return new Dimension();
+      }
+
+      @Override
+      public Dimension preferredLayoutSize(Container parent) {
+        // TODO Auto-generated method stub
+        return new Dimension();
+      }
+
+      @Override
+      public void removeLayoutComponent(Component comp) {
+        // TODO Auto-generated method stub
+
+      }
+
+    });
   }
 
   public void addEditor(EditorPanel editorPanel) {

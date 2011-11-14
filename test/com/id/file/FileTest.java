@@ -3,13 +3,16 @@ package com.id.file;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 
 import org.junit.Test;
 
 import com.id.editor.Point;
-import com.id.file.File;
-import com.id.file.Tombstone;
 
 public class FileTest {
   @Test
@@ -77,6 +80,16 @@ public class FileTest {
     file.insertLine(0, "hi");
     verify(listener).onModifiedStateChanged();
     assertTrue(file.isModified());
+  }
+
+  @Test
+  public void loadFileTest() throws IOException {
+    StringReader stringReader = new StringReader("this\nis");
+    File file = File.loadFrom(new BufferedReader(stringReader));
+    assertEquals("this", file.getLine(0));
+    assertEquals("is", file.getLine(1));
+    assertEquals(2, file.getLineCount());
+    assertTrue(isAllStatus(Tombstone.Status.NORMAL, file));
   }
 
   private static boolean isAllStatus(Tombstone.Status status, File file) {

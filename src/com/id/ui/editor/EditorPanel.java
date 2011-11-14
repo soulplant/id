@@ -18,6 +18,7 @@ public class EditorPanel extends JPanel {
     this.editor = editor;
     textPanel = new TextPanel(editor);
     this.add(new JLabel(editor.getFilename()), BorderLayout.PAGE_START);
+    this.add(new MarkerPanel(editor), BorderLayout.LINE_START);
     this.add(textPanel, BorderLayout.CENTER);
   }
 

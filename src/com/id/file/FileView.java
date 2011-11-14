@@ -1,6 +1,7 @@
 package com.id.file;
 
 import com.id.editor.Point;
+import com.id.file.Tombstone.Status;
 
 public class FileView implements File.Listener, ModifiedListener {
   private final File file;
@@ -106,5 +107,13 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public String getFilename() {
     return file.getFilename();
+  }
+
+  public Status getStatus(int y) {
+    return file.getStatus(start + y);
+  }
+
+  public Grave getGrave(int y) {
+    return file.getGrave(start + y);
   }
 }

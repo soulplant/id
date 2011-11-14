@@ -34,14 +34,11 @@ public class RealFileSystem implements FileSystem {
   }
 
   private File loadFile(String filename) {
-    File file = new File();
+    File file;
     try {
       FileReader fileReader = new FileReader(filename);
       BufferedReader bufferedReader = new BufferedReader(fileReader);
-      String line;
-      while ((line = bufferedReader.readLine()) != null) {
-        file.insertLine(file.getLineCount(), line);
-      }
+      file = File.loadFrom(bufferedReader);
     } catch (IOException e) {
       e.printStackTrace();
       return null;

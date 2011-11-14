@@ -1,5 +1,7 @@
 package com.id.file;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,8 +40,15 @@ public class File {
     for (String line : lines) {
       insertLine(getLineCount(), line);
     }
-    graveyard.reset();
-    patchwork.reset();
+    reset();
+  }
+
+  public File(List<String> lines) {
+    this();
+    for (String line : lines) {
+      insertLine(getLineCount(), line);
+    }
+    reset();
   }
 
   // Lines
@@ -179,5 +188,27 @@ public class File {
   public String[] getLines() {
     String[] result = new String[getLineCount()];
     return lines.toArray(result);
+  }
+
+  public boolean isLineNew(int y) {
+    return graveyard.getStatus(y) == Tombstone.Status.NEW;
+  }
+
+  public Grave getGrave(int y) {
+    return graveyard.getGrave(y);
+  }
+
+  public static File loadFrom(BufferedReader bufferedReader) throws IOException {
+    List<String> lines = new ArrayList<String>();
+    String line;
+    while ((line = bufferedReader.readLine()) != null) {
+      lines.add(line);
+    }
+    return new File(lines);
+  }
+
+  private void reset() {
+    graveyard.reset();
+    patchwork.reset();
   }
 }

@@ -2,6 +2,8 @@ package com.id.editor;
 
 import com.id.editor.Visual.Mode;
 import com.id.file.FileView;
+import com.id.file.Grave;
+import com.id.file.Tombstone.Status;
 
 public class Editor {
   public interface Context {
@@ -228,5 +230,13 @@ public class Editor {
 
   public void startOfLine() {
     cursor.moveTo(cursor.getY(), 0);
+  }
+
+  public Grave getGrave(int y) {
+    return file.getGrave(y);
+  }
+
+  public Status getStatus(int y) {
+    return file.getStatus(y);
   }
 }

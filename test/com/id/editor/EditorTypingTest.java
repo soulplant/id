@@ -86,6 +86,13 @@ public class EditorTypingTest {
     assertFalse(file.isModified());
   }
 
+  @Test
+  public void delete() {
+    setFileContents("abc");
+    typeString("lx");
+    assertFileContents("ac");
+  }
+
   private void assertFileContents(String... lines) {
     assertArrayEquals(lines, file.getLines());
   }

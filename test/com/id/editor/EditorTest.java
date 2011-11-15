@@ -168,4 +168,10 @@ public class EditorTest {
     editor.undo();
     assertEquals("abc", file.getLine(0));
   }
+
+  public void delete() {
+    setFileContents("abc");
+    editor.delete();
+    assertEquals("bc", file.getLine(0));
+  }
 }

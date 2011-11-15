@@ -239,4 +239,8 @@ public class Editor {
   public Status getStatus(int y) {
     return file.getStatus(y);
   }
+
+  public void delete() {
+    file.removeText(cursor.getY(), cursor.getX(), 1);
+  }
 }

@@ -120,6 +120,9 @@ public class EditorKeyHandler {
       case KeyEvent.VK_V:
         editor.toggleVisual(Visual.Mode.CHAR);
         break;
+      case KeyEvent.VK_X:
+        editor.delete();
+        break;
       case KeyEvent.VK_0:
         editor.startOfLine();
         break;

@@ -63,6 +63,5 @@ public class VisualTest {
     visual.removeFrom(new FileView(file));
     assertEquals(2, file.getLineCount());
     assertEquals("ah", file.getLine(0));
-    // TODO Finish.
   }
 }

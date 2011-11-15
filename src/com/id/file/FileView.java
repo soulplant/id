@@ -23,6 +23,10 @@ public class FileView implements File.Listener, ModifiedListener {
     return file.getLine(start + y);
   }
 
+  public int getLineCount() {
+    return end - start + 1;
+  }
+
   public void insertLine(int y, String line) {
     file.insertLine(start + y, line);
   }
@@ -57,20 +61,12 @@ public class FileView implements File.Listener, ModifiedListener {
     // Do nothing.
   }
 
-  public int getLineCount() {
-    return end - start + 1;
-  }
-
   public boolean isInPatch() {
     return file.isInPatch();
   }
 
   public void startPatchAt(int y, int x) {
     file.startPatchAt(start + y, x);
-  }
-
-  public void insertText(int y, int x, String text) {
-    file.insertText(start + y, x, text);
   }
 
   public void breakPatch() {
@@ -87,6 +83,10 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public String removeText(int y, int x, int length) {
     return file.removeText(start + y, x, length);
+  }
+
+  public void insertText(int y, int x, String text) {
+    file.insertText(start + y, x, text);
   }
 
   public String removeText(int y, int x) {

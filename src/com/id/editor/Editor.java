@@ -100,7 +100,11 @@ public class Editor {
   }
 
   private void startPatch() {
-    file.startPatchAt(cursor.getY(), cursor.getX());
+    if (isInVisual()) {
+      file.startPatchAt(visual.getStartPoint().getY(), visual.getStartPoint().getX());
+    } else {
+      file.startPatchAt(cursor.getY(), cursor.getX());
+    }
   }
 
   private void startPatchIfNecessary() {
@@ -241,6 +245,19 @@ public class Editor {
   }
 
   public void delete() {
-    file.removeText(cursor.getY(), cursor.getX(), 1);
+    startPatch();
+    if (visual.isOn()) {
+      visual.removeFrom(file);
+      cursor.moveTo(visual.getStartPoint().getY(), visual.getStartPoint().getX());
+      visual.toggleMode(Visual.Mode.NONE);
+    } else {
+      file.removeText(cursor.getY(), cursor.getX(), 1);
+    }
+    file.breakPatch();
+    applyCursorConstraints();
+  }
+
+  public boolean isInVisual() {
+    return visual.isOn();
   }
 }

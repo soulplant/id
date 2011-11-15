@@ -1,5 +1,7 @@
 package com.id.editor;
 
+import com.id.file.FileView;
+
 public class Visual {
   public enum Mode {
     NONE,
@@ -68,5 +70,34 @@ public class Visual {
 
   public boolean contains(Point point) {
     return mode.contains(this, point);
+  }
+
+  public void removeFrom(FileView file) {
+    switch (mode) {
+    case BLOCK:
+      int left = Math.min(getStartPoint().getX(), getEndPoint().getX());
+      int right = Math.max(getStartPoint().getX(), getEndPoint().getX());
+
+      for (int i = getStartPoint().getY(); i < getEndPoint().getY(); i++) {
+        file.removeText(i, left, right - left);
+      }
+      break;
+    case CHAR:
+      // TODO Fix multi-line.
+      int startLine = getStartPoint().getY();
+      int endLine = getStartPoint().getY();
+      int startX = getStartPoint().getX();
+      int endX = getEndPoint().getX();
+      if (startLine == endLine) {
+        file.removeText(startLine, startX, endX - startX + 1);
+        return;
+      }
+      file.removeText(startLine, getStartPoint().getX());
+      for (int i = 0; i < endLine - startLine; i++) {
+        file.removeLine(startLine + 1);
+      }
+      file.removeText(endLine, 0, getEndPoint().getX());
+      break;
+    }
   }
 }

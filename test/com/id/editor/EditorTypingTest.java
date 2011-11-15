@@ -93,6 +93,18 @@ public class EditorTypingTest {
     assertFileContents("ac");
   }
 
+  @Test
+  public void deleteVisual() {
+    setFileContents("abcdef");
+    typeString("vlx");
+    assertFileContents("cdef");
+    assertFalse(editor.isInVisual());
+    assertEquals(0, editor.getCursorPosition().getX());
+    typeString("u");
+    assertFileContents("abcdef");
+    assertEquals(0, editor.getCursorPosition().getX());
+  }
+
   private void assertFileContents(String... lines) {
     assertArrayEquals(lines, file.getLines());
   }

@@ -53,7 +53,24 @@ public class TextPanel extends JPanel {
       }
       g.drawString(editor.getLine(y), 0, (y + 1) * fontHeightPx - fontDescentPx);
     }
-    g.drawRect(0, 0, g.getClipBounds().width - 1, g.getClipBounds().height - 1);
+    int x = g.getClipBounds().x;
+    int y = g.getClipBounds().y;
+    int height = g.getClipBounds().height - 1;
+    int width = g.getClipBounds().width - 1;
+    int realWidth = getSize().width - 1;
+    int realHeight = getSize().height - 1;
+    if (x == 0) {
+      g.drawLine(x, y, x, y + height);
+    }
+    if (x + width == realWidth) {
+      g.drawLine(x + width, y, x + width, y + height);
+    }
+    if (y == 0) {
+      g.drawLine(x, y, x + width, y);
+    }
+    if (y + height == realHeight) {
+      g.drawLine(x, y + height, x + width, y + height);
+    }
   }
 
   public boolean handleKeyPress(KeyEvent e) {

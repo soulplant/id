@@ -47,30 +47,6 @@ public class FileTest {
   }
 
   @Test
-  public void splitAtEnd() {
-    File file = new File("a");
-    file.splitLine(0, 1);
-    assertEquals("a", file.getLine(0));
-    assertEquals("", file.getLine(1));
-  }
-
-  @Test
-  public void splitInMiddle() {
-    File file = new File("abc");
-    file.splitLine(0, 1);
-    assertEquals("a", file.getLine(0));
-    assertEquals("bc", file.getLine(1));
-  }
-
-  @Test
-  public void removeText() {
-    File file = new File("abc");
-    String removedText = file.removeText(0, 1, 1);
-    assertEquals("b", removedText);
-    assertEquals("ac", file.getLine(0));
-  }
-
-  @Test
   public void otherTest() {
     File file = new File("abc");
     assertFalse(file.isModified());

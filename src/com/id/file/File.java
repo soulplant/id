@@ -141,21 +141,6 @@ public class File {
     changeLine(y, newLine);
   }
 
-  public String removeText(int y, int x, int length) {
-    String line = getLine(y);
-    if (x >= line.length()) {
-      return "";
-    }
-    int substringMax = Math.min(line.length(), x + length);
-    String newLine = line.substring(0, x) + line.substring(substringMax);
-    changeLine(y, newLine);
-    return line.substring(x, substringMax);
-  }
-
-  public String removeText(int y, int x) {
-    return removeText(y, x, getLine(y).length());
-  }
-
   public boolean isEmpty() {
     return getLineCount() == 0;
   }
@@ -170,11 +155,6 @@ public class File {
 
   public void removeModifiedListener(ModifiedListener listener) {
     this.modifiedListeners.remove(listener);
-  }
-
-  public void splitLine(int y, int x) {
-    String removedText = removeText(y, x);
-    insertLine(y + 1, removedText);
   }
 
   public void setFilename(String filename) {
@@ -210,15 +190,5 @@ public class File {
   private void reset() {
     graveyard.reset();
     patchwork.reset();
-  }
-
-  public void removeLineRange(int from, int to) {
-    for (int i = 0; i < to - from + 1; i++) {
-      removeLine(i + from);
-    }
-  }
-
-  public void appendToLine(int y, String tail) {
-    changeLine(y, getLine(y) + tail);
   }
 }

@@ -31,6 +31,10 @@ public class FileView implements File.Listener, ModifiedListener {
     file.insertLine(start + y, line);
   }
 
+  public void changeLine(int y, String line) {
+    file.changeLine(start + y, line);
+  }
+
   @Override
   public void onLineInserted(int y, String line) {
     if (y < start) {
@@ -81,28 +85,36 @@ public class FileView implements File.Listener, ModifiedListener {
     return file.redo();
   }
 
+  public String removeText(int y, int x) {
+    return removeText(y, x, getLine(y).length());
+  }
+
   public String removeText(int y, int x, int length) {
-    return file.removeText(start + y, x, length);
+    String line = getLine(y);
+    if (x >= line.length()) {
+      return "";
+    }
+    int substringMax = Math.min(line.length(), x + length);
+    String newLine = line.substring(0, x) + line.substring(substringMax);
+    changeLine(y, newLine);
+    return line.substring(x, substringMax);
   }
 
   public void insertText(int y, int x, String text) {
     file.insertText(start + y, x, text);
   }
 
-  public String removeText(int y, int x) {
-    return file.removeText(start + y, x);
-  }
-
   public void removeLine(int y) {
     file.removeLine(start + y);
   }
 
-  public boolean isEmpty() {
-    return getLineCount() == 0;
+  public void splitLine(int y, int x) {
+    String removedText = removeText(y, x);
+    insertLine(y + 1, removedText);
   }
 
-  public void splitLine(int y, int x) {
-    file.splitLine(start + y, x);
+  public boolean isEmpty() {
+    return getLineCount() == 0;
   }
 
   public String getFilename() {
@@ -118,10 +130,12 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public void removeLineRange(int from, int to) {
-    file.removeLineRange(start + from, start + to);
+    for (int i = 0; i < to - from + 1; i++) {
+      removeLine(i + from);
+    }
   }
 
   public void appendToLine(int y, String tail) {
-    file.appendToLine(start + y, tail);
+    changeLine(y, getLine(y) + tail);
   }
 }

@@ -59,8 +59,10 @@ public class VisualTest {
     cursor.moveTo(0, 1);
     visual.toggleMode(Visual.Mode.CHAR);
     cursor.moveTo(1, 2);
-    File file = new File("abcd", "defg", "hijk");
+    File file = new File("abcd", "efgh", "hijk");
     visual.removeFrom(new FileView(file));
+    assertEquals(2, file.getLineCount());
+    assertEquals("ah", file.getLine(0));
     // TODO Finish.
   }
 }

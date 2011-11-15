@@ -211,4 +211,14 @@ public class File {
     graveyard.reset();
     patchwork.reset();
   }
+
+  public void removeLineRange(int from, int to) {
+    for (int i = 0; i < to - from + 1; i++) {
+      removeLine(i + from);
+    }
+  }
+
+  public void appendToLine(int y, String tail) {
+    changeLine(y, getLine(y) + tail);
+  }
 }

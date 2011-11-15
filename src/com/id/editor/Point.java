@@ -54,4 +54,9 @@ public class Point {
   public Point constrainX(int min, int max) {
     return new Point(y, Math.max(min, Math.min(max, x)));
   }
+
+  @Override
+  public String toString() {
+    return "[" + y + ", " + x + "]";
+  }
 }

@@ -116,4 +116,12 @@ public class FileView implements File.Listener, ModifiedListener {
   public Grave getGrave(int y) {
     return file.getGrave(start + y);
   }
+
+  public void removeLineRange(int from, int to) {
+    file.removeLineRange(start + from, start + to);
+  }
+
+  public void appendToLine(int y, String tail) {
+    file.appendToLine(start + y, tail);
+  }
 }

@@ -83,9 +83,8 @@ public class Visual {
       }
       break;
     case CHAR:
-      // TODO Fix multi-line.
       int startLine = getStartPoint().getY();
-      int endLine = getStartPoint().getY();
+      int endLine = getEndPoint().getY();
       int startX = getStartPoint().getX();
       int endX = getEndPoint().getX();
       if (startLine == endLine) {
@@ -93,10 +92,12 @@ public class Visual {
         return;
       }
       file.removeText(startLine, getStartPoint().getX());
-      for (int i = 0; i < endLine - startLine; i++) {
-        file.removeLine(startLine + 1);
+      file.removeText(endLine, 0, getEndPoint().getX() + 1);
+      String tail = file.getLine(endLine);
+      if (startLine + 1 <= endLine) {
+        file.removeLineRange(startLine + 1, endLine);
       }
-      file.removeText(endLine, 0, getEndPoint().getX());
+      file.appendToLine(startLine, tail);
       break;
     }
   }

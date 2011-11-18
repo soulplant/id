@@ -86,6 +86,9 @@ public class EditorKeyHandler {
       case KeyEvent.VK_4:
         editor.endOfLine();
         break;
+      case KeyEvent.VK_S:
+        editor.subsituteLine();
+        break;
       default:
         handled = false;
       }

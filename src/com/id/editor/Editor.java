@@ -275,4 +275,14 @@ public class Editor {
   public boolean hasUndo() {
     return file.hasUndo();
   }
+
+  public void subsituteLine() {
+    if (isInVisual()) {
+      substitute();
+      return;
+    }
+    startPatch();
+    file.removeText(cursor.getY(), 0);
+    insert();
+  }
 }

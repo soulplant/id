@@ -133,6 +133,13 @@ public class EditorTypingTest {
     assertFileContents("c");
   }
 
+  @Test
+  public void substituteLine() {
+    setFileContents("abc", "def");
+    typeString("Sddd");
+    assertFileContents("ddd", "def");
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

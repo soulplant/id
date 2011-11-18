@@ -138,4 +138,8 @@ public class FileView implements File.Listener, ModifiedListener {
   public void appendToLine(int y, String tail) {
     changeLine(y, getLine(y) + tail);
   }
+
+  public boolean hasUndo() {
+    return file.hasUndo();
+  }
 }

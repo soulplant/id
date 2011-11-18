@@ -191,4 +191,8 @@ public class File {
     graveyard.reset();
     patchwork.reset();
   }
+
+  public boolean hasUndo() {
+    return !patchwork.pastPatches.isEmpty();
+  }
 }

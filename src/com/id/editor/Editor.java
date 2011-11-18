@@ -271,4 +271,8 @@ public class Editor {
     }
     insert();
   }
+
+  public boolean hasUndo() {
+    return file.hasUndo();
+  }
 }

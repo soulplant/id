@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.awt.event.KeyEvent;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -115,7 +116,6 @@ public class EditorTypingTest {
     assertTrue(editor.isInVisual());
     type(handler.makeEventFromVKey(KeyEvent.VK_ESCAPE));
     assertFalse(editor.isInVisual());
-    ensureUndoGoesToLastFileContents();
   }
 
   @Test
@@ -124,7 +124,6 @@ public class EditorTypingTest {
     typeString("sb");
     assertTrue(editor.isInInsertMode());
     assertFileContents("bbc");
-    ensureUndoGoesToLastFileContents();
   }
 
   @Test
@@ -132,12 +131,18 @@ public class EditorTypingTest {
     setFileContents("abc");
     typeString("vls");
     assertFileContents("c");
+  }
+
+  @After
+  public void checkUndo() {
     ensureUndoGoesToLastFileContents();
   }
 
   private void ensureUndoGoesToLastFileContents() {
     type(handler.escape());
-    typeString("u");
+    while (editor.hasUndo()) {
+      typeString("u");
+    }
     assertFileContents(lastFileContents);
   }
 

@@ -260,4 +260,15 @@ public class Editor {
   public boolean isInVisual() {
     return visual.isOn();
   }
+
+  public void substitute() {
+    startPatch();
+    if (isInVisual()) {
+      visual.removeFrom(file);
+      visual.toggleMode(Visual.Mode.NONE);
+    } else {
+      file.removeText(cursor.getY(), cursor.getX(), 1);
+    }
+    insert();
+  }
 }

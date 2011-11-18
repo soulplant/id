@@ -65,6 +65,7 @@ public class EditorKeyHandler {
       }
     }
 
+    boolean handled = true;
     if (event.isShiftDown()) {
       switch (event.getKeyCode()) {
       case KeyEvent.VK_O:
@@ -86,7 +87,7 @@ public class EditorKeyHandler {
         editor.endOfLine();
         break;
       default:
-        return false;
+        handled = false;
       }
     } else {
       switch (event.getKeyCode()) {
@@ -103,7 +104,14 @@ public class EditorKeyHandler {
         editor.right();
         break;
       case KeyEvent.VK_I:
-        editor.insert();
+        if (!editor.isInVisual()) {
+          editor.insert();
+        } else {
+          handled = false;
+        }
+        break;
+      case KeyEvent.VK_S:
+        editor.substitute();
         break;
       case KeyEvent.VK_U:
         editor.undo();
@@ -133,10 +141,10 @@ public class EditorKeyHandler {
         editor.escape();
         break;
       default:
-        return false;
+        handled = false;
       }
     }
-    return true;
+    return handled;
   }
 
   private boolean isKeyCodeForLetter(int keyCode) {

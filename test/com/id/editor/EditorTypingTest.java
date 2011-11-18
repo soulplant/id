@@ -16,6 +16,7 @@ public class EditorTypingTest {
   private Editor editor;
   private FileView fileView;
   private File file;
+  private String[] lastFileContents;
 
   @Before
   public void init() {
@@ -23,6 +24,7 @@ public class EditorTypingTest {
   }
 
   private void setFileContents(String... lines) {
+    lastFileContents = lines;
     file = new File(lines);
     fileView = new FileView(file);
     editor = new Editor(fileView);
@@ -103,6 +105,40 @@ public class EditorTypingTest {
     typeString("u");
     assertFileContents("abcdef");
     assertEquals(0, editor.getCursorPosition().getX());
+  }
+
+  @Test
+  public void noInsertFromVisual() {
+    setFileContents("abc");
+    typeString("vi");
+    assertFalse(editor.isInInsertMode());
+    assertTrue(editor.isInVisual());
+    type(handler.makeEventFromVKey(KeyEvent.VK_ESCAPE));
+    assertFalse(editor.isInVisual());
+    ensureUndoGoesToLastFileContents();
+  }
+
+  @Test
+  public void replaceChar() {
+    setFileContents("abc");
+    typeString("sb");
+    assertTrue(editor.isInInsertMode());
+    assertFileContents("bbc");
+    ensureUndoGoesToLastFileContents();
+  }
+
+  @Test
+  public void substituteVisual() {
+    setFileContents("abc");
+    typeString("vls");
+    assertFileContents("c");
+    ensureUndoGoesToLastFileContents();
+  }
+
+  private void ensureUndoGoesToLastFileContents() {
+    type(handler.escape());
+    typeString("u");
+    assertFileContents(lastFileContents);
   }
 
   private void assertFileContents(String... lines) {

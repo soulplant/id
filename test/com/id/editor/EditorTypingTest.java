@@ -121,9 +121,9 @@ public class EditorTypingTest {
   @Test
   public void replaceChar() {
     setFileContents("abc");
-    typeString("sb");
+    typeString("lsd");
     assertTrue(editor.isInInsertMode());
-    assertFileContents("bbc");
+    assertFileContents("adc");
   }
 
   @Test
@@ -131,6 +131,8 @@ public class EditorTypingTest {
     setFileContents("abc");
     typeString("vls");
     assertFileContents("c");
+    typeString("X");
+    assertFileContents("Xc");
   }
 
   @Test
@@ -138,6 +140,15 @@ public class EditorTypingTest {
     setFileContents("abc", "def");
     typeString("Sddd");
     assertFileContents("ddd", "def");
+  }
+
+  @Test
+  public void subsituteLineFromMiddle() {
+    setFileContents("abcdef");
+    typeString("llSabc");
+    assertFileContents("abc");
+    ensureUndoGoesToLastFileContents();
+    assertEquals(0, editor.getCursorPosition().getX());
   }
 
   @After

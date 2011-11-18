@@ -232,7 +232,7 @@ public class Editor {
     cursor.moveTo(cursor.getY(), getCurrentLineLength() - 1);
   }
 
-  public void startOfLine() {
+  public void moveCursorToStartOfLine() {
     cursor.moveTo(cursor.getY(), 0);
   }
 
@@ -245,15 +245,21 @@ public class Editor {
   }
 
   public void delete() {
+    delete(true);
+  }
+
+  public void delete(boolean breakPatch) {
     startPatch();
-    if (visual.isOn()) {
+    if (isInVisual()) {
       visual.removeFrom(file);
       cursor.moveTo(visual.getStartPoint().getY(), visual.getStartPoint().getX());
       visual.toggleMode(Visual.Mode.NONE);
     } else {
       file.removeText(cursor.getY(), cursor.getX(), 1);
     }
-    file.breakPatch();
+    if (breakPatch) {
+      file.breakPatch();
+    }
     applyCursorConstraints();
   }
 
@@ -262,13 +268,7 @@ public class Editor {
   }
 
   public void substitute() {
-    startPatch();
-    if (isInVisual()) {
-      visual.removeFrom(file);
-      visual.toggleMode(Visual.Mode.NONE);
-    } else {
-      file.removeText(cursor.getY(), cursor.getX(), 1);
-    }
+    delete(false);
     insert();
   }
 
@@ -281,6 +281,7 @@ public class Editor {
       substitute();
       return;
     }
+    moveCursorToStartOfLine();
     startPatch();
     file.removeText(cursor.getY(), 0);
     insert();

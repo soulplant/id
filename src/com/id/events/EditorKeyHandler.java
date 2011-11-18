@@ -135,7 +135,7 @@ public class EditorKeyHandler {
         editor.delete();
         break;
       case KeyEvent.VK_0:
-        editor.startOfLine();
+        editor.moveCursorToStartOfLine();
         break;
       case KeyEvent.VK_BACK_SPACE:
         editor.backspace();

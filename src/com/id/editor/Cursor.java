@@ -45,4 +45,8 @@ public class Cursor {
   public void setDefaultX(int x) {
     this.defaultX = x;
   }
+
+  public void moveTo(Point point) {
+    moveTo(point.getY(), point.getX());
+  }
 }

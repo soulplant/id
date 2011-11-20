@@ -230,7 +230,7 @@ public class Editor {
     applyCursorConstraints();
   }
 
-  public void endOfLine() {
+  public void moveCursorToEndOfLine() {
     if (isInInsertMode()) {
       throw new IllegalStateException();
     }
@@ -239,6 +239,22 @@ public class Editor {
 
   public void moveCursorToStartOfLine() {
     cursor.moveTo(cursor.getY(), 0);
+  }
+
+  public void moveCursorToNextWord() {
+    int nextSpace = file.findNextSpace(cursor.getY(), cursor.getX());
+    if (nextSpace == -1) {
+      moveCursorToEndOfLine();
+      return;
+    }
+
+    int nextLetter = file.findNextLetter(cursor.getY(), nextSpace);
+    if (nextLetter == -1) {
+      moveCursorToEndOfLine();
+      return;
+    }
+
+    cursor.moveTo(cursor.getY(), nextLetter);
   }
 
   public Grave getGrave(int y) {
@@ -291,4 +307,7 @@ public class Editor {
     file.removeText(cursor.getY(), 0);
     insert();
   }
+
+
+
 }

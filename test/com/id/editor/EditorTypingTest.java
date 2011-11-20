@@ -81,6 +81,18 @@ public class EditorTypingTest {
   }
 
   @Test
+  public void goToNextWord() {
+    String text = "abc def    ghi    ";
+    setFileContents(text);
+    typeString("w");
+    assertEquals(text.indexOf("d"), editor.getCursorPosition().getX());
+    typeString("w");
+    assertEquals(text.indexOf("g"), editor.getCursorPosition().getX());
+    typeString("w");
+    assertEquals(text.length() - 1, editor.getCursorPosition().getX());
+  }
+
+  @Test
   public void changesMade() {
     setFileContents("abc");
     typeString("D");

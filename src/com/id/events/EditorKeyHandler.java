@@ -88,7 +88,7 @@ public class EditorKeyHandler {
         editor.deleteLine();
         break;
       case KeyEvent.VK_4:
-        editor.endOfLine();
+        editor.moveCursorToEndOfLine();
         break;
       case KeyEvent.VK_S:
         editor.subsituteLine();
@@ -109,6 +109,9 @@ public class EditorKeyHandler {
         break;
       case KeyEvent.VK_L:
         editor.right();
+        break;
+      case KeyEvent.VK_W:
+        editor.moveCursorToNextWord();
         break;
       case KeyEvent.VK_I:
         if (!editor.isInVisual()) {

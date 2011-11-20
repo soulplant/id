@@ -13,6 +13,9 @@ public class Cursor {
   }
 
   public void moveTo(int y, int x) {
+    if (x < 0) {
+      throw new IllegalArgumentException();
+    }
     this.point = new Point(y, x);
     this.defaultX = x;
   }

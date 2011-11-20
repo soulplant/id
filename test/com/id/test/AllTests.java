@@ -1,4 +1,5 @@
 package com.id.test;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -10,11 +11,11 @@ import com.id.file.FileViewTest;
 import com.id.file.GraveyardTest;
 import com.id.fuzzy.FuzzyFinderTest;
 import com.id.platform.InMemoryFileSystemTest;
-
+import com.id.rendering.SlugTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ EditorTest.class, VisualTest.class, FileTest.class,
     FileViewTest.class, GraveyardTest.class, FuzzyFinderTest.class,
-    InMemoryFileSystemTest.class, EditorTypingTest.class })
+    InMemoryFileSystemTest.class, EditorTypingTest.class, SlugTest.class })
 public class AllTests {
 }

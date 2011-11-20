@@ -1,7 +1,5 @@
 package com.id.ui.editor;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -12,6 +10,8 @@ import com.id.app.App;
 import com.id.editor.Editor;
 import com.id.editor.Point;
 import com.id.events.EditorKeyHandler;
+import com.id.rendering.EditorRenderer;
+import com.id.rendering.Matrix;
 
 @SuppressWarnings("serial")
 public class TextPanel extends JPanel {
@@ -19,13 +19,7 @@ public class TextPanel extends JPanel {
 
   public TextPanel(Editor editor) {
     this.editor = editor;
-//    setPreferredSize(new Dimension(600, 768));
     setFont(new Font("system", Font.PLAIN, 14));
-  }
-
-  @Override
-  public void setSize(Dimension d) {
-    super.setSize(d);
   }
 
   @Override
@@ -33,26 +27,23 @@ public class TextPanel extends JPanel {
     super.paint(g);
     App.configureFont(g);
 
-    int fontDescentPx = g.getFontMetrics().getDescent();
-    int fontWidthPx = g.getFontMetrics().getWidths()[70];
-    int fontHeightPx = g.getFontMetrics().getHeight();
-    int linesHigh = (int) Math.floor(g.getClipBounds().getHeight() / fontHeightPx);
-    int linesWide = (int) Math.floor(g.getClipBounds().getWidth() / fontWidthPx);
+    final int fontDescentPx = g.getFontMetrics().getDescent();
+    final int fontWidthPx = g.getFontMetrics().getWidths()[70];
+    final int fontHeightPx = g.getFontMetrics().getHeight();
 
+    EditorRenderer renderer = new EditorRenderer(editor, g.getClipBounds(), fontWidthPx, fontHeightPx, fontDescentPx);
+    Matrix matrix = renderer.render();
+    matrix.render(g);
     Point point = editor.getCursorPosition();
+    int cursorYPx = point.getY() * fontHeightPx;
+    int cursorXPx = point.getX() * fontWidthPx;
     int cursorWidthPx = editor.isInInsertMode() ? 2 : fontWidthPx;
-    g.drawRect(point.getX() * fontWidthPx, point.getY() * fontHeightPx, cursorWidthPx, fontHeightPx);
-    for (int y = 0; y < linesHigh && y < editor.getLineCount(); y++) {
-      for (int x = 0; x < linesWide && x < editor.getLine(y).length(); x++) {
-        if (editor.isInVisual(y, x)) {
-          Color color = g.getColor();
-          g.setColor(Color.GRAY);
-          g.fillRect(x * fontWidthPx, y * fontHeightPx - fontDescentPx, fontWidthPx, fontHeightPx + fontDescentPx);
-          g.setColor(color);
-        }
-      }
-      g.drawString(editor.getLine(y), 0, (y + 1) * fontHeightPx - fontDescentPx);
-    }
+    int cursorHeightPx = fontHeightPx;
+    g.drawRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
+    drawOutlineBox(g);
+  }
+
+  private void drawOutlineBox(Graphics g) {
     int x = g.getClipBounds().x;
     int y = g.getClipBounds().y;
     int height = g.getClipBounds().height - 1;

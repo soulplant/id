@@ -180,6 +180,11 @@ public class Editor {
     cursor.moveTo(cursor.getY(), getCurrentLineLength());
     insert();
   }
+  
+	public void insertStart() {
+		cursor.moveTo(cursor.getY(), 0);
+		insert();
+	}
 
   private int getCurrentLineLength() {
     if (file.isEmpty()) {
@@ -286,4 +291,6 @@ public class Editor {
     file.removeText(cursor.getY(), 0);
     insert();
   }
+
+
 }

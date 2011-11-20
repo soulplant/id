@@ -158,6 +158,20 @@ public class EditorTypingTest {
     assertFileContents("ai");
   }
 
+  @Test
+  public void appendTextToLine() {
+	  setFileContents("abc");
+	  typeString("Ade");
+	  assertFileContents("abcde");
+  }
+
+  @Test
+  public void insertTextAtStartOfLine() {
+  	setFileContents("abc");
+  	typeString("Ide");
+  	assertFileContents("deabc");
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

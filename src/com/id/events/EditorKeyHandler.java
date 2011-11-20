@@ -10,8 +10,8 @@ import com.id.editor.Editor;
 import com.id.editor.Visual;
 
 public class EditorKeyHandler {
-  static JFrame frame = new JFrame();
-  static Map<Character, Character> shiftSymbols = new HashMap<Character, Character>();
+  private static JFrame frame = new JFrame();
+  private static Map<Character, Character> shiftSymbols = new HashMap<Character, Character>();
   static {
     shiftSymbols.put('!', '1');
     shiftSymbols.put('@', '2');
@@ -24,6 +24,7 @@ public class EditorKeyHandler {
     shiftSymbols.put('(', '9');
     shiftSymbols.put(')', '0');
   }
+
   public KeyEvent makeEventFromChar(char c) {
     if (shiftSymbols.containsKey(c)) {
       char keyChar = shiftSymbols.get(c);
@@ -73,6 +74,9 @@ public class EditorKeyHandler {
         break;
       case KeyEvent.VK_A:
         editor.appendEnd();
+        break;
+      case KeyEvent.VK_I:
+        editor.insertStart();
         break;
       case KeyEvent.VK_V:
         editor.toggleVisual(Visual.Mode.LINE);

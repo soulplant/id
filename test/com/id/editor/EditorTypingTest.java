@@ -151,6 +151,13 @@ public class EditorTypingTest {
     assertEquals(0, editor.getCursorPosition().getX());
   }
 
+  @Test
+  public void xOverMultipleLines() {
+    setFileContents("abc", "def", "ghi");
+    typeString("lvjjx");
+    assertFileContents("ai");
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

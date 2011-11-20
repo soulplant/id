@@ -91,12 +91,10 @@ public class Visual {
         file.removeText(startLine, startX, endX - startX + 1);
         return;
       }
-      file.removeText(startLine, getStartPoint().getX());
-      file.removeText(endLine, 0, getEndPoint().getX() + 1);
+      file.removeText(startLine, startX);
+      file.removeText(endLine, 0, endX + 1);
       String tail = file.getLine(endLine);
-      if (startLine + 1 <= endLine) {
-        file.removeLineRange(startLine + 1, endLine);
-      }
+      file.removeLineRange(startLine + 1, endLine);
       file.appendToLine(startLine, tail);
       break;
     }

@@ -131,7 +131,7 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public void removeLineRange(int from, int to) {
     for (int i = 0; i < to - from + 1; i++) {
-      removeLine(i + from);
+      removeLine(from);
     }
   }
 

@@ -25,6 +25,8 @@ public class EditorRendererTest {
     setFileContents("abc", "def");
     renderMatrix(new Rectangle(10, 10, 20, 20), 10, 10);
     assertMatrixContents("ef");
+    assertEquals(1, matrix.getLineOffset());
+    assertEquals(1, matrix.getCharOffset());
   }
 
   @Test
@@ -32,7 +34,6 @@ public class EditorRendererTest {
     setFileContents("abc", "def");
     renderMatrix(new Rectangle(5, 5, 20, 20), 10, 10);
     assertMatrixContents("abc", "def");
-    assertMatrixOffset(5, 5);
   }
 
   @Test
@@ -56,11 +57,7 @@ public class EditorRendererTest {
     renderMatrix(new Rectangle(1, 9, 1, 2), 10, 10);
     assertMatrixContents("a", "d");
     assertEquals(0, matrix.getLineOffset());
-  }
-
-  private void assertMatrixOffset(int y, int x) {
-    assertEquals(y, matrix.getOffsetY());
-    assertEquals(x, matrix.getOffsetX());
+    assertEquals(0, matrix.getCharOffset());
   }
 
   private void renderMatrix(Rectangle screen, int fontWidthPx, int fontHeightPx) {

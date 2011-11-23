@@ -31,8 +31,9 @@ public class EditorRenderer {
     int lettersHigh = letterYBottom - letterY + 1;
     final int linesToDraw = Math.min(lettersHigh, editor.getLineCount() - letterY);
     int lineOffset = (int) Math.ceil(screen.y / fontHeightPx);
+    int charOffset = screen.x / fontWidthPx;
 
-    Matrix matrix = new Matrix(linesToDraw, lettersWide, fontDescentPx, fontHeightPx, offsetYPx, offsetXPx, lineOffset);
+    Matrix matrix = new Matrix(linesToDraw, lettersWide, fontDescentPx, fontHeightPx, offsetXPx, lineOffset, charOffset);
 
     for (int i = 0; i < matrix.getHeight(); i++) {
       int lineY = letterY + i;

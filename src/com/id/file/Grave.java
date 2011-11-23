@@ -41,8 +41,9 @@ public class Grave {
   private Pair splitAt(int i) {
     List<Tombstone> splitTombstones = splice(i, tombstones);
     Tombstone tombstone = splitTombstones.remove(0);
-    // TODO This should equal i.
-    history.remove(history.size() - 1);
+    if (i != history.remove(history.size() - 1)) {
+      throw new IllegalStateException("We should only split where the history tells us to");
+    }
     List<Integer> splitHistory = splice(i, history);
     return new Pair(tombstone, new Grave(splitTombstones, splitHistory));
   }

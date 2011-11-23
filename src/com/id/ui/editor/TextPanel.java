@@ -38,6 +38,7 @@ public class TextPanel extends JPanel {
         // Do nothing.
       }
     });
+    updateSize();
   }
 
   private void updateSize() {

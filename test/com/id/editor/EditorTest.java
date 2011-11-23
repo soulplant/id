@@ -8,7 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.id.file.File;
+import com.id.file.File.Listener;
 import com.id.file.FileView;
+
+import static org.mockito.Mockito.*;
 
 public class EditorTest {
   private File file;
@@ -167,6 +170,15 @@ public class EditorTest {
     editor.escape();
     editor.undo();
     assertEquals("abc", file.getLine(0));
+  }
+
+  @Test
+  public void attachListener() {
+    setFileContents("abc");
+    Listener listener = mock(File.Listener.class);
+    editor.addFileListener(listener);
+    editor.addEmptyLinePrevious();
+    verify(listener).onLineInserted(0, "");
   }
 
   public void delete() {

@@ -11,14 +11,16 @@ public class Matrix {
   private final int offsetXPx;
   private final int lineHeightPx;
   private final int fontDescentPx;
+  private final int lineOffset;
 
-  public Matrix(int height, int width, int fontDescentPx, int lineHeightPx, int offsetYPx, int offsetXPx) {
+  public Matrix(int height, int width, int fontDescentPx, int lineHeightPx, int offsetYPx, int offsetXPx, int lineOffset) {
     this.height = height;
     this.width = width;
     this.fontDescentPx = fontDescentPx;
     this.lineHeightPx = lineHeightPx;
     this.offsetYPx = offsetYPx;
     this.offsetXPx = offsetXPx;
+    this.lineOffset = lineOffset;
     for (int y = 0; y < height; y++) {
       slugs.add(new Slug(width));
     }
@@ -59,8 +61,10 @@ public class Matrix {
   public void render(Graphics g) {
     for (int i = 0; i < height; i++) {
       Slug slug = slugs.get(i);
+      // TODO Remove offsetYPx.
+      int y = (lineOffset + i + 1) * lineHeightPx - fontDescentPx -  0 * offsetYPx;
       // NOTE drawString() takes the bottom y coordinate of the rect to draw the text in.
-      g.drawString(slug.getString(), -offsetXPx, (i + 1) * lineHeightPx - fontDescentPx - offsetYPx);
+      g.drawString(slug.getString(), -offsetXPx, y);
     }
   }
 
@@ -75,5 +79,9 @@ public class Matrix {
       buffer.append("]");
     }
     return buffer.toString();
+  }
+
+  public int getLineOffset() {
+    return lineOffset;
   }
 }

@@ -1,7 +1,6 @@
 package com.id.ui.editor;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
@@ -16,16 +15,16 @@ public class MarkerPanel extends JPanel {
 
   public MarkerPanel(Editor editor) {
     this.editor = editor;
-    setPreferredSize(new Dimension(10, 768));
   }
 
   @Override
   public void paint(Graphics g) {
     super.paint(g);
     g.setFont(App.FONT);
+    // TODO Make this only render things in the clip rect.
     int fontHeightPx = g.getFontMetrics().getHeight();
-    int widthPx = g.getClipBounds().width;
-    int height = Math.min(editor.getLineCount(), g.getClipBounds().height / fontHeightPx);
+    int widthPx = 10;
+    int height = editor.getLineCount();
 
     for (int i = 0; i < height; i++) {
       Color color = g.getColor();

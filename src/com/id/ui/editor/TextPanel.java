@@ -1,5 +1,6 @@
 package com.id.ui.editor;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -10,6 +11,7 @@ import com.id.app.App;
 import com.id.editor.Editor;
 import com.id.editor.Point;
 import com.id.events.EditorKeyHandler;
+import com.id.file.File;
 import com.id.rendering.EditorRenderer;
 import com.id.rendering.Matrix;
 
@@ -20,6 +22,33 @@ public class TextPanel extends JPanel {
   public TextPanel(Editor editor) {
     this.editor = editor;
     setFont(new Font("system", Font.PLAIN, 14));
+    editor.addFileListener(new File.Listener() {
+      @Override
+      public void onLineInserted(int y, String line) {
+        updateSize();
+      }
+
+      @Override
+      public void onLineRemoved(int y, String line) {
+        updateSize();
+      }
+
+      @Override
+      public void onLineChanged(int y, String oldLine, String newLine) {
+        // Do nothing.
+      }
+    });
+  }
+
+  private void updateSize() {
+    //  final int fontWidthPx = getFontMetrics(getFont()).getWidths()[70];
+    //  final int fontHeightPx = getFontMetrics(getFont()).getHeight();
+    // TODO Make these not static.
+    final int fontWidthPx = 8;
+    final int fontHeightPx = 14;
+
+    setPreferredSize(new Dimension(fontWidthPx, fontHeightPx * editor.getLineCount()));
+    invalidate();
   }
 
   @Override

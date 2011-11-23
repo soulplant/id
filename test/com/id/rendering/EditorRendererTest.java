@@ -47,6 +47,15 @@ public class EditorRendererTest {
     setFileContents("abc", "def");
     renderMatrix(new Rectangle(0, 10, 10, 10), 10, 10);
     assertMatrixContents("d");
+    assertEquals(1, matrix.getLineOffset());
+  }
+
+  @Test
+  public void checkPaintingGlitch() {
+    setFileContents("abc", "def", "ghi");
+    renderMatrix(new Rectangle(1, 9, 1, 2), 10, 10);
+    assertMatrixContents("a", "d");
+    assertEquals(0, matrix.getLineOffset());
   }
 
   private void assertMatrixOffset(int y, int x) {

@@ -1,6 +1,7 @@
 package com.id.file;
 
 import com.id.editor.Point;
+import com.id.file.File.Listener;
 import com.id.file.Tombstone.Status;
 
 public class FileView implements File.Listener, ModifiedListener {
@@ -156,5 +157,9 @@ public class FileView implements File.Listener, ModifiedListener {
   public int findNextSpace(int y, int x) {
     String line = getLine(y);
     return line.indexOf(" ", x);
+  }
+
+  public void addListener(Listener listener) {
+    file.addListener(listener);
   }
 }

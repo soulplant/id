@@ -26,11 +26,13 @@ public class EditorRenderer {
     final int extraLettersX = offsetXPx > 0 ? 1 : 0;
     int letterX = screen.x / fontWidthPx;
     int letterY = screen.y / fontHeightPx;
+    int letterYBottom = (screen.y + screen.height) / fontHeightPx;
     int lettersWide = screen.width / fontWidthPx + extraLettersX;
-    int lettersHigh = screen.height / fontHeightPx + extraLettersY;
+    int lettersHigh = letterYBottom - letterY + 1;
     final int linesToDraw = Math.min(lettersHigh, editor.getLineCount() - letterY);
+    int lineOffset = (int) Math.ceil(screen.y / fontHeightPx);
 
-    Matrix matrix = new Matrix(linesToDraw, lettersWide, fontDescentPx, fontHeightPx, offsetYPx, offsetXPx);
+    Matrix matrix = new Matrix(linesToDraw, lettersWide, fontDescentPx, fontHeightPx, offsetYPx, offsetXPx, lineOffset);
 
     for (int i = 0; i < matrix.getHeight(); i++) {
       int lineY = letterY + i;

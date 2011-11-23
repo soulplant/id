@@ -1,6 +1,11 @@
 package com.id.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.id.editor.Visual.Mode;
+import com.id.file.File;
+import com.id.file.File.Listener;
 import com.id.file.FileView;
 import com.id.file.Grave;
 import com.id.file.Tombstone.Status;
@@ -15,6 +20,7 @@ public class Editor {
   private final Cursor cursor;
   private final Visual visual;
   private boolean inInsertMode = false;
+  private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();
 
   public Editor(FileView fileView) {
     this.file = fileView;
@@ -308,6 +314,8 @@ public class Editor {
     insert();
   }
 
-
-
+  public void addFileListener(Listener listener) {
+    fileListeners.add(listener);
+    file.addListener(listener);
+  }
 }

@@ -12,13 +12,13 @@ import com.id.file.Tombstone.Status;
 
 public class Editor {
   public interface Context {
-    void moveScreenToIncludePoint(Point point);
+    void moveViewportToIncludePoint(Point point);
     void recenterScreenOnPoint(Point point);
   }
 
   class EmptyContext implements Context {
     @Override
-    public void moveScreenToIncludePoint(Point point) {
+    public void moveViewportToIncludePoint(Point point) {
       // Do nothing.
     }
 
@@ -42,7 +42,7 @@ public class Editor {
     cursor.addListner(new Cursor.Listener() {
       @Override
       public void onMoved(int y, int x) {
-        context.moveScreenToIncludePoint(new Point(y, x));
+        context.moveViewportToIncludePoint(new Point(y, x));
       }
 
       @Override

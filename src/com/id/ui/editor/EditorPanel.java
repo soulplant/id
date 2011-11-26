@@ -44,7 +44,7 @@ public class EditorPanel extends JPanel implements Editor.Context {
   }
 
   @Override
-  public void moveScreenToIncludePoint(Point point) {
+  public void moveViewportToIncludePoint(Point point) {
     textPanel.scrollRectToVisible(cursorPointToRect(point));
   }
 

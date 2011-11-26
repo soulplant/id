@@ -52,4 +52,8 @@ public class Slug {
   public String toString() {
     return getString();
   }
+
+  public int getLength() {
+    return entries.size();
+  }
 }

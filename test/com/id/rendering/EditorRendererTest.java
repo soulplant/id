@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.id.editor.Editor;
+import com.id.editor.Visual;
 import com.id.file.File;
 import com.id.file.FileView;
 
@@ -58,6 +59,22 @@ public class EditorRendererTest {
     assertMatrixContents("a", "d");
     assertEquals(0, matrix.getLineOffset());
     assertEquals(0, matrix.getCharOffset());
+  }
+
+  @Test
+  public void onePixelCase() {
+    setFileContents("abc");
+    renderMatrix(new Rectangle(0, 0, 1, 1), 10, 10);
+    assertMatrixContents("a");
+  }
+
+  @Test
+  public void checkVisual() {
+    setFileContents("abc");
+    editor.toggleVisual(Visual.Mode.CHAR);
+    renderMatrix(new Rectangle(0, 0, 1, 1), 10, 10);
+    assertMatrixContents("a");
+    assertTrue(matrix.isVisual(0, 0));
   }
 
   private void renderMatrix(Rectangle screen, int fontWidthPx, int fontHeightPx) {

@@ -20,24 +20,24 @@ public class EditorRenderer {
   }
 
   public Matrix render() {
-    final int offsetYPx = screen.y % fontHeightPx;
-    final int offsetXPx = screen.x % fontWidthPx;
-    final int extraLettersY = offsetYPx > 0 ? 1 : 0;
-    final int extraLettersX = offsetXPx > 0 ? 1 : 0;
-    int letterX = screen.x / fontWidthPx;
-    int letterY = screen.y / fontHeightPx;
-    int letterYBottom = (screen.y + screen.height) / fontHeightPx;
-    int lettersWide = screen.width / fontWidthPx + extraLettersX;
-    int lettersHigh = letterYBottom - letterY + 1;
-    final int linesToDraw = Math.min(lettersHigh, editor.getLineCount() - letterY);
-    int lineOffset = (int) Math.ceil(screen.y / fontHeightPx);
-    int charOffset = screen.x / fontWidthPx;
+    int startX = screen.x / fontWidthPx;
+    int startY = screen.y / fontHeightPx;
+    int endX = (screen.x + screen.width - 1) / fontWidthPx;
+    int endY = (screen.y + screen.height - 1) / fontHeightPx;
 
-    Matrix matrix = new Matrix(linesToDraw, lettersWide, fontDescentPx, fontHeightPx, offsetXPx, lineOffset, charOffset);
+    int linesToDraw = endY - startY + 1;
+    int charsToDraw = endX - startX + 1;
 
-    for (int i = 0; i < matrix.getHeight(); i++) {
-      int lineY = letterY + i;
-      setLine(i, letterX, lettersWide, matrix, editor.getLine(lineY));
+    return matrix(startY, startX, linesToDraw, charsToDraw);
+  }
+
+  private Matrix matrix(int startY, int startX, int linesToDraw, int charsToDraw) {
+    int height = Math.min(linesToDraw, editor.getLineCount() - startY);
+    int width = charsToDraw;
+    Matrix matrix = new Matrix(height, width, fontDescentPx, fontHeightPx, fontWidthPx, startY, startX);
+    for (int i = 0; i < height; i++) {
+      int lineY = startY + i;
+      setLine(i, startX, charsToDraw, matrix, editor.getLine(lineY));
     }
     return matrix;
   }
@@ -51,6 +51,9 @@ public class EditorRenderer {
     line = safeSubstring(line, startX, length);
     for (int i = 0; i < Math.min(matrix.getWidth(), line.length()); i++) {
       matrix.setLetter(y, i, line.charAt(i));
+      if (editor.isInVisual(y, i)) {
+        matrix.setVisual(y, i, true);
+      }
     }
   }
 }

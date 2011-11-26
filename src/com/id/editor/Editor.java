@@ -39,6 +39,17 @@ public class Editor {
     this.file = fileView;
     this.cursor = new Cursor();
     this.visual = new Visual(this.cursor);
+    cursor.addListner(new Cursor.Listener() {
+      @Override
+      public void onMoved(int y, int x) {
+        context.moveScreenToIncludePoint(new Point(y, x));
+      }
+
+      @Override
+      public void onJumped(int y, int x) {
+        // TODO Recenter the screen on (y, x).
+      }
+    });
   }
 
   public String getLine(int y) {
@@ -57,30 +68,21 @@ public class Editor {
   public void down() {
     cursor.moveBy(1, 0);
     applyCursorConstraints();
-    moveScreenToIncludeCursor();
-  }
-
-
-  private void moveScreenToIncludeCursor() {
-    context.moveScreenToIncludePoint(cursor.getPoint());
   }
 
   public void up() {
     cursor.moveBy(-1, 0);
     applyCursorConstraints();
-    moveScreenToIncludeCursor();
   }
 
   public void left() {
     cursor.moveBy(0, -1);
     applyCursorConstraints();
-    moveScreenToIncludeCursor();
   }
 
   public void right() {
     cursor.moveBy(0, 1);
     applyCursorConstraints();
-    moveScreenToIncludeCursor();
   }
 
   public void insert() {

@@ -1,8 +1,17 @@
 package com.id.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Cursor {
+  public interface Listener {
+    void onMoved(int y, int x);
+    void onJumped(int y, int x);
+  }
+
   private Point point;
   private int defaultX;
+  private final List<Listener> listeners = new ArrayList<Listener>();
 
   public Cursor() {
     this.point = new Point(0, 0);
@@ -13,11 +22,37 @@ public class Cursor {
   }
 
   public void moveTo(int y, int x) {
+    setPosition(y, x);
+    fireOnMoved(y, x);
+  }
+
+  private void fireOnMoved(int y, int x) {
+    fireOnJumped(y, x);
+  }
+
+  private void fireOnJumped(int y, int x) {
+    for (Listener listener : listeners) {
+      listener.onMoved(y, x);
+    }
+  }
+
+  public void jumpTo(int y, int x) {
+    setPosition(y, x);
+    for (Listener listener : listeners) {
+      listener.onJumped(y, x);
+    }
+  }
+
+  private void setPosition(int y, int x) {
+    checkBounds(y, x);
+    this.point = new Point(y, x);
+    this.defaultX = x;
+  }
+
+  private void checkBounds(int y, int x) {
     if (x < 0) {
       throw new IllegalArgumentException();
     }
-    this.point = new Point(y, x);
-    this.defaultX = x;
   }
 
   public void moveBy(int dy, int dx) {
@@ -27,6 +62,7 @@ public class Cursor {
     } else {
       defaultX = point.getX();
     }
+    fireOnMoved(point.getY(), point.getX());
   }
 
   public int getY() {
@@ -51,5 +87,13 @@ public class Cursor {
 
   public void moveTo(Point point) {
     moveTo(point.getY(), point.getX());
+  }
+
+  public void addListner(Listener listener) {
+    listeners.add(listener);
+  }
+
+  public void removeListener(Listener listener) {
+    listeners.remove(listener);
   }
 }

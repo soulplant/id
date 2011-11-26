@@ -16,11 +16,24 @@ public class Editor {
     void recenterScreenOnPoint(Point point);
   }
 
+  class EmptyContext implements Context {
+    @Override
+    public void moveScreenToIncludePoint(Point point) {
+      // Do nothing.
+    }
+
+    @Override
+    public void recenterScreenOnPoint(Point point) {
+      // Do nothing.
+    }
+  }
+
   private final FileView file;
   private final Cursor cursor;
   private final Visual visual;
   private boolean inInsertMode = false;
   private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();
+  private Context context = new EmptyContext();
 
   public Editor(FileView fileView) {
     this.file = fileView;
@@ -44,22 +57,30 @@ public class Editor {
   public void down() {
     cursor.moveBy(1, 0);
     applyCursorConstraints();
+    moveScreenToIncludeCursor();
   }
 
+
+  private void moveScreenToIncludeCursor() {
+    context.moveScreenToIncludePoint(cursor.getPoint());
+  }
 
   public void up() {
     cursor.moveBy(-1, 0);
     applyCursorConstraints();
+    moveScreenToIncludeCursor();
   }
 
   public void left() {
     cursor.moveBy(0, -1);
     applyCursorConstraints();
+    moveScreenToIncludeCursor();
   }
 
   public void right() {
     cursor.moveBy(0, 1);
     applyCursorConstraints();
+    moveScreenToIncludeCursor();
   }
 
   public void insert() {
@@ -317,5 +338,9 @@ public class Editor {
   public void addFileListener(Listener listener) {
     fileListeners.add(listener);
     file.addListener(listener);
+  }
+
+  public void setContext(Context context) {
+    this.context = context;
   }
 }

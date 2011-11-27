@@ -37,7 +37,7 @@ public class EditorRenderer {
     Matrix matrix = new Matrix(height, width, fontDescentPx, fontHeightPx, fontWidthPx, startY, startX);
     for (int i = 0; i < height; i++) {
       int lineY = startY + i;
-      setLine(i, startX, charsToDraw, matrix, editor.getLine(lineY));
+      setLine(i, startX, charsToDraw, matrix, lineY);
     }
     return matrix;
   }
@@ -47,12 +47,13 @@ public class EditorRenderer {
     return line.substring(x, endIndex);
   }
 
-  private void setLine(int y, int startX, int length, Matrix matrix, String line) {
+  private void setLine(int matrixY, int startX, int length, Matrix matrix, int lineY) {
+    String line = editor.getLine(lineY);
     line = safeSubstring(line, startX, length);
     for (int i = 0; i < Math.min(matrix.getWidth(), line.length()); i++) {
-      matrix.setLetter(y, i, line.charAt(i));
-      if (editor.isInVisual(y, i)) {
-        matrix.setVisual(y, i, true);
+      matrix.setLetter(matrixY, i, line.charAt(i));
+      if (editor.isInVisual(lineY, i)) {
+        matrix.setVisual(matrixY, i, true);
       }
     }
   }

@@ -77,6 +77,16 @@ public class EditorRendererTest {
     assertTrue(matrix.isVisual(0, 0));
   }
 
+  @Test
+  public void checkHighlight() {
+    setFileContents("ab");
+    editor.setHighlight("a");
+    renderMatrix(new Rectangle(0, 0, 20, 10), 10, 10);
+    assertMatrixContents("ab");
+    assertTrue(matrix.isHighlight(0, 0));
+    assertFalse(matrix.isHighlight(0, 1));
+  }
+
   private void renderMatrix(Rectangle screen, int fontWidthPx, int fontHeightPx) {
     renderer = new EditorRenderer(editor, screen, fontWidthPx, fontHeightPx, 0);
     matrix = renderer.render();

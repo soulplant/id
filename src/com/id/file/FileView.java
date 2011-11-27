@@ -174,4 +174,44 @@ public class FileView implements File.Listener, ModifiedListener {
     String nextLine = removeLine(y + 1);
     changeLine(y, getLine(y) + nextLine);
   }
+
+  public void setHighlight(String word) {
+    file.setHighlight(word);
+  }
+
+  public boolean isHighlighted(int y, int x) {
+    return file.isHighlighted(start + y, x);
+  }
+
+  public void clearHighlight() {
+    file.clearHighlight();
+  }
+
+  public String getWordUnder(int y, int x) {
+    int start = findWordStart(y, x);
+    int end = findWordEnd(y, x);
+    return getLine(y).substring(start, end + 1);
+  }
+
+  private int findWordEnd(int y, int x) {
+    String line = getLine(y);
+    int i = x;
+    while (i < line.length() - 1 && isWordCharacter(line.charAt(i + 1))) {
+      i++;
+    }
+    return i;
+  }
+
+  private int findWordStart(int y, int x) {
+    String line = getLine(y);
+    int i = x;
+    while (i > 0 && isWordCharacter(line.charAt(i - 1))) {
+      i--;
+    }
+    return i;
+  }
+
+  private boolean isWordCharacter(char c) {
+    return Character.isLetterOrDigit(c);
+  }
 }

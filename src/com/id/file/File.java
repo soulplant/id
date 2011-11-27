@@ -21,6 +21,7 @@ public class File {
   private final Patchwork patchwork;
   private final Graveyard graveyard;
   private String filename;
+  private Highlight highlight = new EmptyHighlight();
 
   public File() {
     this.patchwork = new Patchwork();
@@ -195,5 +196,31 @@ public class File {
 
   public boolean hasUndo() {
     return !patchwork.pastPatches.isEmpty();
+  }
+
+  public void setHighlight(String word) {
+    setHighlight(new CachingHighlight(word, this.getLineList()));
+  }
+
+  private void setHighlight(Highlight highlight) {
+    removeListener(this.highlight);
+    this.highlight = highlight;
+    addListener(this.highlight);
+  }
+
+  public void removeListener(Listener listener) {
+    listeners.remove(listener);
+  }
+
+  public boolean isHighlighted(int y, int x) {
+    return highlight.isHighlighted(y, x);
+  }
+
+  public List<String> getLineList() {
+    return new ArrayList<String>(lines);
+  }
+
+  public void clearHighlight() {
+    setHighlight(new EmptyHighlight());
   }
 }

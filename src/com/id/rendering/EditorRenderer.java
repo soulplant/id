@@ -55,6 +55,9 @@ public class EditorRenderer {
       if (editor.isInVisual(lineY, i)) {
         matrix.setVisual(matrixY, i, true);
       }
+      if (editor.isHighlight(lineY, i)) {
+        matrix.setHighlight(matrixY, i, true);
+      }
     }
   }
 }

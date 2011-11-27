@@ -371,4 +371,20 @@ public class Editor {
     visual.toggleMode(Visual.Mode.NONE);
     file.breakPatch();
   }
+
+  public void setHighlight(String word) {
+    file.setHighlight(word);
+  }
+
+  public boolean isHighlight(int y, int x) {
+    return file.isHighlighted(y, x);
+  }
+
+  public void highlightWordUnderCursor() {
+    file.setHighlight(file.getWordUnder(cursor.getY(), cursor.getX()));
+  }
+
+  public void clearHighlight() {
+    file.clearHighlight();
+  }
 }

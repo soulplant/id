@@ -55,10 +55,13 @@ public class Matrix {
     for (int y = 0; y < height; y++) {
       Slug slug = slugs.get(y);
       for (int x = 0; x < slug.getLength(); x++) {
+        int boxY = (lineOffset + y) * charHeightPx;
+        int boxX = x * charWidthPx;
         if (slug.isVisual(x)) {
-          int boxY = (lineOffset + y) * charHeightPx;
-          int boxX = x * charWidthPx;
           g.setColor(Color.GRAY);
+          g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
+        } else if (slug.isHighlight(x)) {
+          g.setColor(Color.CYAN);
           g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
         }
       }
@@ -92,5 +95,13 @@ public class Matrix {
 
   public void setVisual(int y, int x, boolean visual) {
     slugs.get(y).setVisual(x, visual);
+  }
+
+  public boolean isHighlight(int y, int x) {
+    return slugs.get(y).isHighlight(x);
+  }
+
+  public void setHighlight(int y, int x, boolean highlight) {
+    slugs.get(y).setHighlight(x, highlight);
   }
 }

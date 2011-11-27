@@ -1,6 +1,8 @@
 package com.id.file;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -53,5 +55,25 @@ public class FileViewTest {
   public void removeLineRange() {
     FileView file = new FileView(new File("abc", "def"));
     file.removeLineRange(0, 1);
+  }
+
+  @Test
+  public void highlights() {
+    FileView file = new FileView(new File("abc", "def"));
+    file.setHighlight("abc");
+    assertTrue(file.isHighlighted(0, 0));
+    assertFalse(file.isHighlighted(1, 0));
+    file.changeLine(0, "babc");
+    assertFalse(file.isHighlighted(0, 0));
+    assertTrue(file.isHighlighted(0, 1));
+    file.clearHighlight();
+    assertFalse(file.isHighlighted(0, 0));
+    assertFalse(file.isHighlighted(0, 1));
+  }
+
+  @Test
+  public void getWordUnderCursor() {
+    FileView file = new FileView(new File("abc asdf", "def"));
+    assertEquals("abc", file.getWordUnder(0, 1));
   }
 }

@@ -208,6 +208,19 @@ public class EditorTypingTest {
     assertFileContents("abc", "defghi");
   }
 
+  @Test
+  public void star() {
+    setFileContents("abc", "def", "abc");
+    typeString("*");
+    assertTrue(editor.isHighlight(0, 0));
+    assertFalse(editor.isHighlight(1, 0));
+    assertTrue(editor.isHighlight(2, 0));
+    typeString("\\");
+    assertFalse(editor.isHighlight(0, 0));
+    assertFalse(editor.isHighlight(1, 0));
+    assertFalse(editor.isHighlight(2, 0));
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

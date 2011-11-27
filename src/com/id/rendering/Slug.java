@@ -56,4 +56,12 @@ public class Slug {
   public int getLength() {
     return entries.size();
   }
+
+  public void setHighlight(int i, boolean highlight) {
+    entries.get(i).isHighlight = highlight;
+  }
+
+  public boolean isHighlight(int i) {
+    return entries.get(i).isHighlight;
+  }
 }

@@ -116,6 +116,9 @@ public class EditorKeyHandler {
       case KeyEvent.VK_S:
         editor.subsituteLine();
         break;
+      case KeyEvent.VK_8:
+        editor.highlightWordUnderCursor();
+        break;
       default:
         handled = false;
       }
@@ -178,6 +181,9 @@ public class EditorKeyHandler {
         break;
       case KeyEvent.VK_BACK_SPACE:
         editor.backspace();
+        break;
+      case KeyEvent.VK_BACK_SLASH:
+        editor.clearHighlight();
         break;
       case KeyEvent.VK_ESCAPE:
         editor.escape();

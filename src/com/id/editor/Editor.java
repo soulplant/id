@@ -361,4 +361,14 @@ public class Editor {
     cursor.moveBy(-(context.getViewportHeight() - 1), 0);
     applyCursorConstraints();
   }
+
+  public void join() {
+    if (!isInVisual()) {
+      throw new IllegalStateException();
+    }
+    startPatch();
+    file.joinRange(visual.getStartPoint().getY(), visual.getEndPoint().getY());
+    visual.toggleMode(Visual.Mode.NONE);
+    file.breakPatch();
+  }
 }

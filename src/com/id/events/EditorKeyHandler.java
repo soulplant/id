@@ -75,7 +75,7 @@ public class EditorKeyHandler {
         boolean handled = true;
         switch (event.getKeyCode()) {
         case KeyEvent.VK_J:
-          // TODO Join.
+          editor.join();
           break;
         case KeyEvent.VK_K:
           // Do nothing.

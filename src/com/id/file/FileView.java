@@ -105,8 +105,8 @@ public class FileView implements File.Listener, ModifiedListener {
     file.insertText(start + y, x, text);
   }
 
-  public void removeLine(int y) {
-    file.removeLine(start + y);
+  public String removeLine(int y) {
+    return file.removeLine(start + y);
   }
 
   public void splitLine(int y, int x) {
@@ -161,5 +161,17 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public void addListener(Listener listener) {
     file.addListener(listener);
+  }
+
+  public void joinRange(int start, int end) {
+    int length = end - start + 1;
+    for (int i = 0; i < length; i++) {
+      join(start);
+    }
+  }
+
+  private void join(int y) {
+    String nextLine = removeLine(y + 1);
+    changeLine(y, getLine(y) + nextLine);
   }
 }

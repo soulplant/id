@@ -65,9 +65,10 @@ public class File {
     fireLineInserted(y, line);
   }
 
-  public void removeLine(int y) {
+  public String removeLine(int y) {
     String line = lines.remove(y);
     fireLineRemoved(y, line);
+    return line;
   }
 
   public void changeLine(int y, String line) {

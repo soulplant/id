@@ -200,6 +200,14 @@ public class EditorTypingTest {
     assertEquals(0, editor.getCursorPosition().getY());
   }
 
+  @Test
+  public void join() {
+    setFileContents("abc", "def", "ghi");
+    typeString("jVJ");
+    assertFalse(editor.isInVisual());
+    assertFileContents("abc", "defghi");
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

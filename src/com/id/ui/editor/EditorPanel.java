@@ -54,7 +54,11 @@ public class EditorPanel extends JPanel implements Editor.Context {
 
   @Override
   public void recenterScreenOnPoint(Point point) {
-    // TODO Implement.
+    int viewportHeight = textPanel.getVisibleRect().height;
+    int padding = (viewportHeight - 14) / 2;
+
+    Rectangle rect = new Rectangle(point.getX() * 8, point.getY() * 14 - padding, 8, viewportHeight);
+    textPanel.scrollRectToVisible(rect);
   }
 
   @Override

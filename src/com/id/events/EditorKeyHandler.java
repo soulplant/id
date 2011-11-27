@@ -185,6 +185,9 @@ public class EditorKeyHandler {
       case KeyEvent.VK_BACK_SLASH:
         editor.clearHighlight();
         break;
+      case KeyEvent.VK_Z:
+        editor.recenter();
+        break;
       case KeyEvent.VK_ESCAPE:
         editor.escape();
         break;

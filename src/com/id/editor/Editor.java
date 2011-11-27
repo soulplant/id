@@ -387,4 +387,8 @@ public class Editor {
   public void clearHighlight() {
     file.clearHighlight();
   }
+
+  public void recenter() {
+    context.recenterScreenOnPoint(cursor.getPoint());
+  }
 }

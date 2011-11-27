@@ -70,6 +70,25 @@ public class EditorKeyHandler {
       }
     }
 
+    if (editor.isInVisual()) {
+      if (event.isShiftDown()) {
+        boolean handled = true;
+        switch (event.getKeyCode()) {
+        case KeyEvent.VK_J:
+          // TODO Join.
+          break;
+        case KeyEvent.VK_K:
+          // Do nothing.
+          break;
+        default:
+          handled = false;
+          break;
+        }
+        if (handled) {
+          return true;
+        }
+      }
+    }
     boolean handled = true;
     if (event.isShiftDown()) {
       switch (event.getKeyCode()) {

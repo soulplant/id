@@ -191,6 +191,15 @@ public class EditorTypingTest {
     assertFileContents();
   }
 
+  @Test
+  public void pageDown() {
+    setFileContents("abc", "def", "ghi");
+    type(handler.makeEventFromControlChar('f'));
+    assertEquals(2, editor.getCursorPosition().getY());
+    type(handler.makeEventFromControlChar('b'));
+    assertEquals(0, editor.getCursorPosition().getY());
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

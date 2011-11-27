@@ -37,6 +37,10 @@ public class EditorKeyHandler {
     return new KeyEvent(frame, KeyEvent.KEY_PRESSED, 0L, mask, Character.toUpperCase(c), c);
   }
 
+  public KeyEvent makeEventFromChar(char c, int modifiers) {
+    return new KeyEvent(frame, KeyEvent.KEY_PRESSED, 0L, modifiers, Character.toUpperCase(c), c);
+  }
+
   public KeyEvent makeEventFromVKey(int keyCode) {
     return new KeyEvent(frame, KeyEvent.KEY_PRESSED, 0L, 0, keyCode, (char) keyCode);
   }
@@ -95,6 +99,15 @@ public class EditorKeyHandler {
         break;
       default:
         handled = false;
+      }
+    } else if (event.isControlDown()) {
+      switch (event.getKeyCode()) {
+      case KeyEvent.VK_F:
+        editor.downPage();
+        break;
+      case KeyEvent.VK_B:
+        editor.upPage();
+        break;
       }
     } else {
       switch (event.getKeyCode()) {
@@ -164,5 +177,9 @@ public class EditorKeyHandler {
         (" `~!@#$%^&*()-_=+[{]}\\|;:,<.>/?".indexOf(keyCode) != -1) ||
         keyCode == 39 /* single quote */ ||
         keyCode == 222 /* double quote */;
+  }
+
+  public KeyEvent makeEventFromControlChar(char c) {
+    return makeEventFromChar(c, KeyEvent.CTRL_DOWN_MASK);
   }
 }

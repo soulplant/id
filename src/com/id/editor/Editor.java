@@ -14,6 +14,7 @@ public class Editor {
   public interface Context {
     void moveViewportToIncludePoint(Point point);
     void recenterScreenOnPoint(Point point);
+    int getViewportHeight();
   }
 
   class EmptyContext implements Context {
@@ -25,6 +26,11 @@ public class Editor {
     @Override
     public void recenterScreenOnPoint(Point point) {
       // Do nothing.
+    }
+
+    @Override
+    public int getViewportHeight() {
+      return 10;
     }
   }
 
@@ -344,5 +350,15 @@ public class Editor {
 
   public void setContext(Context context) {
     this.context = context;
+  }
+
+  public void downPage() {
+    cursor.moveBy(context.getViewportHeight() - 1, 0);
+    applyCursorConstraints();
+  }
+
+  public void upPage() {
+    cursor.moveBy(-(context.getViewportHeight() - 1), 0);
+    applyCursorConstraints();
   }
 }

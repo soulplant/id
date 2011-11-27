@@ -56,4 +56,9 @@ public class EditorPanel extends JPanel implements Editor.Context {
   public void recenterScreenOnPoint(Point point) {
     // TODO Implement.
   }
+
+  @Override
+  public int getViewportHeight() {
+    return getHeight() / 14;
+  }
 }

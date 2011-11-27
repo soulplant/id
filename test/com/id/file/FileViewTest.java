@@ -48,4 +48,10 @@ public class FileViewTest {
     assertEquals("b", removedText);
     assertEquals("ac", file.getLine(0));
   }
+
+  @Test
+  public void removeLineRange() {
+    FileView file = new FileView(new File("abc", "def"));
+    file.removeLineRange(0, 1);
+  }
 }

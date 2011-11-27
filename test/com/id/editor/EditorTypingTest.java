@@ -184,6 +184,13 @@ public class EditorTypingTest {
   	assertFileContents("deabc");
   }
 
+  @Test
+  public void deleteLineRange() {
+    setFileContents("abc", "def");
+    typeString("lVjx");
+    assertFileContents();
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

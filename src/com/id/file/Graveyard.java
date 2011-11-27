@@ -6,6 +6,7 @@ import java.util.List;
 public class Graveyard implements File.Listener {
   private final List<Tombstone> tombstones = new ArrayList<Tombstone>();
   private final List<Grave> graves = new ArrayList<Grave>();
+  private Grave otherGrave;
 
   public Graveyard(List<String> lines) {
     for (String line : lines) {
@@ -17,6 +18,7 @@ public class Graveyard implements File.Listener {
 
   public void reset() {
     resetRange(0, tombstones.size() - 1);
+    otherGrave = new Grave();
   }
 
   public void resetRange(int from, int to) {
@@ -30,10 +32,8 @@ public class Graveyard implements File.Listener {
   public void onLineInserted(int y, String line) {
     Pair splitResult = null;
 
-    if (y > 0) {
-      Grave previousGrave = graves.get(y - 1);
-      splitResult = previousGrave.split(line);
-    }
+    Grave previousGrave = getGrave(y - 1);
+    splitResult = previousGrave.split(line);
     if (splitResult == null) {
       splitResult = new Pair(new Tombstone(line, null), new Grave());
     }
@@ -52,7 +52,7 @@ public class Graveyard implements File.Listener {
       // Deleting a new line with an empty grave yields nothing to inherit.
       return;
     }
-    Grave previousGrave = graves.get(y - 1);
+    Grave previousGrave = getGrave(y - 1);
     previousGrave.inherit(tombstone, grave);
   }
 
@@ -63,13 +63,16 @@ public class Graveyard implements File.Listener {
 
   public void debug(int y) {
     System.out.println(tombstones.get(y));
-    System.out.println(graves.get(y));
+    System.out.println(getGrave(y));
   }
   public Tombstone.Status getStatus(int y) {
     return tombstones.get(y).getStatus();
   }
 
   public Grave getGrave(int y) {
+    if (y == -1) {
+      return otherGrave;
+    }
     return graves.get(y);
   }
 
@@ -94,7 +97,7 @@ public class Graveyard implements File.Listener {
             .append(": ")
             .append(tombstones.get(i))
             .append(" / ")
-            .append(graves.get(i))
+            .append(getGrave(i))
             .append("\n");
     }
     return result.toString();

@@ -63,4 +63,12 @@ public class GraveyardTest {
     assertEquals("c", result.get(1));
     assertEquals(2, result.size());
   }
+
+  @Test
+  public void removeFirstLine() {
+    Graveyard graveyard = new Graveyard(Arrays.asList("abc", "def"));
+    graveyard.onLineRemoved(0, "abc");
+    graveyard.onLineInserted(0, "abc");
+    assertTrue(graveyard.getGrave(-1).isEmpty());
+  }
 }

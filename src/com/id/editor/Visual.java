@@ -97,6 +97,9 @@ public class Visual {
       file.removeLineRange(startLine + 1, endLine);
       file.appendToLine(startLine, tail);
       break;
+    case LINE:
+      file.removeLineRange(getStartPoint().getY(), getEndPoint().getY());
+      break;
     }
   }
 }

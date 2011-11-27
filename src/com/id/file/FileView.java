@@ -214,4 +214,16 @@ public class FileView implements File.Listener, ModifiedListener {
   private boolean isWordCharacter(char c) {
     return Character.isLetterOrDigit(c);
   }
+
+  public Point getNextHighlightPoint(int y, int x) {
+    Point point = file.getNextHighlightPoint(start + y, x);
+    if (isInView(point)) {
+      return point.offset(-start, 0);
+    }
+    return null;
+  }
+
+  private boolean isInView(Point point) {
+    return start <= point.getY() && point.getY() <= end;
+  }
 }

@@ -223,4 +223,8 @@ public class File {
   public void clearHighlight() {
     setHighlight(new EmptyHighlight());
   }
+
+  public Point getNextHighlightPoint(int y, int x) {
+    return highlight.getNextMatch(y, x);
+  }
 }

@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.id.editor.Point;
+
 public class FileViewTest {
   @Test
   public void viewShrinksWhenLinesGetRemoved() {
@@ -75,5 +77,14 @@ public class FileViewTest {
   public void getWordUnderCursor() {
     FileView file = new FileView(new File("abc asdf", "def"));
     assertEquals("abc", file.getWordUnder(0, 1));
+  }
+
+  @Test
+  public void getNextHighlightPoint() {
+    FileView file = new FileView(new File("abc asdf", "def", "abc"));
+    file.setHighlight("abc");
+    Point point = file.getNextHighlightPoint(0, 0);
+    assertEquals(2, point.getY());
+    assertEquals(0, point.getX());
   }
 }

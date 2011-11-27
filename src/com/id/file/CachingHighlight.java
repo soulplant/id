@@ -3,6 +3,8 @@ package com.id.file;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.id.editor.Point;
+
 public class CachingHighlight implements Highlight, File.Listener {
   private static class Match {
     public final int start;
@@ -13,7 +15,7 @@ public class CachingHighlight implements Highlight, File.Listener {
       this.length = length;
     }
 
-    public boolean doesContain(int x) {
+    public boolean contains(int x) {
       return x >= start && x < start + length;
     }
   }
@@ -26,11 +28,33 @@ public class CachingHighlight implements Highlight, File.Listener {
 
     public boolean isMatchAt(int x) {
       for (Match match : matches) {
-        if (match.doesContain(x)) {
+        if (match.contains(x)) {
           return true;
         }
       }
       return false;
+    }
+
+    public int getNextMatch(int x) {
+      boolean pastCurrentMatch = false;
+      for (Match match : matches) {
+        if (match.contains(x)) {
+          pastCurrentMatch = true;
+          continue;
+        }
+        if (pastCurrentMatch) {
+          return match.start;
+        }
+      }
+      return -1;
+    }
+
+    public boolean isEmpty() {
+      return matches.isEmpty();
+    }
+
+    public int getFirstMatch() {
+      return matches.get(0).start;
     }
   }
 
@@ -73,5 +97,22 @@ public class CachingHighlight implements Highlight, File.Listener {
   @Override
   public void onLineChanged(int y, String oldLine, String newLine) {
     lineMatches.set(y, makeMatchFor(newLine));
+  }
+
+  @Override
+  public Point getNextMatch(int y, int x) {
+    int n = lineMatches.get(y).getNextMatch(x);
+    if (n != -1) {
+      return new Point(y, n);
+    }
+    // No more matches on the current line so we go looking.
+    for (int i = y + 1; y < lineMatches.size(); i++) {
+      LineMatches matches = lineMatches.get(i);
+      if (!matches.isEmpty()) {
+        return new Point(i, matches.getFirstMatch());
+      }
+    }
+    // No more matches.
+    return null;
   }
 }

@@ -1,5 +1,7 @@
 package com.id.file;
 
+import com.id.editor.Point;
+
 public class EmptyHighlight implements Highlight {
   @Override
   public boolean isHighlighted(int y, int x) {
@@ -19,5 +21,10 @@ public class EmptyHighlight implements Highlight {
   @Override
   public void onLineChanged(int y, String oldLine, String newLine) {
     // Do nothing.
+  }
+
+  @Override
+  public Point getNextMatch(int y, int x) {
+    return null;
   }
 }

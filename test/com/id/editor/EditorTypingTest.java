@@ -221,6 +221,15 @@ public class EditorTypingTest {
     assertFalse(editor.isHighlight(2, 0));
   }
 
+  @Test
+  public void n() {
+    setFileContents("abc", "def", "abc");
+    typeString("*n");
+    assertEquals(2, editor.getCursorPosition().getY());
+    typeString("n");
+    assertEquals(2, editor.getCursorPosition().getY());
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

@@ -188,6 +188,9 @@ public class EditorKeyHandler {
       case KeyEvent.VK_Z:
         editor.recenter();
         break;
+      case KeyEvent.VK_N:
+        editor.next();
+        break;
       case KeyEvent.VK_ESCAPE:
         editor.escape();
         break;

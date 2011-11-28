@@ -217,7 +217,7 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public Point getNextHighlightPoint(int y, int x) {
     Point point = file.getNextHighlightPoint(start + y, x);
-    if (isInView(point)) {
+    if (point != null && isInView(point)) {
       return point.offset(-start, 0);
     }
     return null;

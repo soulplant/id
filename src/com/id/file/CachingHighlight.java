@@ -106,7 +106,7 @@ public class CachingHighlight implements Highlight, File.Listener {
       return new Point(y, n);
     }
     // No more matches on the current line so we go looking.
-    for (int i = y + 1; y < lineMatches.size(); i++) {
+    for (int i = y + 1; i < lineMatches.size(); i++) {
       LineMatches matches = lineMatches.get(i);
       if (!matches.isEmpty()) {
         return new Point(i, matches.getFirstMatch());

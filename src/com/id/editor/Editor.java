@@ -391,4 +391,11 @@ public class Editor {
   public void recenter() {
     context.recenterScreenOnPoint(cursor.getPoint());
   }
+
+  public void next() {
+    Point point = file.getNextHighlightPoint(cursor.getY(), cursor.getX());
+    if (point != null) {
+      cursor.moveTo(point);
+    }
+  }
 }

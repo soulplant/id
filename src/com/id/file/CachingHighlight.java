@@ -18,6 +18,10 @@ public class CachingHighlight implements Highlight, File.Listener {
     public boolean contains(int x) {
       return x >= start && x < start + length;
     }
+
+    public boolean startsAt(int x) {
+      return start == x;
+    }
   }
 
   private static class LineMatches {
@@ -49,12 +53,35 @@ public class CachingHighlight implements Highlight, File.Listener {
       return -1;
     }
 
+    public int getPreviousMatch(int x) {
+      boolean skippedMatchAtStart = false;
+      for (int i = matches.size() - 1; i >= 0; i--) {
+        Match match = matches.get(i);
+        if (match.contains(x)) {
+          if (match.startsAt(x)) {
+            if (skippedMatchAtStart) {
+              return match.start;
+            } else {
+              skippedMatchAtStart = true;
+            }
+          } else {
+            return match.start;
+          }
+        }
+      }
+      return -1;
+    }
+
     public boolean isEmpty() {
       return matches.isEmpty();
     }
 
     public int getFirstMatch() {
       return matches.get(0).start;
+    }
+
+    public int getLastMatch() {
+      return matches.get(matches.size() - 1).start;
     }
   }
 
@@ -113,6 +140,21 @@ public class CachingHighlight implements Highlight, File.Listener {
       }
     }
     // No more matches.
+    return null;
+  }
+
+  @Override
+  public Point getPreviousMatch(int y, int x) {
+    int n = lineMatches.get(y).getPreviousMatch(x);
+    if (n != -1) {
+      return new Point(y, n);
+    }
+    for (int i = y - 1; i >= 0; i--) {
+      LineMatches matches = lineMatches.get(i);
+      if (!matches.isEmpty()) {
+        return new Point(i, matches.getLastMatch());
+      }
+    }
     return null;
   }
 }

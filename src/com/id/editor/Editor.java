@@ -398,4 +398,11 @@ public class Editor {
       cursor.moveTo(point);
     }
   }
+
+  public void previous() {
+    Point point = file.getPreviousHighlightPoint(cursor.getY(), cursor.getX());
+    if (point != null) {
+      cursor.moveTo(point);
+    }
+  }
 }

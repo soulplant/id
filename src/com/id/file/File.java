@@ -227,4 +227,8 @@ public class File {
   public Point getNextHighlightPoint(int y, int x) {
     return highlight.getNextMatch(y, x);
   }
+
+  public Point getPreviousHighlightPoint(int y, int x) {
+    return highlight.getPreviousMatch(y, x);
+  }
 }

@@ -119,6 +119,9 @@ public class EditorKeyHandler {
       case KeyEvent.VK_8:
         editor.highlightWordUnderCursor();
         break;
+      case KeyEvent.VK_N:
+        editor.previous();
+        break;
       default:
         handled = false;
       }

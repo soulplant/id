@@ -27,4 +27,9 @@ public class EmptyHighlight implements Highlight {
   public Point getNextMatch(int y, int x) {
     return null;
   }
+
+  @Override
+  public Point getPreviousMatch(int y, int x) {
+    return null;
+  }
 }

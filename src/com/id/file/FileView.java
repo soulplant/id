@@ -226,4 +226,12 @@ public class FileView implements File.Listener, ModifiedListener {
   private boolean isInView(Point point) {
     return start <= point.getY() && point.getY() <= end;
   }
+
+  public Point getPreviousHighlightPoint(int y, int x) {
+    Point point = file.getPreviousHighlightPoint(start + y, x);
+    if (point != null && isInView(point)) {
+      return point.offset(-start, 0);
+    }
+    return null;
+  }
 }

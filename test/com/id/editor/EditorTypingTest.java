@@ -228,6 +228,8 @@ public class EditorTypingTest {
     assertEquals(2, editor.getCursorPosition().getY());
     typeString("n");
     assertEquals(2, editor.getCursorPosition().getY());
+    typeString("N");
+    assertEquals(0, editor.getCursorPosition().getY());
   }
 
   @After

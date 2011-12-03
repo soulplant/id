@@ -4,13 +4,10 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JFrame;
-
 import com.id.editor.Editor;
 import com.id.editor.Visual;
 
 public class EditorKeyHandler {
-  private static JFrame frame = new JFrame();
   private static Map<Character, Character> shiftSymbols = new HashMap<Character, Character>();
   static {
     shiftSymbols.put('!', '1');
@@ -25,27 +22,27 @@ public class EditorKeyHandler {
     shiftSymbols.put(')', '0');
   }
 
-  public KeyEvent makeEventFromChar(char c) {
+  public KeyStroke makeEventFromChar(char c) {
     if (shiftSymbols.containsKey(c)) {
       char keyChar = shiftSymbols.get(c);
-      return new KeyEvent(frame, KeyEvent.KEY_PRESSED, 0L, KeyEvent.SHIFT_DOWN_MASK, keyChar, keyChar);
+      return new KeyStroke(keyChar, KeyEvent.SHIFT_DOWN_MASK);
     }
     int mask = 0;
     if (Character.isUpperCase(c)) {
       mask = KeyEvent.SHIFT_DOWN_MASK;
     }
-    return new KeyEvent(frame, KeyEvent.KEY_PRESSED, 0L, mask, Character.toUpperCase(c), c);
+    return new KeyStroke(c, mask);
   }
 
-  public KeyEvent makeEventFromChar(char c, int modifiers) {
-    return new KeyEvent(frame, KeyEvent.KEY_PRESSED, 0L, modifiers, Character.toUpperCase(c), c);
+  public KeyStroke makeEventFromChar(char c, int modifiers) {
+    return new KeyStroke(c, modifiers);
   }
 
-  public KeyEvent makeEventFromVKey(int keyCode) {
-    return new KeyEvent(frame, KeyEvent.KEY_PRESSED, 0L, 0, keyCode, (char) keyCode);
+  public KeyStroke makeEventFromVKey(int keyCode) {
+    return new KeyStroke((char) keyCode, 0);
   }
 
-  public KeyEvent escape() {
+  public KeyStroke escape() {
     return makeEventFromVKey(KeyEvent.VK_ESCAPE);
   }
 
@@ -53,7 +50,7 @@ public class EditorKeyHandler {
     return handleKeyPress(makeEventFromChar(c), editor);
   }
 
-  public boolean handleKeyPress(KeyEvent event, Editor editor) {
+  public boolean handleKeyPress(KeyStroke event, Editor editor) {
     if (editor.isInInsertMode()) {
       boolean handled = true;
       if (isKeyCodeForLetter(event.getKeyCode())) {
@@ -213,7 +210,7 @@ public class EditorKeyHandler {
         keyCode == 222 /* double quote */;
   }
 
-  public KeyEvent makeEventFromControlChar(char c) {
+  public KeyStroke makeEventFromControlChar(char c) {
     return makeEventFromChar(c, KeyEvent.CTRL_DOWN_MASK);
   }
 }

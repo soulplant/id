@@ -19,14 +19,14 @@ public class EditorKeyHandlerTest {
 
   @Test
   public void capitalC() {
-    KeyEvent event = handler.makeEventFromChar('C');
+    KeyStroke event = handler.makeEventFromChar('C');
     assertTrue(event.isShiftDown());
     assertEquals(KeyEvent.VK_C, event.getKeyCode());
   }
 
   @Test
   public void lowercaseL() {
-    KeyEvent event = handler.makeEventFromChar('l');
+    KeyStroke event = handler.makeEventFromChar('l');
     assertFalse(event.isShiftDown());
     assertEquals(KeyEvent.VK_L, event.getKeyCode());
   }

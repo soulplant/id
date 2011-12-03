@@ -1,6 +1,9 @@
 package com.id.editor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.awt.event.KeyEvent;
 
@@ -9,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.id.events.EditorKeyHandler;
+import com.id.events.KeyStroke;
 import com.id.file.File;
 import com.id.file.FileView;
 
@@ -249,7 +253,7 @@ public class EditorTypingTest {
     assertArrayEquals(lines, file.getLines());
   }
 
-  private void type(KeyEvent event) {
+  private void type(KeyStroke event) {
     handler.handleKeyPress(event, editor);
   }
 

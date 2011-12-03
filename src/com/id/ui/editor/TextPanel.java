@@ -11,6 +11,7 @@ import com.id.app.App;
 import com.id.editor.Editor;
 import com.id.editor.Point;
 import com.id.events.EditorKeyHandler;
+import com.id.events.KeyStroke;
 import com.id.file.File;
 import com.id.rendering.EditorRenderer;
 import com.id.rendering.Matrix;
@@ -95,6 +96,6 @@ public class TextPanel extends JPanel {
   }
 
   public boolean handleKeyPress(KeyEvent e) {
-    return new EditorKeyHandler().handleKeyPress(e, editor);
+    return new EditorKeyHandler().handleKeyPress(new KeyStroke(e), editor);
   }
 }

@@ -72,7 +72,6 @@ public class App implements Listener {
     frame.getContentPane().add(editorSwapper, "spotlight");
     frame.getContentPane().add(stack, "stack");
     frame.setSize(new Dimension(1024, 768));
-    frame.pack();
     frame.setVisible(true);
 
     frame.addKeyListener(new KeyListener() {

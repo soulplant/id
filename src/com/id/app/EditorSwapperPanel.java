@@ -40,7 +40,6 @@ public class EditorSwapperPanel extends JPanel implements EditorList {
     this.removeAll();
     add(editorPanels.get(this.selected), BorderLayout.CENTER);
     fireSelectedChanged();
-    repaint();
   }
 
   private void fireSelectedChanged() {

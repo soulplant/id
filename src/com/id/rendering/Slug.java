@@ -8,8 +8,8 @@ public class Slug {
     public char letter;
     public boolean isVisual = false;
     public boolean isHighlight = false;
-    public boolean isCursor = false;
-    public boolean isWideCursor = false;
+//    public boolean isCursor = false;
+//    public boolean isWideCursor = false;
 
     public Entry(char letter) {
       this.letter = letter;

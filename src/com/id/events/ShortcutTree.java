@@ -69,11 +69,14 @@ public class ShortcutTree {
     node.setAction(action);
   }
 
-  public void step(KeyStroke key) {
+  public boolean step(KeyStroke key) {
+    boolean wasAtTop = isAtTop();
     currentNode = currentNode.lookupChild(key);
     if (currentNode == null) {
       currentNode = rootNode;
+      return !wasAtTop;
     }
+    return true;
   }
 
   public Action getCurrentAction() {
@@ -83,13 +86,14 @@ public class ShortcutTree {
     return null;
   }
 
-  public void stepAndExecute(KeyStroke key) {
-    step(key);
+  public boolean stepAndExecute(KeyStroke key) {
+    boolean wasHandled = step(key);
     Action action = getCurrentAction();
     if (action != null) {
       action.execute();
       reset();
     }
+    return wasHandled;
   }
 
   public void reset() {

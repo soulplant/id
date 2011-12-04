@@ -61,4 +61,17 @@ public class ShortcutTreeTest {
     tree.stepAndExecute(KeyStroke.fromChar('c'));
     verify(mockAction, times(1)).execute();
   }
+
+  @Test
+  public void handledKeys() {
+    ShortcutTree tree = new ShortcutTree();
+    Action mockAction = mock(ShortcutTree.Action.class);
+    tree.setShortcut(KeyStroke.fromString("cc"), mockAction);
+    assertTrue(tree.stepAndExecute(KeyStroke.fromChar('c')));
+    assertTrue(tree.stepAndExecute(KeyStroke.fromChar('d')));
+    assertTrue(tree.isAtTop());
+    assertTrue(tree.stepAndExecute(KeyStroke.fromChar('c')));
+    assertTrue(tree.stepAndExecute(KeyStroke.fromChar('c')));
+    assertTrue(tree.isAtTop());
+  }
 }

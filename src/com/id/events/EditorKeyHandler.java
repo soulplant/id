@@ -243,7 +243,7 @@ public class EditorKeyHandler {
       }
     } else {
       this.editor = editor;
-      normalTree.stepAndExecute(event);
+      return normalTree.stepAndExecute(event);
     }
     return handled;
   }

@@ -1,31 +1,31 @@
 package com.id.events;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.awt.event.KeyEvent;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.id.editor.Editor;
+import com.id.file.File;
+import com.id.file.FileView;
+
 public class EditorKeyHandlerTest {
+  private File file;
+  private FileView fileView;
+  private Editor editor;
+  private EditorKeyHandler handler;
+
   @Before
   public void setup() {
-    new EditorKeyHandler();
+    file = new File();
+    fileView = new FileView(file);
+    editor = new Editor(fileView);
+    handler = new EditorKeyHandler();
   }
 
   @Test
-  public void capitalC() {
-    KeyStroke event = KeyStroke.fromChar('C');
-    assertTrue(event.isShiftDown());
-    assertEquals(KeyEvent.VK_C, event.getKeyCode());
-  }
-
-  @Test
-  public void lowercaseL() {
-    KeyStroke event = KeyStroke.fromChar('l');
-    assertFalse(event.isShiftDown());
-    assertEquals(KeyEvent.VK_L, event.getKeyCode());
+  public void testHandling() {
+    // NOTE This will break if we ever add a key binding for q in the editor.
+    assertFalse(handler.handleKeyPress(KeyStroke.fromChar('q'), editor));
   }
 }

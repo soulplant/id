@@ -25,11 +25,11 @@ public class EditorKeyHandler {
   public KeyStroke makeEventFromChar(char c) {
     if (shiftSymbols.containsKey(c)) {
       char keyChar = shiftSymbols.get(c);
-      return new KeyStroke(keyChar, KeyEvent.SHIFT_DOWN_MASK);
+      return new KeyStroke(keyChar, KeyEvent.SHIFT_MASK);
     }
     int mask = 0;
     if (Character.isUpperCase(c)) {
-      mask = KeyEvent.SHIFT_DOWN_MASK;
+      mask = KeyEvent.SHIFT_MASK;
     }
     return new KeyStroke(c, mask);
   }
@@ -53,7 +53,7 @@ public class EditorKeyHandler {
   public boolean handleKeyPress(KeyStroke event, Editor editor) {
     if (editor.isInInsertMode()) {
       boolean handled = true;
-      if (isKeyCodeForLetter(event.getKeyCode())) {
+      if (event.isLetter()) {
         editor.onLetterTyped(event.getKeyChar());
       } else if (event.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
         editor.backspace();
@@ -201,16 +201,7 @@ public class EditorKeyHandler {
     return handled;
   }
 
-  private boolean isKeyCodeForLetter(int keyCode) {
-    return ('a' <= keyCode && keyCode <= 'z') ||
-        ('A' <= keyCode && keyCode <= 'Z') ||
-        ('0' <= keyCode && keyCode <= '9') ||
-        (" `~!@#$%^&*()-_=+[{]}\\|;:,<.>/?".indexOf(keyCode) != -1) ||
-        keyCode == 39 /* single quote */ ||
-        keyCode == 222 /* double quote */;
-  }
-
   public KeyStroke makeEventFromControlChar(char c) {
-    return makeEventFromChar(c, KeyEvent.CTRL_DOWN_MASK);
+    return makeEventFromChar(c, KeyEvent.CTRL_MASK);
   }
 }

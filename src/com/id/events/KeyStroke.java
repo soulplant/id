@@ -44,6 +44,10 @@ public class KeyStroke {
     return getLetter();
   }
 
+  public boolean isLetter() {
+    return isKeyCodeForLetter(getKeyCode());
+  }
+
   @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
@@ -61,5 +65,14 @@ public class KeyStroke {
     if (append) {
       buffer.append(string).append(", ");
     }
+  }
+
+  private static boolean isKeyCodeForLetter(int keyCode) {
+    return ('a' <= keyCode && keyCode <= 'z') ||
+        ('A' <= keyCode && keyCode <= 'Z') ||
+        ('0' <= keyCode && keyCode <= '9') ||
+        (" `~!@#$%^&*()-_=+[{]}\\|;:,<.>/?".indexOf(keyCode) != -1) ||
+        keyCode == 39 /* single quote */ ||
+        keyCode == 222 /* double quote */;
   }
 }

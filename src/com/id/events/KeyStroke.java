@@ -1,8 +1,49 @@
 package com.id.events;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class KeyStroke {
+  private static Map<Character, Character> shiftSymbols = new HashMap<Character, Character>();
+  static {
+    shiftSymbols.put('!', '1');
+    shiftSymbols.put('@', '2');
+    shiftSymbols.put('#', '3');
+    shiftSymbols.put('$', '4');
+    shiftSymbols.put('%', '5');
+    shiftSymbols.put('^', '6');
+    shiftSymbols.put('&', '7');
+    shiftSymbols.put('*', '8');
+    shiftSymbols.put('(', '9');
+    shiftSymbols.put(')', '0');
+  }
+
+  public static KeyStroke fromChar(char c) {
+    if (shiftSymbols.containsKey(c)) {
+      return new KeyStroke(c, KeyEvent.SHIFT_MASK);
+    }
+    int mask = 0;
+    if (Character.isUpperCase(c)) {
+      mask = KeyEvent.SHIFT_MASK;
+    }
+    return new KeyStroke(c, mask);
+  }
+
+  public static KeyStroke fromVKey(int keyCode) {
+    return new KeyStroke((char) keyCode, 0);
+  }
+
+  public static KeyStroke escape() {
+    return KeyStroke.fromVKey(KeyEvent.VK_ESCAPE);
+  }
+
+  public static KeyStroke fromControlChar(char c) {
+    return new KeyStroke(c, KeyEvent.CTRL_MASK);
+  }
+
   private final char letter;
   private final int modifiers;
 
@@ -12,8 +53,11 @@ public class KeyStroke {
         .toLowerCase(letter);
   }
 
+  private static final int mask = KeyEvent.SHIFT_MASK | KeyEvent.CTRL_MASK
+      | KeyEvent.ALT_MASK | KeyEvent.META_MASK;
+
   public KeyStroke(KeyEvent event) {
-    this(event.getKeyChar(), event.getModifiers());
+    this(event.getKeyChar(), mask & event.getModifiers());
   }
 
   public boolean isShiftDown() {
@@ -61,6 +105,20 @@ public class KeyStroke {
     return buffer.toString();
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof KeyStroke) {
+      KeyStroke other = (KeyStroke) obj;
+      return letter == other.letter && modifiers == other.modifiers;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return letter * modifiers;
+  }
+
   private void maybeAppend(StringBuffer buffer, String string, boolean append) {
     if (append) {
       buffer.append(string).append(", ");
@@ -68,11 +126,22 @@ public class KeyStroke {
   }
 
   private static boolean isKeyCodeForLetter(int keyCode) {
-    return ('a' <= keyCode && keyCode <= 'z') ||
-        ('A' <= keyCode && keyCode <= 'Z') ||
-        ('0' <= keyCode && keyCode <= '9') ||
-        (" `~!@#$%^&*()-_=+[{]}\\|;:,<.>/?".indexOf(keyCode) != -1) ||
-        keyCode == 39 /* single quote */ ||
-        keyCode == 222 /* double quote */;
+    return ('a' <= keyCode && keyCode <= 'z')
+        || ('A' <= keyCode && keyCode <= 'Z')
+        || ('0' <= keyCode && keyCode <= '9')
+        || (" `~!@#$%^&*()-_=+[{]}\\|;:,<.>/?".indexOf(keyCode) != -1)
+        || keyCode == 39 /* single quote */|| keyCode == 222 /* double quote */;
+  }
+
+  public static List<KeyStroke> fromString(String string) {
+    List<KeyStroke> result = new ArrayList<KeyStroke>();
+    for (int i = 0; i < string.length(); i++) {
+      result.add(KeyStroke.fromChar(string.charAt(i)));
+    }
+    return result;
+  }
+
+  public static KeyStroke backspace() {
+    return KeyStroke.fromVKey(KeyEvent.VK_BACK_SPACE);
   }
 }

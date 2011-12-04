@@ -332,7 +332,7 @@ public class Editor {
     return file.hasUndo();
   }
 
-  public void subsituteLine() {
+  public void substituteLine() {
     if (isInVisual()) {
       substitute();
       return;
@@ -404,5 +404,9 @@ public class Editor {
     if (point != null) {
       cursor.moveTo(point);
     }
+  }
+
+  public void moveCursorToStartOfFile() {
+    cursor.moveTo(0, 0);
   }
 }

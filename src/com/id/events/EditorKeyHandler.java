@@ -1,53 +1,163 @@
 package com.id.events;
 
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
 import com.id.editor.Editor;
 import com.id.editor.Visual;
+import com.id.events.ShortcutTree.Action;
 
 public class EditorKeyHandler {
-  private static Map<Character, Character> shiftSymbols = new HashMap<Character, Character>();
-  static {
-    shiftSymbols.put('!', '1');
-    shiftSymbols.put('@', '2');
-    shiftSymbols.put('#', '3');
-    shiftSymbols.put('$', '4');
-    shiftSymbols.put('%', '5');
-    shiftSymbols.put('^', '6');
-    shiftSymbols.put('&', '7');
-    shiftSymbols.put('*', '8');
-    shiftSymbols.put('(', '9');
-    shiftSymbols.put(')', '0');
+  private final ShortcutTree normalTree;
+  private Editor editor;
+
+  public EditorKeyHandler() {
+    normalTree = new ShortcutTree();
+
+    setNormal("j", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.down();
+      }
+    });
+    setNormal("k", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.up();
+      }
+    });
+    setNormal("h", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.left();
+      }
+    });
+    setNormal("l", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.right();
+      }
+    });
+    setNormal("w", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.moveCursorToNextWord();
+      }
+    });
+    setNormal("i", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        // TODO This should be handled at a higher level - we shouldn't be
+        // stepping ShortcutTrees that are for modes we aren't in.
+        if (editor.isInVisual()) {
+          return;
+        }
+        editor.insert();
+      }
+    });
+    setNormal("s", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.substitute();
+      }
+    });
+    setNormal("u", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.undo();
+      }
+    });
+    setNormal("r", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.redo();
+      }
+    });
+    setNormal("o", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.addEmptyLine();
+      }
+    });
+    setNormal("a", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.append();
+      }
+    });
+    setNormal("v", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.toggleVisual(Visual.Mode.CHAR);
+      }
+    });
+    setNormal("x", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.delete();
+      }
+    });
+    setNormal("0", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.moveCursorToStartOfLine();
+      }
+    });
+    setNormal(KeyStroke.backspace(), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.backspace();
+      }
+    });
+    setNormal("\\", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.clearHighlight();
+      }
+    });
+    setNormal("z", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.recenter();
+      }
+    });
+    setNormal("n", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.next();
+      }
+    });
+    setNormal(KeyStroke.escape(), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.escape();
+      }
+    });
+    setNormal(KeyStroke.fromString("gg"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.moveCursorToStartOfFile();
+      }
+    });
+    setNormal(KeyStroke.fromString("cc"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.substituteLine();
+      }
+    });
   }
 
-  public KeyStroke makeEventFromChar(char c) {
-    if (shiftSymbols.containsKey(c)) {
-      char keyChar = shiftSymbols.get(c);
-      return new KeyStroke(keyChar, KeyEvent.SHIFT_MASK);
-    }
-    int mask = 0;
-    if (Character.isUpperCase(c)) {
-      mask = KeyEvent.SHIFT_MASK;
-    }
-    return new KeyStroke(c, mask);
+  private void setNormal(List<KeyStroke> keys, Action action) {
+    normalTree.setShortcut(keys, action);
   }
 
-  public KeyStroke makeEventFromChar(char c, int modifiers) {
-    return new KeyStroke(c, modifiers);
+  private void setNormal(KeyStroke key, Action action) {
+    normalTree.setShortcut(Arrays.asList(key), action);
   }
 
-  public KeyStroke makeEventFromVKey(int keyCode) {
-    return new KeyStroke((char) keyCode, 0);
-  }
-
-  public KeyStroke escape() {
-    return makeEventFromVKey(KeyEvent.VK_ESCAPE);
-  }
-
-  public boolean handleChar(char c, Editor editor) {
-    return handleKeyPress(makeEventFromChar(c), editor);
+  private void setNormal(String string, Action action) {
+    normalTree.setShortcut(KeyStroke.fromString(string), action);
   }
 
   public boolean handleKeyPress(KeyStroke event, Editor editor) {
@@ -107,13 +217,13 @@ public class EditorKeyHandler {
       case KeyEvent.VK_D:
         editor.deleteLine();
         break;
-      case KeyEvent.VK_4:
+      case '$':
         editor.moveCursorToEndOfLine();
         break;
       case KeyEvent.VK_S:
-        editor.subsituteLine();
+        editor.substituteLine();
         break;
-      case KeyEvent.VK_8:
+      case '*':
         editor.highlightWordUnderCursor();
         break;
       case KeyEvent.VK_N:
@@ -132,76 +242,9 @@ public class EditorKeyHandler {
         break;
       }
     } else {
-      switch (event.getKeyCode()) {
-      case KeyEvent.VK_J:
-        editor.down();
-        break;
-      case KeyEvent.VK_K:
-        editor.up();
-        break;
-      case KeyEvent.VK_H:
-        editor.left();
-        break;
-      case KeyEvent.VK_L:
-        editor.right();
-        break;
-      case KeyEvent.VK_W:
-        editor.moveCursorToNextWord();
-        break;
-      case KeyEvent.VK_I:
-        if (!editor.isInVisual()) {
-          editor.insert();
-        } else {
-          handled = false;
-        }
-        break;
-      case KeyEvent.VK_S:
-        editor.substitute();
-        break;
-      case KeyEvent.VK_U:
-        editor.undo();
-        break;
-      case KeyEvent.VK_R:
-        editor.redo();
-        break;
-      case KeyEvent.VK_O:
-        editor.addEmptyLine();
-        break;
-      case KeyEvent.VK_A:
-        editor.append();
-        break;
-      case KeyEvent.VK_V:
-        editor.toggleVisual(Visual.Mode.CHAR);
-        break;
-      case KeyEvent.VK_X:
-        editor.delete();
-        break;
-      case KeyEvent.VK_0:
-        editor.moveCursorToStartOfLine();
-        break;
-      case KeyEvent.VK_BACK_SPACE:
-        editor.backspace();
-        break;
-      case KeyEvent.VK_BACK_SLASH:
-        editor.clearHighlight();
-        break;
-      case KeyEvent.VK_Z:
-        editor.recenter();
-        break;
-      case KeyEvent.VK_N:
-        editor.next();
-        break;
-      case KeyEvent.VK_ESCAPE:
-        editor.escape();
-        break;
-      default:
-        handled = false;
-      }
+      this.editor = editor;
+      normalTree.stepAndExecute(event);
     }
     return handled;
-  }
-
-  public KeyStroke makeEventFromControlChar(char c) {
-    return makeEventFromChar(c, KeyEvent.CTRL_MASK);
   }
 }

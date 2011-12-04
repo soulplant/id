@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.awt.event.KeyEvent;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +38,7 @@ public class EditorTypingTest {
   public void changeLine() {
     setFileContents("abc");
     typeString("lCabc");
-    type(handler.escape());
+    type(KeyStroke.escape());
     assertEquals("aabc", file.getLine(0));
     assertFalse(editor.isInInsertMode());
   }
@@ -59,7 +57,7 @@ public class EditorTypingTest {
   public void deleteAndRetype() {
     setFileContents("abc", "def");
     typeString("Dadefg");
-    type(handler.escape());
+    type(KeyStroke.escape());
     assertFileContents("defg", "def");
   }
 
@@ -130,7 +128,7 @@ public class EditorTypingTest {
     typeString("vi");
     assertFalse(editor.isInInsertMode());
     assertTrue(editor.isInVisual());
-    type(handler.makeEventFromVKey(KeyEvent.VK_ESCAPE));
+    type(KeyStroke.escape());
     assertFalse(editor.isInVisual());
   }
 
@@ -198,9 +196,9 @@ public class EditorTypingTest {
   @Test
   public void pageDown() {
     setFileContents("abc", "def", "ghi");
-    type(handler.makeEventFromControlChar('f'));
+    type(KeyStroke.fromControlChar('f'));
     assertEquals(2, editor.getCursorPosition().getY());
-    type(handler.makeEventFromControlChar('b'));
+    type(KeyStroke.fromControlChar('b'));
     assertEquals(0, editor.getCursorPosition().getY());
   }
 
@@ -236,13 +234,29 @@ public class EditorTypingTest {
     assertEquals(0, editor.getCursorPosition().getY());
   }
 
+  @Test
+  public void gg() {
+    setFileContents("abc", "def");
+    typeString("j");
+    assertEquals(1, editor.getCursorPosition().getY());
+    typeString("gg");
+    assertEquals(0, editor.getCursorPosition().getY());
+  }
+
+  @Test
+  public void cc() {
+    setFileContents("abc", "def");
+    typeString("ccggg");
+    assertFileContents("ggg", "def");
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();
   }
 
   private void ensureUndoGoesToLastFileContents() {
-    type(handler.escape());
+    type(KeyStroke.escape());
     while (editor.hasUndo()) {
       typeString("u");
     }
@@ -264,6 +278,6 @@ public class EditorTypingTest {
   }
 
   private void typeChar(char c) {
-    handler.handleChar(c, editor);
+    handler.handleKeyPress(KeyStroke.fromChar(c), editor);
   }
 }

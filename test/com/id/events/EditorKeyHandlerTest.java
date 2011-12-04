@@ -10,23 +10,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class EditorKeyHandlerTest {
-
-  private EditorKeyHandler handler;
   @Before
   public void setup() {
-    handler = new EditorKeyHandler();
+    new EditorKeyHandler();
   }
 
   @Test
   public void capitalC() {
-    KeyStroke event = handler.makeEventFromChar('C');
+    KeyStroke event = KeyStroke.fromChar('C');
     assertTrue(event.isShiftDown());
     assertEquals(KeyEvent.VK_C, event.getKeyCode());
   }
 
   @Test
   public void lowercaseL() {
-    KeyStroke event = handler.makeEventFromChar('l');
+    KeyStroke event = KeyStroke.fromChar('l');
     assertFalse(event.isShiftDown());
     assertEquals(KeyEvent.VK_L, event.getKeyCode());
   }

@@ -19,6 +19,7 @@ import com.id.rendering.Matrix;
 @SuppressWarnings("serial")
 public class TextPanel extends JPanel {
   private final Editor editor;
+  private final EditorKeyHandler handler = new EditorKeyHandler();
 
   public TextPanel(Editor editor) {
     this.editor = editor;
@@ -96,6 +97,6 @@ public class TextPanel extends JPanel {
   }
 
   public boolean handleKeyPress(KeyEvent e) {
-    return new EditorKeyHandler().handleKeyPress(new KeyStroke(e), editor);
+    return handler.handleKeyPress(new KeyStroke(e), editor);
   }
 }

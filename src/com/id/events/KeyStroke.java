@@ -57,7 +57,10 @@ public class KeyStroke {
       | KeyEvent.ALT_MASK | KeyEvent.META_MASK;
 
   public KeyStroke(KeyEvent event) {
-    this(event.getKeyChar(), mask & event.getModifiers());
+    // NOTE We have to do this getKeyText() hack because getKeyChar() is
+    // undefined when ctrl is held down.
+    this(KeyEvent.getKeyText(event.getKeyCode()).charAt(0),
+        mask & event.getModifiers());
   }
 
   public boolean isShiftDown() {

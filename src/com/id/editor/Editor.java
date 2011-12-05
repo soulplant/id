@@ -409,4 +409,8 @@ public class Editor {
   public void moveCursorToStartOfFile() {
     cursor.moveTo(0, 0);
   }
+
+  public void moveCursorToEndOfFile() {
+    cursor.moveTo(getLineCount() - 1, 0);
+  }
 }

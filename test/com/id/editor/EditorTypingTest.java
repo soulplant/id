@@ -250,6 +250,13 @@ public class EditorTypingTest {
     assertFileContents("ggg", "def");
   }
 
+  @Test
+  public void G() {
+    setFileContents("abc", "def");
+    typeString("G");
+    assertEquals(1, editor.getCursorPosition().getY());
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

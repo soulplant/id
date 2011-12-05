@@ -116,7 +116,7 @@ public class KeyStroke {
 
   @Override
   public int hashCode() {
-    return letter * modifiers;
+    return letter * (modifiers + 1);
   }
 
   private void maybeAppend(StringBuffer buffer, String string, boolean append) {

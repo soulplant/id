@@ -27,4 +27,11 @@ public class KeyStrokeTest {
     assertFalse(event.isShiftDown());
     assertEquals(KeyEvent.VK_L, event.getKeyCode());
   }
+
+  @Test
+  public void testHashCode() {
+    KeyStroke event = KeyStroke.fromChar('l');
+    KeyStroke event2 = KeyStroke.fromChar('m');
+    assertNotSame(event.hashCode(), event2.hashCode());
+  }
 }

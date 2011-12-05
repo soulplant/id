@@ -134,22 +134,84 @@ public class EditorKeyHandler {
         editor.escape();
       }
     });
-    setNormal(KeyStroke.fromString("gg"), new ShortcutTree.Action() {
+    setNormal("gg", new ShortcutTree.Action() {
       @Override
       public void execute() {
         editor.moveCursorToStartOfFile();
       }
     });
-    setNormal(KeyStroke.fromString("cc"), new ShortcutTree.Action() {
+    setNormal("cc", new ShortcutTree.Action() {
       @Override
       public void execute() {
         editor.substituteLine();
       }
     });
-  }
-
-  private void setNormal(List<KeyStroke> keys, Action action) {
-    normalTree.setShortcut(keys, action);
+    setNormal("O", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.addEmptyLinePrevious();
+      }
+    });
+    setNormal("A", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.appendEnd();
+      }
+    });
+    setNormal("I", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.insertStart();
+      }
+    });
+    setNormal("V", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.toggleVisual(Visual.Mode.LINE);
+      }
+    });
+    setNormal("C", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeLine();
+      }
+    });
+    setNormal("D", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.deleteLine();
+      }
+    });
+    setNormal("$", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.moveCursorToEndOfLine();
+      }
+    });
+    setNormal("S", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.substituteLine();
+      }
+    });
+    setNormal("*", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.highlightWordUnderCursor();
+      }
+    });
+    setNormal("N", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.previous();
+      }
+    });
+    setNormal("G", new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.moveCursorToEndOfFile();
+      }
+    });
   }
 
   private void setNormal(KeyStroke key, Action action) {
@@ -197,42 +259,7 @@ public class EditorKeyHandler {
       }
     }
     boolean handled = true;
-    if (event.isShiftDown()) {
-      switch (event.getKeyCode()) {
-      case KeyEvent.VK_O:
-        editor.addEmptyLinePrevious();
-        break;
-      case KeyEvent.VK_A:
-        editor.appendEnd();
-        break;
-      case KeyEvent.VK_I:
-        editor.insertStart();
-        break;
-      case KeyEvent.VK_V:
-        editor.toggleVisual(Visual.Mode.LINE);
-        break;
-      case KeyEvent.VK_C:
-        editor.changeLine();
-        break;
-      case KeyEvent.VK_D:
-        editor.deleteLine();
-        break;
-      case '$':
-        editor.moveCursorToEndOfLine();
-        break;
-      case KeyEvent.VK_S:
-        editor.substituteLine();
-        break;
-      case '*':
-        editor.highlightWordUnderCursor();
-        break;
-      case KeyEvent.VK_N:
-        editor.previous();
-        break;
-      default:
-        handled = false;
-      }
-    } else if (event.isControlDown()) {
+    if (event.isControlDown()) {
       switch (event.getKeyCode()) {
       case KeyEvent.VK_F:
         editor.downPage();

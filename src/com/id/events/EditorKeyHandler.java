@@ -2,7 +2,6 @@ package com.id.events;
 
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
-import java.util.List;
 
 import com.id.editor.Editor;
 import com.id.editor.Visual;
@@ -212,6 +211,18 @@ public class EditorKeyHandler {
         editor.moveCursorToEndOfFile();
       }
     });
+    setNormal(KeyStroke.fromControlChar('f'), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.downPage();
+      }
+    });
+    setNormal(KeyStroke.fromControlChar('b'), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.upPage();
+      }
+    });
   }
 
   private void setNormal(KeyStroke key, Action action) {
@@ -256,22 +267,12 @@ public class EditorKeyHandler {
         if (handled) {
           return true;
         }
+      } else {
+        this.editor = editor;
+        return normalTree.stepAndExecute(event);
       }
     }
-    boolean handled = true;
-    if (event.isControlDown()) {
-      switch (event.getKeyCode()) {
-      case KeyEvent.VK_F:
-        editor.downPage();
-        break;
-      case KeyEvent.VK_B:
-        editor.upPage();
-        break;
-      }
-    } else {
-      this.editor = editor;
-      return normalTree.stepAndExecute(event);
-    }
-    return handled;
+    this.editor = editor;
+    return normalTree.stepAndExecute(event);
   }
 }

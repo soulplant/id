@@ -8,6 +8,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import com.id.events.ShortcutTree.Action;
@@ -82,6 +84,15 @@ public class ShortcutTreeTest {
     tree.setShortcut(KeyStroke.fromString("g"), mock(ShortcutTree.Action.class));
     tree.setShortcut(KeyStroke.fromString("G"), mockAction);
     tree.stepAndExecute(KeyStroke.fromChar('G'));
+    verify(mockAction, times(1)).execute();
+  }
+
+  @Test
+  public void escape() {
+    ShortcutTree tree = new ShortcutTree();
+    Action mockAction = mock(ShortcutTree.Action.class);
+    tree.setShortcut(Arrays.asList(KeyStroke.escape()), mockAction);
+    tree.stepAndExecute(KeyStroke.escape());
     verify(mockAction, times(1)).execute();
   }
 }

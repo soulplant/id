@@ -53,14 +53,12 @@ public class KeyStroke {
         .toLowerCase(letter);
   }
 
-  private static final int mask = KeyEvent.SHIFT_MASK | KeyEvent.CTRL_MASK
-      | KeyEvent.ALT_MASK | KeyEvent.META_MASK;
-
-  public KeyStroke(KeyEvent event) {
-    // NOTE We have to do this getKeyText() hack because getKeyChar() is
-    // undefined when ctrl is held down.
-    this(KeyEvent.getKeyText(event.getKeyCode()).charAt(0),
-        mask & event.getModifiers());
+  public static KeyStroke fromKeyEvent(KeyEvent event) {
+    char c = (char) event.getKeyCode();
+    if (event.isControlDown() && !event.isShiftDown()) {
+      c = Character.toLowerCase(c);
+    }
+    return new KeyStroke(c, event.getModifiers());
   }
 
   public boolean isShiftDown() {

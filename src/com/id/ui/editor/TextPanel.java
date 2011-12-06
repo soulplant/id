@@ -97,6 +97,6 @@ public class TextPanel extends JPanel {
   }
 
   public boolean handleKeyPress(KeyEvent e) {
-    return handler.handleKeyPress(new KeyStroke(e), editor);
+    return handler.handleKeyPress(KeyStroke.fromKeyEvent(e), editor);
   }
 }

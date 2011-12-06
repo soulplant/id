@@ -257,6 +257,13 @@ public class EditorTypingTest {
     assertEquals(1, editor.getCursorPosition().getY());
   }
 
+  @Test
+  public void regressionJoin() {
+    setFileContents("abc", "def");
+    typeString("VjJ");
+    assertEquals(0, editor.getCursorPosition().getY());
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

@@ -370,6 +370,7 @@ public class Editor {
     file.joinRange(visual.getStartPoint().getY(), visual.getEndPoint().getY());
     visual.toggleMode(Visual.Mode.NONE);
     file.breakPatch();
+    applyCursorConstraints();
   }
 
   public void setHighlight(String word) {

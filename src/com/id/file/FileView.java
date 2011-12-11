@@ -101,10 +101,6 @@ public class FileView implements File.Listener, ModifiedListener {
     return line.substring(x, substringMax);
   }
 
-  public void insertText(int y, int x, String text) {
-    file.insertText(start + y, x, text);
-  }
-
   public String removeLine(int y) {
     return file.removeLine(start + y);
   }
@@ -233,5 +229,46 @@ public class FileView implements File.Listener, ModifiedListener {
       return point.offset(-start, 0);
     }
     return null;
+  }
+
+  public void appendText(int y, String text) {
+    changeLine(y, getLine(y) + text);
+
+  }
+
+  public void insertText(int y, int x, String... lines) {
+    insertText(y, x, false, lines);
+  }
+
+  public void insertTextWithLineBreak(int y, int x, String... lines) {
+    insertText(y, x, true, lines);
+  }
+
+  public void insertText(int y, int x, boolean lineBreakOnLast, String... lines) {
+    if (lines.length == 0) {
+      return;
+    }
+    String topLine = getLine(y);
+    String head = topLine.substring(0, x);
+    String tail = topLine.substring(x);
+    changeLine(y, head + lines[0]);
+    int lastInsertedLine = y;
+    for (int i = 1; i < lines.length; i++) {
+      insertLine(y + i, lines[i]);
+      lastInsertedLine = y + i;
+    }
+    if (lineBreakOnLast) {
+      insertLine(lastInsertedLine + 1, tail);
+    } else {
+      appendText(lastInsertedLine, tail);
+    }
+  }
+
+  public void insertLines(int y, String... lines) {
+    int i = y;
+    for (String line : lines) {
+      insertLine(i, line);
+      i++;
+    }
   }
 }

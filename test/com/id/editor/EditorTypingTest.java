@@ -1,6 +1,5 @@
 package com.id.editor;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -9,29 +8,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.id.events.EditorKeyHandler;
 import com.id.events.KeyStroke;
-import com.id.file.File;
-import com.id.file.FileView;
+import com.id.test.EditorTestBase;
 
-public class EditorTypingTest {
-  private EditorKeyHandler handler;
-  private Editor editor;
-  private FileView fileView;
-  private File file;
-  private String[] lastFileContents;
+public class EditorTypingTest extends EditorTestBase {
 
   @Before
   public void init() {
     setFileContents();
-  }
-
-  private void setFileContents(String... lines) {
-    lastFileContents = lines;
-    file = new File(lines);
-    fileView = new FileView(file);
-    editor = new Editor(fileView);
-    handler = new EditorKeyHandler();
   }
 
   @Test
@@ -267,31 +251,5 @@ public class EditorTypingTest {
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();
-  }
-
-  private void ensureUndoGoesToLastFileContents() {
-    type(KeyStroke.escape());
-    while (editor.hasUndo()) {
-      typeString("u");
-    }
-    assertFileContents(lastFileContents);
-  }
-
-  private void assertFileContents(String... lines) {
-    assertArrayEquals(lines, file.getLines());
-  }
-
-  private void type(KeyStroke event) {
-    handler.handleKeyPress(event, editor);
-  }
-
-  private void typeString(String letters) {
-    for (int i = 0; i < letters.length(); i++) {
-      typeChar(letters.charAt(i));
-    }
-  }
-
-  private void typeChar(char c) {
-    handler.handleKeyPress(KeyStroke.fromChar(c), editor);
   }
 }

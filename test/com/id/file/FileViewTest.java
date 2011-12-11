@@ -117,4 +117,18 @@ public class FileViewTest extends EditorTestBase {
     fileView.insertLines(1, "def", "ghi");
     assertFileContents("abc", "def", "ghi");
   }
+
+  @Test
+  public void insertMultilineTextOnEmpty() {
+    setFileContents();
+    fileView.insertText(0, 0, "abc", "def");
+    assertFileContents("abc", "def");
+  }
+
+  @Test
+  public void insertMultilineTextWithTrailingLine() {
+    setFileContents();
+    fileView.insertTextWithLineBreak(0, 0, "abc", "def");
+    assertFileContents("abc", "def");
+  }
 }

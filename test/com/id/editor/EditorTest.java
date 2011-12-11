@@ -3,30 +3,21 @@ package com.id.editor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.id.file.File;
 import com.id.file.File.Listener;
-import com.id.file.FileView;
+import com.id.test.EditorTestBase;
 
-import static org.mockito.Mockito.*;
-
-public class EditorTest {
-  private File file;
-  private FileView fileView;
-  private Editor editor;
+public class EditorTest extends EditorTestBase {
 
   @Before
   public void init() {
     setFileContents();
-  }
-
-  private void setFileContents(String... lines) {
-    file = new File(lines);
-    fileView = new FileView(file);
-    editor = new Editor(fileView);
   }
 
   @Test

@@ -248,6 +248,10 @@ public class FileView implements File.Listener, ModifiedListener {
     if (lines.length == 0) {
       return;
     }
+    if (file.isEmpty()) {
+      insertLines(0, lines);
+      return;
+    }
     String topLine = getLine(y);
     String head = topLine.substring(0, x);
     String tail = topLine.substring(x);

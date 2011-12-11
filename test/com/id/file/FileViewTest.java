@@ -8,8 +8,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.id.editor.Point;
+import com.id.test.EditorTestBase;
 
-public class FileViewTest {
+public class FileViewTest extends EditorTestBase {
   @Test
   public void viewShrinksWhenLinesGetRemoved() {
     FileView fileView = new FileView(new File("a", "b", "c"), 0, 1);
@@ -23,7 +24,7 @@ public class FileViewTest {
 
   @Test
   public void viewGrowsWhenLinesGetInserted() {
-    FileView fileView = new FileView(new File("a", "b", "c"));
+    setFileContents("a", "b", "c");
     fileView.insertLine(0, "hi");
     assertEquals(4, fileView.getLineCount());
     fileView.insertLine(4, "there");
@@ -32,7 +33,7 @@ public class FileViewTest {
 
   @Test
   public void splitAtEnd() {
-    FileView fileView = new FileView(new File("a"));
+    setFileContents("a");
     fileView.splitLine(0, 1);
     assertEquals("a", fileView.getLine(0));
     assertEquals("", fileView.getLine(1));
@@ -40,7 +41,7 @@ public class FileViewTest {
 
   @Test
   public void splitInMiddle() {
-    FileView fileView = new FileView(new File("abc"));
+    setFileContents("abc");
     fileView.splitLine(0, 1);
     assertEquals("a", fileView.getLine(0));
     assertEquals("bc", fileView.getLine(1));
@@ -48,7 +49,7 @@ public class FileViewTest {
 
   @Test
   public void removeText() {
-    FileView fileView = new FileView(new File("abc"));
+    setFileContents("abc");
     String removedText = fileView.removeText(0, 1, 1);
     assertEquals("b", removedText);
     assertEquals("ac", fileView.getLine(0));
@@ -56,13 +57,13 @@ public class FileViewTest {
 
   @Test
   public void removeLineRange() {
-    FileView fileView = new FileView(new File("abc", "def"));
+    setFileContents("abc", "def");
     fileView.removeLineRange(0, 1);
   }
 
   @Test
   public void highlights() {
-    FileView fileView = new FileView(new File("abc", "def"));
+    setFileContents("abc", "def");
     fileView.setHighlight("abc");
     assertTrue(fileView.isHighlighted(0, 0));
     assertFalse(fileView.isHighlighted(1, 0));
@@ -76,13 +77,13 @@ public class FileViewTest {
 
   @Test
   public void getWordUnderCursor() {
-    FileView fileView = new FileView(new File("abc asdf", "def"));
+    setFileContents("abc asdf", "def");
     assertEquals("abc", fileView.getWordUnder(0, 1));
   }
 
   @Test
   public void getNextHighlightPoint() {
-    FileView fileView = new FileView(new File("abc asdf", "def", "abc"));
+    setFileContents("abc asdf", "def", "abc");
     fileView.setHighlight("abc");
     Point point = fileView.getNextHighlightPoint(0, 0);
     assertEquals(2, point.getY());
@@ -91,39 +92,29 @@ public class FileViewTest {
 
   @Test
   public void insertText() {
-    File file = new File("ab");
-    FileView fileView = new FileView(file);
+    setFileContents("ab");
     fileView.insertText(0, 1, "xxx");
-    assertFileContents(file, "axxxb");
+    assertFileContents("axxxb");
   }
 
   @Test
   public void insertMultilineText() {
-    File file = new File("ab");
-    FileView fileView = new FileView(file);
-    System.out.println(file.getLineList());
+    setFileContents("ab");
     fileView.insertText(0, 1, "xxx", "yyy");
-    System.out.println(file.getLineList());
-    assertFileContents(file, "axxx", "yyyb");
+    assertFileContents("axxx", "yyyb");
   }
 
   @Test
   public void insertMultilineTextWithTheLastLineIncludingALineBreak() {
-    File file = new File("ab");
-    FileView fileView = new FileView(file);
+    setFileContents("ab");
     fileView.insertTextWithLineBreak(0, 1, "xxx", "yyy");
-    assertFileContents(file, "axxx", "yyy", "b");
+    assertFileContents("axxx", "yyy", "b");
   }
 
   @Test
   public void insertLines() {
-    File file = new File("abc");
-    FileView fileView = new FileView(file);
+    setFileContents("abc");
     fileView.insertLines(1, "def", "ghi");
-    assertFileContents(file, "abc", "def", "ghi");
-  }
-
-  private void assertFileContents(File file, String... contents) {
-    assertArrayEquals(contents, file.getLines());
+    assertFileContents("abc", "def", "ghi");
   }
 }

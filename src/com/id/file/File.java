@@ -62,6 +62,9 @@ public class File {
   }
 
   public void insertLine(int y, String line) {
+    if (isEmpty()) {
+      y = 0;
+    }
     lines.add(y, line);
     fireLineInserted(y, line);
   }

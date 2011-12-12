@@ -40,6 +40,7 @@ public class Editor {
   private boolean inInsertMode = false;
   private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();
   private Context context = new EmptyContext();
+  private Register register = null;
 
   public Editor(FileView fileView) {
     this.file = fileView;
@@ -307,16 +308,22 @@ public class Editor {
   public void delete(boolean breakPatch) {
     startPatch();
     if (isInVisual()) {
+      register = visual.getRegister(file);
       visual.removeFrom(file);
       cursor.moveTo(visual.getStartPoint().getY(), visual.getStartPoint().getX());
       visual.toggleMode(Visual.Mode.NONE);
     } else {
+      register = new Register(Visual.Mode.CHAR, false, "" + getCharUnderCursor());
       file.removeText(cursor.getY(), cursor.getX(), 1);
     }
     if (breakPatch) {
       file.breakPatch();
     }
     applyCursorConstraints();
+  }
+
+  private char getCharUnderCursor() {
+    return file.getLine(cursor.getY()).charAt(cursor.getX());
   }
 
   public boolean isInVisual() {
@@ -413,5 +420,31 @@ public class Editor {
 
   public void moveCursorToEndOfFile() {
     cursor.moveTo(getLineCount() - 1, 0);
+  }
+
+  public void put() {
+    if (register == null) {
+      return;
+    }
+    startPatch();
+    register.put(cursor.getY(), cursor.getX(), file);
+    file.breakPatch();
+  }
+
+  public void putBefore() {
+    if (register == null) {
+      return;
+    }
+    startPatch();
+    register.putBefore(cursor.getY(), cursor.getX(), file);
+    file.breakPatch();
+  }
+
+  public void yank() {
+    if (!isInVisual()) {
+      throw new IllegalStateException();
+    }
+    register = visual.getRegister(file);
+    toggleVisual(Visual.Mode.NONE);
   }
 }

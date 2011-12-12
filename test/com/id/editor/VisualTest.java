@@ -64,4 +64,39 @@ public class VisualTest {
     assertEquals(2, file.getLineCount());
     assertEquals("ah", file.getLine(0));
   }
+
+  @Test
+  public void pullFromFileCharwise() {
+    cursor.moveTo(0, 1);
+    visual.toggleMode(Visual.Mode.CHAR);
+    cursor.moveTo(1, 1);
+    File file = new File("abc", "def");
+    Register register = visual.getRegister(new FileView(file));
+    assertEquals(2, register.getLineCount());
+    assertEquals("bc", register.getLine(0));
+    assertEquals("de", register.getLine(1));
+  }
+
+  @Test
+  public void pullFromFileCharwiseOnSingleLine() {
+    cursor.moveTo(0, 1);
+    visual.toggleMode(Visual.Mode.CHAR);
+    cursor.moveTo(0, 2);
+    File file = new File("abc");
+    Register register = visual.getRegister(new FileView(file));
+    assertEquals(1, register.getLineCount());
+    assertEquals("bc", register.getLine(0));
+  }
+
+  @Test
+  public void pullFromFileLinewise() {
+    cursor.moveTo(0, 1);
+    visual.toggleMode(Visual.Mode.LINE);
+    cursor.moveTo(1, 1);
+    File file = new File("abc", "def");
+    Register register = visual.getRegister(new FileView(file));
+    assertEquals(2, register.getLineCount());
+    assertEquals("abc", register.getLine(0));
+    assertEquals("def", register.getLine(1));
+  }
 }

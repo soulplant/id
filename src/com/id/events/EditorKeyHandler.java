@@ -98,6 +98,18 @@ public class EditorKeyHandler {
         editor.delete();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("p"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.put();
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("P"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.putBefore();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("0"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -227,6 +239,20 @@ public class EditorKeyHandler {
       }
     });
 
+    visualTree.setShortcut(KeyStroke.fromString("y"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.yank();
+      }
+    });
+    visualTree.setShortcut(KeyStroke.fromString("d"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.delete();
+      }
+    });
     visualTree.setShortcut(KeyStroke.fromString("J"),
         new ShortcutTree.Action() {
       @Override

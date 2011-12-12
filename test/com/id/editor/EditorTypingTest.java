@@ -248,6 +248,51 @@ public class EditorTypingTest extends EditorTestBase {
     assertEquals(0, editor.getCursorPosition().getY());
   }
 
+  @Test
+  public void xPullsIntoRegister() {
+    setFileContents("abc");
+    typeString("xp");
+    assertFileContents("bac");
+  }
+
+  @Test
+  public void visualLineRangeDeletePullsIntoRegister() {
+    setFileContents("abc", "def", "ghi");
+    typeString("Vjx");
+    assertFileContents("ghi");
+    typeString("p");
+    assertFileContents("ghi", "abc", "def");
+  }
+
+  @Test
+  public void visualDeleteOnlyLineInFile() {
+    setFileContents("abc");
+    typeString("Vxp");
+  }
+
+  @Test
+  public void putBefore() {
+    setFileContents("abc", "def");
+    typeString("VxP");
+    assertFileContents("abc", "def");
+  }
+
+  @Test
+  public void yank() {
+    setFileContents("abc");
+    typeString("vy");
+    assertFalse(editor.isInVisual());
+    typeString("p");
+    assertFileContents("aabc");
+  }
+
+  @Test
+  public void deleteVisualYanks() {
+    setFileContents("abc");
+    typeString("Vdpp");
+    setFileContents("abc", "abc");
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

@@ -1,5 +1,8 @@
 package com.id.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.id.file.FileView;
 
 public class Visual {
@@ -70,6 +73,42 @@ public class Visual {
 
   public boolean contains(Point point) {
     return mode.contains(this, point);
+  }
+
+  public Register getRegister(FileView fileView) {
+    List<String> lines = new ArrayList<String>();
+    int startLine = getStartPoint().getY();
+    int endLine = getEndPoint().getY();
+    int startX = getStartPoint().getX();
+    int endX = getEndPoint().getX();
+
+    switch (mode) {
+    case CHAR:
+      if (startLine == endLine) {
+        lines.add(fileView.getLine(startLine).substring(startX, endX + 1));
+        return makeRegister(lines);
+      }
+      for (int y = startLine; y <= endLine; y++) {
+        String line = fileView.getLine(y);
+        if (y == startLine) {
+          lines.add(line.substring(startX));
+        } else if (y == endLine) {
+          lines.add(line.substring(0, endX + 1));
+        } else {
+          lines.add(line);
+        }
+      }
+      return makeRegister(lines);
+    case LINE:
+      return makeRegister(fileView.getLineRange(startLine, endLine));
+    default:
+      throw new IllegalStateException();
+    }
+  }
+
+  private Register makeRegister(List<String> lines) {
+    String[] array = new String[lines.size()];
+    return new Register(mode, false, lines.toArray(array));
   }
 
   public void removeFrom(FileView file) {

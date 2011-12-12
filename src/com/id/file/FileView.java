@@ -1,5 +1,8 @@
 package com.id.file;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.id.editor.Point;
 import com.id.file.File.Listener;
 import com.id.file.Tombstone.Status;
@@ -274,5 +277,13 @@ public class FileView implements File.Listener, ModifiedListener {
       insertLine(i, line);
       i++;
     }
+  }
+
+  public List<String> getLineRange(int startY, int endY) {
+    List<String> result = new ArrayList<String>();
+    for (int i = startY; i <= endY; i++) {
+      result.add(getLine(i));
+    }
+    return result;
   }
 }

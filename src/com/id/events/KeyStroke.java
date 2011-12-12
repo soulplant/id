@@ -23,7 +23,7 @@ public class KeyStroke {
 
   public static KeyStroke fromChar(char c) {
     if (shiftSymbols.containsKey(c)) {
-      return new KeyStroke(c, KeyEvent.SHIFT_MASK);
+      return new KeyStroke(shiftSymbols.get(c), KeyEvent.SHIFT_MASK);
     }
     int mask = 0;
     if (Character.isUpperCase(c)) {

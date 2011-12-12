@@ -469,4 +469,11 @@ public class Editor {
     register = visual.getRegister(file);
     toggleVisual(Visual.Mode.NONE);
   }
+
+  public void tab() {
+    int spacesToAdd = cursor.getX() % 2 == 0 ? 2 : 1;
+    for (int i = 0; i < spacesToAdd; i++) {
+      onLetterTyped(' ');
+    }
+  }
 }

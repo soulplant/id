@@ -39,6 +39,12 @@ public class EditorKeyHandler {
         editor.right();
       }
     });
+    normalTree.setShortcut(Arrays.asList(KeyStroke.tab()), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.tab();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("dd"), new ShortcutTree.Action() {
       @Override
       public void execute() {

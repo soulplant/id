@@ -149,4 +149,8 @@ public class KeyStroke {
   public static KeyStroke enter() {
     return KeyStroke.fromVKey(KeyEvent.VK_ENTER);
   }
+
+  public static KeyStroke tab() {
+    return KeyStroke.fromVKey(KeyEvent.VK_TAB);
+  }
 }

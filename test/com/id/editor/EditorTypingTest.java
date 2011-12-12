@@ -323,6 +323,32 @@ public class EditorTypingTest extends EditorTestBase {
     assertFileContents("  abc", "  abc");
   }
 
+  @Test
+  public void tabInsertsTwoSpaces() {
+    setFileContents();
+    typeString("i");
+    type(KeyStroke.tab());
+    assertFileContents("  ");
+  }
+
+  @Test
+  public void tabAlignsToIndentationLevel() {
+    setFileContents(" ");
+    typeString("A");
+    type(KeyStroke.tab());
+    assertFileContents("  ");
+  }
+
+  @Test
+  public void tabOnEndOfLine() {
+    setFileContents("abc");
+    typeString("A");
+    type(KeyStroke.tab());
+    assertFileContents("abc ");
+    type(KeyStroke.tab());
+    assertFileContents("abc   ");
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

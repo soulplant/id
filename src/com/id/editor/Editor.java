@@ -224,12 +224,15 @@ public class Editor {
   }
 
   public static int getSpacesBackIncludingSoftTabs(String line, int x, int tabSize) {
+    if (x == 0) {
+      return 0;
+    }
     for (int i = 0; i < x; i++) {
       if (!isWhitespace(line.charAt(i))) {
         return 1;
       }
     }
-    return x % tabSize == 0 ? Math.min(x, tabSize) : x % tabSize;
+    return x % tabSize == 0 ? tabSize : x % tabSize;
   }
 
   public void append() {

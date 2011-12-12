@@ -108,9 +108,9 @@ public class FileView implements File.Listener, ModifiedListener {
     return file.removeLine(start + y);
   }
 
-  public void splitLine(int y, int x) {
+  public void splitLine(int y, int x, String paddingText) {
     String removedText = removeText(y, x);
-    insertLine(y + 1, removedText);
+    insertLine(y + 1, paddingText + removedText);
   }
 
   public boolean isEmpty() {

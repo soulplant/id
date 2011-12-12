@@ -1,6 +1,7 @@
 package com.id.test;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import com.id.editor.Editor;
 import com.id.events.EditorKeyHandler;
@@ -33,6 +34,11 @@ public class EditorTestBase {
 
   protected void assertFileContents(String... lines) {
     assertArrayEquals(lines, file.getLines());
+  }
+
+  protected void assertCursorPosition(int y, int x) {
+    assertEquals(y, editor.getCursorPosition().getY());
+    assertEquals(x, editor.getCursorPosition().getX());
   }
 
   protected void type(KeyStroke event) {

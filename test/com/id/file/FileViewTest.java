@@ -34,17 +34,17 @@ public class FileViewTest extends EditorTestBase {
   @Test
   public void splitAtEnd() {
     setFileContents("a");
-    fileView.splitLine(0, 1);
+    fileView.splitLine(0, 1, "xxx");
     assertEquals("a", fileView.getLine(0));
-    assertEquals("", fileView.getLine(1));
+    assertEquals("xxx", fileView.getLine(1));
   }
 
   @Test
   public void splitInMiddle() {
     setFileContents("abc");
-    fileView.splitLine(0, 1);
+    fileView.splitLine(0, 1, "xxx");
     assertEquals("a", fileView.getLine(0));
-    assertEquals("bc", fileView.getLine(1));
+    assertEquals("xxxbc", fileView.getLine(1));
   }
 
   @Test

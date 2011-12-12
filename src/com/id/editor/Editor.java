@@ -98,7 +98,7 @@ public class Editor {
   }
 
   private void applyCursorConstraints() {
-    int isInNormalMode = !isInInsertMode() ? 1 : 0;
+    int isInNormalMode = isInInsertMode() ? 0 : 1;
     cursor.constrainY(0, file.getLineCount() - 1);
     cursor.constrainX(0, getCurrentLineLength() - isInNormalMode);
   }
@@ -168,24 +168,40 @@ public class Editor {
   }
 
   public void addEmptyLine() {
+    addLineAt(cursor.getY() + 1, getIndentForLine(cursor.getY()));
+  }
+
+  public void addEmptyLinePrevious() {
+    addLineAt(cursor.getY(), getIndentForLine(cursor.getY()));
+  }
+
+  private void addLineAt(int y, String text) {
     startPatchIfNecessary();
     if (file.isEmpty()) {
       file.insertLine(0, "");
     }
-    file.insertLine(Math.min(file.getLineCount(), cursor.getY() + 1), "");
-    cursor.moveBy(1, 0);
-    applyCursorConstraints();
-    insert();
+    file.insertLine(Math.min(file.getLineCount(), y), text);
+    cursor.moveTo(y, 0);
+    appendEnd();
   }
 
-  public void addEmptyLinePrevious() {
-    startPatch();
+  private String getIndentForLine(int y) {
     if (file.isEmpty()) {
-      file.insertLine(0, "");
+      return "";
     }
-    file.insertLine(cursor.getY(), "");
-    applyCursorConstraints();
-    insert();
+    String line = getLine(y);
+    StringBuffer indent = new StringBuffer();
+    for (int i = 0; i < line.length(); i++) {
+      if (!isWhitespace(line.charAt(i))) {
+        break;
+      }
+      indent.append(line.charAt(i));
+    }
+    return indent.toString();
+  }
+
+  private boolean isWhitespace(char c) {
+    return c == ' ';
   }
 
   public void backspace() {
@@ -236,9 +252,10 @@ public class Editor {
       addEmptyLine();
       return;
     }
-    file.splitLine(cursor.getY(), cursor.getX());
+    String indentText = getIndentForLine(cursor.getY());
+    file.splitLine(cursor.getY(), cursor.getX(), indentText);
     cursor.moveBy(1, 0);
-    cursor.moveTo(cursor.getY(), 0);
+    cursor.moveTo(cursor.getY(), indentText.length());
   }
 
   public String getFilename() {
@@ -274,10 +291,8 @@ public class Editor {
   }
 
   public void moveCursorToEndOfLine() {
-    if (isInInsertMode()) {
-      throw new IllegalStateException();
-    }
-    cursor.moveTo(cursor.getY(), getCurrentLineLength() - 1);
+    int x = getCurrentLineLength() - (isInInsertMode() ? 0 : 1);
+    cursor.moveTo(cursor.getY(), x);
   }
 
   public void moveCursorToStartOfLine() {

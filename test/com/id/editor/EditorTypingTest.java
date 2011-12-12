@@ -300,6 +300,29 @@ public class EditorTypingTest extends EditorTestBase {
     assertFileContents("def");
   }
 
+  @Test
+  public void autoIndent() {
+    setFileContents("  abc");
+    typeString("o");
+    assertFileContents("  abc", "  ");
+    assertCursorPosition(1, 2);
+    assertEquals(2, editor.getCursorPosition().getX());
+    typeString("abc");
+    assertFileContents("  abc", "  abc");
+    type(KeyStroke.escape());
+    typeString("Oabc");
+    assertFileContents("  abc", "  abc", "  abc");
+  }
+
+  @Test
+  public void autoIndentWithEnter() {
+    setFileContents();
+    typeString("i  abc");
+    type(KeyStroke.enter());
+    typeString("abc");
+    assertFileContents("  abc", "  abc");
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

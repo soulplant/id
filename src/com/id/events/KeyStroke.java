@@ -145,4 +145,8 @@ public class KeyStroke {
   public static KeyStroke backspace() {
     return KeyStroke.fromVKey(KeyEvent.VK_BACK_SPACE);
   }
+
+  public static KeyStroke enter() {
+    return KeyStroke.fromVKey(KeyEvent.VK_ENTER);
+  }
 }

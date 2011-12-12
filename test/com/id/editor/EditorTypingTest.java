@@ -293,6 +293,13 @@ public class EditorTypingTest extends EditorTestBase {
     setFileContents("abc", "abc");
   }
 
+  @Test
+  public void dd() {
+    setFileContents("abc", "def");
+    typeString("dd");
+    assertFileContents("def");
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

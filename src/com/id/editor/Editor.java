@@ -259,9 +259,16 @@ public class Editor {
     append();
   }
 
-  public void deleteLine() {
+  public void deleteToEndOfLine() {
     startPatch();
     file.removeText(cursor.getY(), cursor.getX());
+    file.breakPatch();
+    applyCursorConstraints();
+  }
+
+  public void deleteLine() {
+    startPatch();
+    file.removeLine(cursor.getY());
     file.breakPatch();
     applyCursorConstraints();
   }

@@ -39,6 +39,12 @@ public class EditorKeyHandler {
         editor.right();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("dd"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.deleteLine();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("w"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -191,7 +197,7 @@ public class EditorKeyHandler {
     normalTree.setShortcut(KeyStroke.fromString("D"), new ShortcutTree.Action() {
       @Override
       public void execute() {
-        editor.deleteLine();
+        editor.deleteToEndOfLine();
       }
     });
     normalTree.setShortcut(KeyStroke.fromString("$"), new ShortcutTree.Action() {

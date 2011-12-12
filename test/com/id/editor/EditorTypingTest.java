@@ -349,6 +349,23 @@ public class EditorTypingTest extends EditorTestBase {
     assertFileContents("abc   ");
   }
 
+  @Test
+  public void backspaceSoftTabsAtStartOfLine() {
+    setFileContents("  abc");
+    typeString("la");
+    type(KeyStroke.backspace());
+    assertFileContents("abc");
+    assertCursorPosition(0, 0);
+  }
+
+  @Test
+  public void dontBackspaceSoftTabsAtEndOfLine() {
+    setFileContents("abc   ");
+    typeString("A");
+    type(KeyStroke.backspace());
+    assertFileContents("abc  ");
+  }
+
   @After
   public void checkUndo() {
     ensureUndoGoesToLastFileContents();

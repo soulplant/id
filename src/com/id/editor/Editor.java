@@ -200,7 +200,7 @@ public class Editor {
     return indent.toString();
   }
 
-  private boolean isWhitespace(char c) {
+  private static boolean isWhitespace(char c) {
     return c == ' ';
   }
 
@@ -217,9 +217,19 @@ public class Editor {
       file.insertText(cursor.getY(), targetX, line);
       cursor.moveTo(cursor.getY(), targetX);
     } else {
-      file.removeText(cursor.getY(), cursor.getX() - 1, 1);
-      cursor.moveBy(0, -1);
+      int charsToRemove = getSpacesBackIncludingSoftTabs(getCurrentLine(), cursor.getX(), 2);
+      file.removeText(cursor.getY(), cursor.getX() - charsToRemove, charsToRemove);
+      cursor.moveBy(0, -charsToRemove);
     }
+  }
+
+  public static int getSpacesBackIncludingSoftTabs(String line, int x, int tabSize) {
+    for (int i = 0; i < x; i++) {
+      if (!isWhitespace(line.charAt(i))) {
+        return 1;
+      }
+    }
+    return x % tabSize == 0 ? Math.min(x, tabSize) : x % tabSize;
   }
 
   public void append() {

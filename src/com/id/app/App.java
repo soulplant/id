@@ -61,6 +61,7 @@ public class App implements Listener {
     fuzzyFinder.addPathToIndex(".");
 
     frame = new JFrame(APP_NAME);
+    frame.setFocusTraversalKeysEnabled(false);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setLayout(new AppLayout());
 

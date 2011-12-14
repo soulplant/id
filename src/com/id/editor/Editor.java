@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.id.editor.Visual.Mode;
+import com.id.events.EditorKeyHandler;
+import com.id.events.KeyStroke;
+import com.id.events.KeyStrokeHandler;
 import com.id.file.File;
 import com.id.file.File.Listener;
 import com.id.file.FileView;
 import com.id.file.Grave;
 import com.id.file.Tombstone.Status;
 
-public class Editor {
+public class Editor implements KeyStrokeHandler {
   public interface Context {
     void moveViewportToIncludePoint(Point point);
     void recenterScreenOnPoint(Point point);
@@ -41,6 +44,7 @@ public class Editor {
   private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();
   private Context context = new EmptyContext();
   private Register register = null;
+  private final EditorKeyHandler keyHandler;
 
   public Editor(FileView fileView) {
     this.file = fileView;
@@ -57,6 +61,7 @@ public class Editor {
         // TODO Recenter the screen on (y, x).
       }
     });
+    keyHandler = new EditorKeyHandler();
   }
 
   public String getLine(int y) {
@@ -488,5 +493,10 @@ public class Editor {
     for (int i = 0; i < spacesToAdd; i++) {
       onLetterTyped(' ');
     }
+  }
+
+  @Override
+  public boolean handleKeyStroke(KeyStroke keyStroke) {
+    return keyHandler.handleKeyPress(keyStroke, this);
   }
 }

@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
@@ -13,72 +12,19 @@ import javax.swing.JTextField;
 import com.id.fuzzy.FuzzyFinder;
 
 @SuppressWarnings("serial")
-public class FuzzyFinderFrame extends JFrame implements KeyListener, FocusListener {
-  public interface Listener {
-    void onSelected(String item);
-  }
+public class FuzzyFinderFrame extends JFrame implements FocusListener, FuzzyFinder.Listener {
   private final FuzzyFinder fuzzyFinder;
   private final JTextField textField = new JTextField();
   private final ItemListPanel itemList = new ItemListPanel();
-  private final Listener listener;
 
-  public FuzzyFinderFrame(FuzzyFinder fuzzyFinder, Listener listener) {
+  public FuzzyFinderFrame(FuzzyFinder fuzzyFinder, KeyListener keyListener) {
     this.fuzzyFinder = fuzzyFinder;
-    this.listener = listener;
-
     textField.setPreferredSize(new Dimension(200, 20));
-    textField.addKeyListener(this);
     add(textField, BorderLayout.PAGE_START);
     add(itemList, BorderLayout.CENTER);
     pack();
     textField.addFocusListener(this);
-  }
-
-  @Override
-  public void keyPressed(KeyEvent event) {
-    boolean handled = true;
-    switch (event.getKeyCode()) {
-    case KeyEvent.VK_UP:
-      itemList.up();
-      break;
-    case KeyEvent.VK_DOWN:
-      itemList.down();
-      break;
-    case KeyEvent.VK_ESCAPE:
-      exit();
-      break;
-    case KeyEvent.VK_ENTER:
-      listener.onSelected(itemList.getSelectedItem());
-      exit();
-      break;
-    default:
-      handled = false;
-      break;
-    }
-
-    if (handled) {
-      return;
-    }
-    updateResults();
-  }
-
-  private void exit() {
-    setVisible(false);
-  }
-
-  @Override
-  public void keyReleased(KeyEvent event) {
-    // Do nothing.
-  }
-
-  @Override
-  public void keyTyped(KeyEvent event) {
-    // Do nothing.
-  }
-
-  private void updateResults() {
-    itemList.setItems(fuzzyFinder.getMatches(textField.getText()));
-    pack();
+    textField.addKeyListener(keyListener);
   }
 
   @Override
@@ -88,6 +34,22 @@ public class FuzzyFinderFrame extends JFrame implements KeyListener, FocusListen
 
   @Override
   public void focusLost(FocusEvent event) {
-    setVisible(false);
+    fuzzyFinder.setVisible(false);
+  }
+
+  @Override
+  public void onQueryChanged() {
+    itemList.setItems(fuzzyFinder.getMatches());
+    pack();
+  }
+
+  @Override
+  public void onItemSelected(String item) {
+    // Do nothing.
+  }
+
+  @Override
+  public void onSetVisible(boolean visible) {
+    setVisible(visible);
   }
 }

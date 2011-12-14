@@ -1,4 +1,4 @@
-package com.id.app;
+package com.id.ui.app;
 
 import java.awt.Component;
 import java.awt.Container;

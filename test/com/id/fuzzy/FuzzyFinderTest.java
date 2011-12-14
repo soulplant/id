@@ -24,8 +24,10 @@ public class FuzzyFinderTest {
     fileSystem.insertFile("src/blah.gyp");
 
     fuzzyFinder.addPathToIndex("src");
+    fuzzyFinder.setQuery("chrome");
     assertTrue(fuzzyFinder.contains("src/browser/ui/chrome.h"));
-    assertEquals(2, fuzzyFinder.getMatches("chrome").size());
-    assertEquals(1, fuzzyFinder.getMatches("gyp").size());
+    assertEquals(2, fuzzyFinder.getMatches().size());
+    fuzzyFinder.setQuery("gyp");
+    assertEquals(1, fuzzyFinder.getMatches().size());
   }
 }

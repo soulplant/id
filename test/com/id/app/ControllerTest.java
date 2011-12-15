@@ -32,14 +32,15 @@ public class ControllerTest {
     fuzzyListener = mock(FuzzyFinder.Listener.class);
     controller = new Controller(editors, fileSystem, fuzzyFinder);
 
-    fileSystem.insertFile("a", "aaa");
-    fileSystem.insertFile("b", "bbb");
+    fileSystem.insertFile("./a", "aaa");
+    fileSystem.insertFile("./b", "bbb");
+    fuzzyFinder.addPathToIndex(".");
   }
 
   @Test
   public void moveBetweenFilesEditingThem() {
-    controller.openFile("a");
-    controller.openFile("b");
+    controller.openFile("./a");
+    controller.openFile("./b");
     assertEquals("aaa", editors.get(0).getLine(0));
     assertEquals("bbb", editors.get(1).getLine(0));
     typeString("SxKx");
@@ -80,6 +81,16 @@ public class ControllerTest {
     typeString("t");
     type(KeyStroke.escape());
     assertFalse(fuzzyFinder.isVisible());
+  }
+
+  @Test
+  public void selectFromFuzzyFinderOpensFile() {
+    typeString("ta");
+    type(KeyStroke.enter());
+    assertFalse(fuzzyFinder.isVisible());
+    assertEquals(1, editors.size());
+    assertEquals(0, editors.getFocusedIndex());
+    assertEquals("a", editors.get(0).getFilename());
   }
 
   private void type(KeyStroke keyStroke) {

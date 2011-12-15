@@ -9,7 +9,7 @@ import com.id.file.FileView;
 import com.id.fuzzy.FuzzyFinder;
 import com.id.platform.FileSystem;
 
-public class Controller implements KeyStrokeHandler {
+public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListener {
   private final ListModel<Editor> editors;
   private final FileSystem fileSystem;
   private final ShortcutTree shortcuts = new ShortcutTree();
@@ -19,6 +19,7 @@ public class Controller implements KeyStrokeHandler {
     this.editors = editors;
     this.fileSystem = fileSystem;
     this.fuzzyFinder = fuzzyFinder;
+    fuzzyFinder.setSelectionListener(this);
     shortcuts.setShortcut(KeyStroke.fromString("J"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -73,5 +74,11 @@ public class Controller implements KeyStrokeHandler {
 
   public void openFuzzyFinder() {
     fuzzyFinder.setVisible(true);
+  }
+
+  @Override
+  public void onItemSelected(String fuzzyFinderFile) {
+    openFile(fuzzyFinderFile);
+    fuzzyFinder.setVisible(false);
   }
 }

@@ -55,6 +55,12 @@ class Node {
   public List<String> getContents() {
     return contents;
   }
+
+  public File getFile() {
+    File result = new File(getContents());
+    result.setFilename(getName());
+    return result;
+  }
 }
 
 public class InMemoryFileSystem implements FileSystem {
@@ -87,7 +93,7 @@ public class InMemoryFileSystem implements FileSystem {
 
   @Override
   public File getFile(String path) {
-    return new File(getNode(path).getContents());
+    return getNode(path).getFile();
   }
 
   @Override

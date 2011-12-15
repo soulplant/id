@@ -36,6 +36,7 @@ public class App {
     final ListModel<Editor> editors = new ListModel<Editor>();
     FileSystem fileSystem = new RealFileSystem();
     FuzzyFinder fuzzyFinder = new FuzzyFinder(fileSystem);
+    fuzzyFinder.addPathToIndex(".");
     final Controller controller = new Controller(editors, fileSystem, fuzzyFinder);
 
     final EditorSwapperView spotlightView = new EditorSwapperView(editors);

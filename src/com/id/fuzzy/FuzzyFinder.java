@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.id.app.Controller;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
@@ -14,9 +15,13 @@ import com.id.platform.FileSystem;
 public class FuzzyFinder implements KeyStrokeHandler {
   public interface Listener {
     void onQueryChanged();
-    void onItemSelected(String item);
     void onSetVisible(boolean visible);
   }
+
+  public interface SelectionListener {
+    void onItemSelected(String item);
+  }
+
   private final List<String> paths = new ArrayList<String>();
   private final List<String> filenames = new ArrayList<String>();
   private final FileSystem fileSystem;
@@ -24,6 +29,7 @@ public class FuzzyFinder implements KeyStrokeHandler {
   private String query = "";
   private final List<Listener> listeners = new ArrayList<Listener>();
   private final ShortcutTree shortcuts = new ShortcutTree();
+  private SelectionListener selectionListener;
 
   public FuzzyFinder(FileSystem fileSystem) {
     this.fileSystem = fileSystem;
@@ -33,6 +39,20 @@ public class FuzzyFinder implements KeyStrokeHandler {
         setVisible(false);
       }
     });
+    shortcuts.setShortcut(Arrays.asList(KeyStroke.enter()), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        selectCurrentItem();
+      }
+    });
+  }
+
+  public void setSelectionListener(SelectionListener selectionListener) {
+    this.selectionListener = selectionListener;
+  }
+
+  public void selectCurrentItem() {
+    fireItemSelected();
   }
 
   public void setVisible(boolean visible) {
@@ -83,8 +103,11 @@ public class FuzzyFinder implements KeyStrokeHandler {
     if (shortcuts.stepAndExecute(keyStroke)) {
       return true;
     }
-    addToQuery(keyStroke.getKeyChar());
-    return true;
+    if (keyStroke.isLetter()) {
+      addToQuery(keyStroke.getKeyChar());
+      return true;
+    }
+    return false;
   }
 
   private void addToQuery(char keyChar) {
@@ -103,6 +126,14 @@ public class FuzzyFinder implements KeyStrokeHandler {
     for (Listener listener : listeners) {
       listener.onSetVisible(visible);
     }
+  }
+
+  private void fireItemSelected() {
+    selectionListener.onItemSelected(getSelectedItem());
+  }
+
+  private String getSelectedItem() {
+    return getMatches().get(0);
   }
 
   public void addListener(Listener listener) {

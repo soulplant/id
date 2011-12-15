@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
@@ -39,13 +40,9 @@ public class FuzzyFinderFrame extends JFrame implements FocusListener, FuzzyFind
 
   @Override
   public void onQueryChanged() {
-    itemList.setItems(fuzzyFinder.getMatches());
+    List<String> matches = fuzzyFinder.getMatches();
+    itemList.setItems(matches);
     pack();
-  }
-
-  @Override
-  public void onItemSelected(String item) {
-    // Do nothing.
   }
 
   @Override

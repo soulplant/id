@@ -24,11 +24,20 @@ public class CachingHighlightTest {
   public void previous() {
     File file = new File("abc", "dog");
     CachingHighlight highlight = new CachingHighlight("dog", file.getLineList());
-    file.addListener(highlight);
 
-    Point point = highlight.getPreviousMatch(1, 1);
+    assertPointEquals(1, 0, highlight.getPreviousMatch(1, 1));
+  }
+
+  @Test
+  public void itGoesToPreviousMatchesOnTheSameLine() {
+    File file = new File("abc", "abc abc abc");
+    CachingHighlight highlight = new CachingHighlight("abc", file.getLineList());
+    assertPointEquals(1, 4, highlight.getPreviousMatch(1, 8));
+  }
+
+  private void assertPointEquals(int y, int x, Point point) {
     assertNotNull(point);
-    assertEquals(1, point.getY());
-    assertEquals(0, point.getX());
+    assertEquals(y, point.getY());
+    assertEquals(x, point.getX());
   }
 }

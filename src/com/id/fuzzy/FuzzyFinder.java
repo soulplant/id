@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.id.app.Controller;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
@@ -148,5 +147,13 @@ public class FuzzyFinder implements KeyStrokeHandler {
   void setQuery(String query) {
     this.query = query;
     fireQueryChanged();
+  }
+
+  public String getCurrentQuery() {
+    return query;
+  }
+
+  public void clearQuery() {
+    this.query = "";
   }
 }

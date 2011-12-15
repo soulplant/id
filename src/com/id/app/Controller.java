@@ -38,9 +38,16 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         showFuzzyFinder();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("q"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        closeCurrentFile();
+      }
+    });
   }
 
-  private void showFuzzyFinder() {
+  public void showFuzzyFinder() {
+    fuzzyFinder.clearQuery();
     fuzzyFinder.setVisible(true);
   }
 
@@ -70,10 +77,6 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
       return true;
     }
     return shortcuts.stepAndExecute(keyStroke);
-  }
-
-  public void openFuzzyFinder() {
-    fuzzyFinder.setVisible(true);
   }
 
   @Override

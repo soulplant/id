@@ -47,6 +47,8 @@ public class FuzzyFinderFrame extends JFrame implements FocusListener, FuzzyFind
 
   @Override
   public void onSetVisible(boolean visible) {
+    textField.setText(fuzzyFinder.getCurrentQuery());
+    onQueryChanged();
     setVisible(visible);
   }
 }

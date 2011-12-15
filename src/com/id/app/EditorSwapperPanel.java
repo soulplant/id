@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.id.ui.editor.EditorPanel;
@@ -11,10 +12,12 @@ import com.id.ui.editor.EditorPanel;
 @SuppressWarnings("serial")
 public class EditorSwapperPanel extends JPanel {
   private final List<EditorPanel> editorPanels = new ArrayList<EditorPanel>();
+  private final JLabel placeholderLabel = new JLabel("No more things to edit");
   private int selected;
 
   public EditorSwapperPanel() {
     setLayout(new BorderLayout());
+    super.add(placeholderLabel);
   }
 
   public void addEditor(EditorPanel editorPanel) {
@@ -30,6 +33,10 @@ public class EditorSwapperPanel extends JPanel {
       previous();
     }
     editorPanels.remove(editorPanel);
+    if (editorPanels.isEmpty()) {
+      super.removeAll();
+      super.add(placeholderLabel);
+    }
   }
 
   public void next() {
@@ -42,7 +49,7 @@ public class EditorSwapperPanel extends JPanel {
 
   protected void setSelected(int selected) {
     this.selected = Math.max(0, Math.min(editorPanels.size() - 1, selected));
-    this.removeAll();
+    super.removeAll();
     add(editorPanels.get(this.selected), BorderLayout.CENTER);
   }
 

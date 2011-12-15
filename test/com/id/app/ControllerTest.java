@@ -53,21 +53,16 @@ public class ControllerTest {
   @Test
   public void controllerCanBringUpTheFuzzyFinder() {
     fuzzyFinder.addListener(fuzzyListener);
-    controller.openFuzzyFinder();
+    controller.showFuzzyFinder();
     verify(fuzzyListener).onSetVisible(true);
   }
 
   @Test
   public void typingGoesToTheFuzzyFinderWhenItsUp() {
-    controller.openFuzzyFinder();
+    controller.showFuzzyFinder();
     fuzzyFinder.addListener(fuzzyListener);
     typeString("hi");
     verify(fuzzyListener, times(2)).onQueryChanged();
-  }
-
-  @Test
-  public void typingEnterMakesTheFuzzyFinderDismiss() {
-    controller.openFuzzyFinder();
   }
 
   @Test
@@ -91,6 +86,22 @@ public class ControllerTest {
     assertEquals(1, editors.size());
     assertEquals(0, editors.getFocusedIndex());
     assertEquals("a", editors.get(0).getFilename());
+  }
+
+  @Test
+  public void showFuzzyFinderClearsOldQuery() {
+    typeString("ta");
+    type(KeyStroke.enter());
+    typeString("t");
+    assertEquals("", fuzzyFinder.getCurrentQuery());
+  }
+
+  @Test
+  public void closeCurrentFile() {
+    controller.openFile("./a");
+    controller.openFile("./b");
+    controller.closeCurrentFile();
+    assertEquals(1, editors.size());
   }
 
   private void type(KeyStroke keyStroke) {

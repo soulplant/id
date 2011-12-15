@@ -23,7 +23,7 @@ public class KeyStroke {
 
   public static KeyStroke fromChar(char c) {
     if (shiftSymbols.containsKey(c)) {
-      return new KeyStroke(shiftSymbols.get(c), KeyEvent.SHIFT_MASK);
+      return new KeyStroke(c, KeyEvent.SHIFT_MASK);
     }
     int mask = 0;
     if (Character.isUpperCase(c)) {
@@ -44,6 +44,14 @@ public class KeyStroke {
     return new KeyStroke(c, KeyEvent.CTRL_MASK);
   }
 
+  public static KeyStroke fromKeyEvent(KeyEvent event) {
+    char c = event.getKeyChar();
+    if (event.isControlDown()) {
+      c = Character.toLowerCase((char) event.getKeyCode());
+    }
+    return new KeyStroke(c, event.getModifiers());
+  }
+
   private final char letter;
   private final int modifiers;
 
@@ -51,14 +59,6 @@ public class KeyStroke {
     this.modifiers = modifiers;
     this.letter = isShiftDown() ? Character.toUpperCase(letter) : Character
         .toLowerCase(letter);
-  }
-
-  public static KeyStroke fromKeyEvent(KeyEvent event) {
-    char c = (char) event.getKeyCode();
-    if (event.isControlDown() && !event.isShiftDown()) {
-      c = Character.toLowerCase(c);
-    }
-    return new KeyStroke(c, event.getModifiers());
   }
 
   public boolean isShiftDown() {
@@ -130,8 +130,7 @@ public class KeyStroke {
     return ('a' <= keyCode && keyCode <= 'z')
         || ('A' <= keyCode && keyCode <= 'Z')
         || ('0' <= keyCode && keyCode <= '9')
-        || (" `~!@#$%^&*()-_=+[{]}\\|;:,<.>/?".indexOf(keyCode) != -1)
-        || keyCode == 39 /* single quote */|| keyCode == 222 /* double quote */;
+        || (" `~!@#$%^&*()-_=+[{]}\\|;:,<.>/?\"'".indexOf(keyCode) != -1);
   }
 
   public static List<KeyStroke> fromString(String string) {

@@ -18,6 +18,11 @@ public class EditorTypingTest extends EditorTestBase {
     setFileContents();
   }
 
+  @After
+  public void checkUndo() {
+    ensureUndoGoesToLastFileContents();
+  }
+
   @Test
   public void changeLine() {
     setFileContents("abc");
@@ -366,8 +371,10 @@ public class EditorTypingTest extends EditorTestBase {
     assertFileContents("abc  ");
   }
 
-  @After
-  public void checkUndo() {
-    ensureUndoGoesToLastFileContents();
+  @Test
+  public void movingPreviousShouldVisitEachOccurrenceOnTheSameLine() {
+    setFileContents("abc abc abc");
+    typeString("*$NN");
+    assertCursorPosition(0, 4);
   }
 }

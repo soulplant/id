@@ -30,9 +30,18 @@ public class CachingHighlightTest {
 
   @Test
   public void itGoesToPreviousMatchesOnTheSameLine() {
-    File file = new File("abc", "abc abc abc");
+    File file = new File("abc abc abc");
     CachingHighlight highlight = new CachingHighlight("abc", file.getLineList());
-    assertPointEquals(1, 4, highlight.getPreviousMatch(1, 8));
+    assertPointEquals(0, 4, highlight.getPreviousMatch(0, 8));
+    assertPointEquals(0, 4, highlight.getPreviousMatch(0, 7));
+  }
+
+  @Test
+  public void itGoesToNextMatchesOnTheSameLine() {
+    File file = new File("abc abc abc");
+    CachingHighlight highlight = new CachingHighlight("abc", file.getLineList());
+    assertPointEquals(0, 4, highlight.getNextMatch(0, 1));
+    assertPointEquals(0, 4, highlight.getNextMatch(0, 0));
   }
 
   private void assertPointEquals(int y, int x, Point point) {

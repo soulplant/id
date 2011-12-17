@@ -19,8 +19,17 @@ public class CachingHighlight implements Highlight, File.Listener {
       return x >= start && x < start + length;
     }
 
-    public boolean startsAt(int x) {
-      return start == x;
+    public boolean startsBefore(int x) {
+      return start < x;
+    }
+
+    public boolean startsAfter(int x) {
+      return start > x;
+    }
+
+    @Override
+    public String toString() {
+      return "Match[" + start + ", " + length + "]";
     }
   }
 
@@ -40,13 +49,8 @@ public class CachingHighlight implements Highlight, File.Listener {
     }
 
     public int getNextMatch(int x) {
-      boolean pastCurrentMatch = false;
       for (Match match : matches) {
-        if (match.contains(x)) {
-          pastCurrentMatch = true;
-          continue;
-        }
-        if (pastCurrentMatch) {
+        if (match.startsAfter(x)) {
           return match.start;
         }
       }
@@ -54,19 +58,10 @@ public class CachingHighlight implements Highlight, File.Listener {
     }
 
     public int getPreviousMatch(int x) {
-      boolean skippedMatchAtStart = false;
       for (int i = matches.size() - 1; i >= 0; i--) {
         Match match = matches.get(i);
-        if (match.contains(x)) {
-          if (match.startsAt(x)) {
-            if (skippedMatchAtStart) {
-              return match.start;
-            } else {
-              skippedMatchAtStart = true;
-            }
-          } else {
-            return match.start;
-          }
+        if (match.startsBefore(x)) {
+          return match.start;
         }
       }
       return -1;
@@ -82,6 +77,11 @@ public class CachingHighlight implements Highlight, File.Listener {
 
     public int getLastMatch() {
       return matches.get(matches.size() - 1).start;
+    }
+
+    @Override
+    public String toString() {
+      return "LineMatches[" + matches + "]";
     }
   }
 
@@ -145,6 +145,11 @@ public class CachingHighlight implements Highlight, File.Listener {
 
   @Override
   public Point getPreviousMatch(int y, int x) {
+    Point point = getPreviousMatchInner(y, x);
+    return point;
+  }
+
+  private Point getPreviousMatchInner(int y, int x) {
     int n = lineMatches.get(y).getPreviousMatch(x);
     if (n != -1) {
       return new Point(y, n);

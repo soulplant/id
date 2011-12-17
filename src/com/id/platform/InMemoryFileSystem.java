@@ -93,7 +93,11 @@ public class InMemoryFileSystem implements FileSystem {
 
   @Override
   public File getFile(String path) {
-    return getNode(path).getFile();
+    Node node = getNode(path);
+    if (node == null) {
+      return null;
+    }
+    return node.getFile();
   }
 
   @Override

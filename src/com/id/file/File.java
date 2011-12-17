@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.id.editor.Point;
+import com.id.git.FileDelta;
 
 public class File {
   public interface Listener {
@@ -233,5 +235,9 @@ public class File {
 
   public Point getPreviousHighlightPoint(int y, int x) {
     return highlight.getPreviousMatch(y, x);
+  }
+
+  public void setDiffMarkers(FileDelta delta) {
+    graveyard.setDiffMarkers(delta);
   }
 }

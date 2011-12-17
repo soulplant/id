@@ -7,13 +7,22 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import com.id.editor.Editor;
 import com.id.events.KeyStroke;
+import com.id.file.Grave;
+import com.id.file.Graveyard;
+import com.id.file.Tombstone;
 import com.id.fuzzy.FuzzyFinder;
 import com.id.fuzzy.FuzzyFinder.Listener;
+import com.id.git.Diff;
+import com.id.git.FileDelta;
+import com.id.git.InMemoryRepository;
 import com.id.platform.InMemoryFileSystem;
 
 
@@ -23,6 +32,7 @@ public class ControllerTest {
   private InMemoryFileSystem fileSystem;
   private FuzzyFinder fuzzyFinder;
   private Listener fuzzyListener;
+  private InMemoryRepository repo;
 
   @Before
   public void setup() {
@@ -30,7 +40,8 @@ public class ControllerTest {
     fileSystem = new InMemoryFileSystem();
     fuzzyFinder = new FuzzyFinder(fileSystem);
     fuzzyListener = mock(FuzzyFinder.Listener.class);
-    controller = new Controller(editors, fileSystem, fuzzyFinder);
+    repo = new InMemoryRepository();
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repo);
 
     fileSystem.insertFile("./a", "aaa");
     fileSystem.insertFile("./b", "bbb");
@@ -102,6 +113,26 @@ public class ControllerTest {
     controller.openFile("./b");
     controller.closeCurrentFile();
     assertEquals(1, editors.size());
+  }
+
+  @Test
+  public void canImportDiffsFromGit() {
+    Map<String, FileDelta> fileDeltas = new HashMap<String, FileDelta>();
+    FileDelta fileDelta = new FileDelta();
+    fileDelta.addNewLine(0, "aaa");  // First line of "./a" is new.
+    fileDelta.addDeletedLine(0, "deleted 1");  // We deleted two lines from the end of a.
+    fileDelta.addDeletedLine(0, "deleted 2");
+    fileDeltas.put("./a", fileDelta);
+    Diff diff = new Diff(fileDeltas);
+    repo.setDiffResult(diff);
+    controller.importDiffs();
+    assertEquals(Tombstone.Status.NEW, editors.get(0).getStatus(0));
+    assertEquals(2, editors.get(0).getGrave(0).size());
+  }
+
+  @Test
+  public void openingNonExistentFileShouldntCrash() {
+    controller.openFile("doesn't exist");
   }
 
   private void type(KeyStroke keyStroke) {

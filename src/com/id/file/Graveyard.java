@@ -2,6 +2,9 @@ package com.id.file;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+
+import com.id.git.FileDelta;
 
 public class Graveyard implements File.Listener {
   private final List<Tombstone> tombstones = new ArrayList<Tombstone>();
@@ -101,5 +104,20 @@ public class Graveyard implements File.Listener {
             .append("\n");
     }
     return result.toString();
+  }
+
+  public void setDiffMarkers(FileDelta delta) {
+    reset();
+
+    for (Entry<Integer, String> addition : delta.getAdditions().entrySet()) {
+      int y = addition.getKey();
+      tombstones.set(y, new Tombstone(addition.getValue(), null));
+    }
+    for (Entry<Integer, List<String>> deletion : delta.getDeletions().entrySet()) {
+      int y = deletion.getKey();
+      for (Tombstone tombstone : Tombstone.deletionsFromLines(deletion.getValue())) {
+        graves.get(y).inherit(tombstone, new Grave());
+      }
+    }
   }
 }

@@ -1,0 +1,112 @@
+diff --git a/src/com/id/app/App.java b/src/com/id/app/App.java
+index 0342b9c..1ac7beb 100644
+--- a/src/com/id/app/App.java
++++ b/src/com/id/app/App.java
+@@ -6,7 +6,9 @@ import java.awt.Graphics;
+ import java.awt.Graphics2D;
+ import java.awt.GraphicsEnvironment;
+ import java.awt.RenderingHints;
++import java.io.BufferedReader;
+ import java.io.IOException;
++import java.io.InputStreamReader;
+ 
+ import javax.swing.JLabel;
+ import javax.swing.SwingUtilities;
+@@ -59,6 +61,17 @@ public class App {
+     editors.moveUp();
+ 
+     frame.setVisible(true);
++    try {
++      Process process = Runtime.getRuntime().exec("git diff HEAD^");
++      BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
++      String line;
++      while ((line = br.readLine()) != null) {
++        System.out.println(line);
++      }
++    } catch (IOException e) {
++      // TODO Auto-generated catch block
++      e.printStackTrace();
++    }
+   }
+ 
+   public static void configureFont(Graphics g) {
+diff --git a/src/com/id/app/Controller.java b/src/com/id/app/Controller.java
+index ad8852c..73e0607 100644
+--- a/src/com/id/app/Controller.java
++++ b/src/com/id/app/Controller.java
+@@ -7,6 +7,8 @@ import com.id.events.ShortcutTree;
+ import com.id.file.File;
+ import com.id.file.FileView;
+ import com.id.fuzzy.FuzzyFinder;
++import com.id.git.Diff;
++import com.id.git.InMemoryRepository;
+ import com.id.platform.FileSystem;
+ 
+ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListener {
+@@ -14,11 +16,13 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
+   private final FileSystem fileSystem;
+   private final ShortcutTree shortcuts = new ShortcutTree();
+   private final FuzzyFinder fuzzyFinder;
++  private final InMemoryRepository repository;
+ 
+-  public Controller(ListModel<Editor> editors, FileSystem fileSystem, FuzzyFinder fuzzyFinder) {
++  public Controller(ListModel<Editor> editors, FileSystem fileSystem, FuzzyFinder fuzzyFinder, InMemoryRepository repository) {
+     this.editors = editors;
+     this.fileSystem = fileSystem;
+     this.fuzzyFinder = fuzzyFinder;
++    this.repository = repository;
+     fuzzyFinder.setSelectionListener(this);
+     shortcuts.setShortcut(KeyStroke.fromString("J"), new ShortcutTree.Action() {
+       @Override
+@@ -84,4 +88,8 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
+     openFile(fuzzyFinderFile);
+     fuzzyFinder.setVisible(false);
+   }
++
++  public void importDiffs() {
++    Diff diff = repository.getDiffTo(repository.getHead());
++  }
+ }
+diff --git a/test/com/id/app/ControllerTest.java b/test/com/id/app/ControllerTest.java
+index bda7772..a87219a 100644
+--- a/test/com/id/app/ControllerTest.java
++++ b/test/com/id/app/ControllerTest.java
+@@ -14,6 +14,7 @@ import com.id.editor.Editor;
+ import com.id.events.KeyStroke;
+ import com.id.fuzzy.FuzzyFinder;
+ import com.id.fuzzy.FuzzyFinder.Listener;
++import com.id.git.InMemoryRepository;
+ import com.id.platform.InMemoryFileSystem;
+ 
+ 
+@@ -23,6 +24,7 @@ public class ControllerTest {
+   private InMemoryFileSystem fileSystem;
+   private FuzzyFinder fuzzyFinder;
+   private Listener fuzzyListener;
++  private InMemoryRepository repo;
+ 
+   @Before
+   public void setup() {
+@@ -30,7 +32,8 @@ public class ControllerTest {
+     fileSystem = new InMemoryFileSystem();
+     fuzzyFinder = new FuzzyFinder(fileSystem);
+     fuzzyListener = mock(FuzzyFinder.Listener.class);
+-    controller = new Controller(editors, fileSystem, fuzzyFinder);
++    repo = new InMemoryRepository();
++    controller = new Controller(editors, fileSystem, fuzzyFinder, repo);
+ 
+     fileSystem.insertFile("./a", "aaa");
+     fileSystem.insertFile("./b", "bbb");
+@@ -104,6 +107,12 @@ public class ControllerTest {
+     assertEquals(1, editors.size());
+   }
+ 
++  @Test
++  public void canImportDiffsFromGit() {
++    repo.setDiffToHead(diff);
++    controller.importDiffs();
++  }
++
+   private void type(KeyStroke keyStroke) {
+     controller.handleKeyStroke(keyStroke);
+   }

@@ -7,6 +7,8 @@ import com.id.events.ShortcutTree;
 import com.id.file.File;
 import com.id.file.FileView;
 import com.id.fuzzy.FuzzyFinder;
+import com.id.git.Diff;
+import com.id.git.Repository;
 import com.id.platform.FileSystem;
 
 public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListener {
@@ -14,11 +16,13 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   private final FileSystem fileSystem;
   private final ShortcutTree shortcuts = new ShortcutTree();
   private final FuzzyFinder fuzzyFinder;
+  private final Repository repository;
 
-  public Controller(ListModel<Editor> editors, FileSystem fileSystem, FuzzyFinder fuzzyFinder) {
+  public Controller(ListModel<Editor> editors, FileSystem fileSystem, FuzzyFinder fuzzyFinder, Repository repository) {
     this.editors = editors;
     this.fileSystem = fileSystem;
     this.fuzzyFinder = fuzzyFinder;
+    this.repository = repository;
     fuzzyFinder.setSelectionListener(this);
     shortcuts.setShortcut(KeyStroke.fromString("J"), new ShortcutTree.Action() {
       @Override
@@ -44,6 +48,12 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         closeCurrentFile();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("1"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        importDiffs();
+      }
+    });
   }
 
   public void showFuzzyFinder() {
@@ -59,9 +69,14 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     editors.moveDown();
   }
 
-  public void openFile(String filename) {
+  public Editor openFile(String filename) {
     File file = fileSystem.getFile(filename);
-    editors.add(new Editor(new FileView(file)));
+    if (file == null) {
+      return null;
+    }
+    Editor editor = new Editor(new FileView(file));
+    editors.add(editor);
+    return editor;
   }
 
   public void closeCurrentFile() {
@@ -83,5 +98,16 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   public void onItemSelected(String fuzzyFinderFile) {
     openFile(fuzzyFinderFile);
     fuzzyFinder.setVisible(false);
+  }
+
+  public void importDiffs() {
+    Diff diff = repository.getDiffTo(repository.getHead());
+    for (String filename : diff.getModifiedFiles()) {
+      Editor editor = openFile(filename);
+      if (editor == null) {
+        continue;  // Probably a deleted file.
+      }
+      editor.setDiffMarkers(diff.getDelta(filename));
+    }
   }
 }

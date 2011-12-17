@@ -1,5 +1,8 @@
 package com.id.file;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Tombstone {
   public enum Status {
@@ -45,5 +48,13 @@ public class Tombstone {
 
   public void reset() {
     original = current;
+  }
+
+  public static List<Tombstone> deletionsFromLines(List<String> lines) {
+    List<Tombstone> result = new ArrayList<Tombstone>();
+    for (String line : lines) {
+      result.add(new Tombstone(line, line));
+    }
+    return result;
   }
 }

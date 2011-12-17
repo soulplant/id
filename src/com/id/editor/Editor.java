@@ -12,6 +12,7 @@ import com.id.file.File.Listener;
 import com.id.file.FileView;
 import com.id.file.Grave;
 import com.id.file.Tombstone.Status;
+import com.id.git.FileDelta;
 
 public class Editor implements KeyStrokeHandler {
   public interface Context {
@@ -498,5 +499,9 @@ public class Editor implements KeyStrokeHandler {
   @Override
   public boolean handleKeyStroke(KeyStroke keyStroke) {
     return keyHandler.handleKeyPress(keyStroke, this);
+  }
+
+  public void setDiffMarkers(FileDelta delta) {
+    file.setDiffMarkers(delta);
   }
 }

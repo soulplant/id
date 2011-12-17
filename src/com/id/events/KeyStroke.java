@@ -23,17 +23,21 @@ public class KeyStroke {
 
   public static KeyStroke fromChar(char c) {
     if (shiftSymbols.containsKey(c)) {
-      return new KeyStroke(c, KeyEvent.SHIFT_MASK);
+      return new KeyStroke(c, 0, KeyEvent.SHIFT_MASK);
     }
     int mask = 0;
     if (Character.isUpperCase(c)) {
       mask = KeyEvent.SHIFT_MASK;
     }
-    return new KeyStroke(c, mask);
+    return new KeyStroke(c, 0, mask);
   }
 
   public static KeyStroke fromVKey(int keyCode) {
-    return new KeyStroke((char) keyCode, 0);
+    return fromVKey(keyCode, 0);
+  }
+
+  public static KeyStroke fromVKey(int keyCode, int modifiers) {
+    return new KeyStroke((char) 0, keyCode, modifiers);
   }
 
   public static KeyStroke escape() {
@@ -41,21 +45,27 @@ public class KeyStroke {
   }
 
   public static KeyStroke fromControlChar(char c) {
-    return new KeyStroke(c, KeyEvent.CTRL_MASK);
+    return new KeyStroke(c, 0, KeyEvent.CTRL_MASK);
   }
 
   public static KeyStroke fromKeyEvent(KeyEvent event) {
-    char c = event.getKeyChar();
-    if (event.isControlDown()) {
-      c = Character.toLowerCase((char) event.getKeyCode());
+    if (event.isControlDown() && isKeyCodeForLetter(event.getKeyCode())) {
+      // TODO Support control + other modifiers.
+      char c = Character.toLowerCase((char) event.getKeyCode());
+      return fromControlChar(c);
     }
-    return new KeyStroke(c, event.getModifiers());
+    if (isKeyCodeForLetter(event.getKeyChar())) {
+      return fromChar(event.getKeyChar());
+    }
+    return fromVKey(event.getKeyCode(), event.getModifiers());
   }
 
   private final char letter;
   private final int modifiers;
+  private final int code;
 
-  public KeyStroke(char letter, int modifiers) {
+  public KeyStroke(char letter, int code, int modifiers) {
+    this.code = code;
     this.modifiers = modifiers;
     this.letter = isShiftDown() ? Character.toUpperCase(letter) : Character
         .toLowerCase(letter);
@@ -82,7 +92,7 @@ public class KeyStroke {
   }
 
   public int getKeyCode() {
-    return Character.toUpperCase(letter);
+    return code;
   }
 
   public char getKeyChar() {
@@ -90,14 +100,19 @@ public class KeyStroke {
   }
 
   public boolean isLetter() {
-    return isKeyCodeForLetter(getKeyCode());
+    return code ==  0;
   }
 
   @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
     buffer.append("KeyStroke[");
-    buffer.append(getLetter()).append(", ");
+    if (isLetter()) {
+      buffer.append(getLetter());
+    } else {
+      buffer.append(getKeyCode());
+    }
+    buffer.append(", ");
     maybeAppend(buffer, "SHIFT", isShiftDown());
     maybeAppend(buffer, "CTRL", isControlDown());
     maybeAppend(buffer, "ALT", isAltDown());
@@ -110,7 +125,7 @@ public class KeyStroke {
   public boolean equals(Object obj) {
     if (obj instanceof KeyStroke) {
       KeyStroke other = (KeyStroke) obj;
-      return letter == other.letter && modifiers == other.modifiers;
+      return letter == other.letter && modifiers == other.modifiers && code == other.code;
     }
     return false;
   }
@@ -151,5 +166,21 @@ public class KeyStroke {
 
   public static KeyStroke tab() {
     return KeyStroke.fromVKey(KeyEvent.VK_TAB);
+  }
+
+  public static KeyStroke down() {
+    return KeyStroke.fromVKey(KeyEvent.VK_DOWN);
+  }
+
+  public static KeyStroke right() {
+    return KeyStroke.fromVKey(KeyEvent.VK_RIGHT);
+  }
+
+  public static KeyStroke up() {
+    return KeyStroke.fromVKey(KeyEvent.VK_UP);
+  }
+
+  public static KeyStroke left() {
+    return KeyStroke.fromVKey(KeyEvent.VK_LEFT);
   }
 }

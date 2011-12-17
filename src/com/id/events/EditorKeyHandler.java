@@ -39,10 +39,28 @@ public class EditorKeyHandler {
         editor.right();
       }
     });
-    normalTree.setShortcut(Arrays.asList(KeyStroke.tab()), new ShortcutTree.Action() {
+    normalTree.setShortcut(Arrays.asList(KeyStroke.up()), new ShortcutTree.Action() {
       @Override
       public void execute() {
-        editor.tab();
+        editor.up();
+      }
+    });
+    normalTree.setShortcut(Arrays.asList(KeyStroke.down()), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.down();
+      }
+    });
+    normalTree.setShortcut(Arrays.asList(KeyStroke.left()), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.left();
+      }
+    });
+    normalTree.setShortcut(Arrays.asList(KeyStroke.right()), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.right();
       }
     });
     normalTree.setShortcut(KeyStroke.fromString("dd"), new ShortcutTree.Action() {
@@ -290,6 +308,10 @@ public class EditorKeyHandler {
         editor.backspace();
       } else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
         editor.enter();
+      } else if (event.getKeyCode() == KeyEvent.VK_TAB) {
+        editor.tab();
+      } else if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        editor.escape();
       } else {
         handled = false;
       }
@@ -299,7 +321,9 @@ public class EditorKeyHandler {
     }
 
     this.editor = editor;
-    return (editor.isInVisual() && visualTree.stepAndExecute(event))
-        || normalTree.stepAndExecute(event);
+    if (editor.isInVisual() && visualTree.stepAndExecute(event)) {
+      return true;
+    }
+    return normalTree.stepAndExecute(event);
   }
 }

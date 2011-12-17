@@ -377,4 +377,31 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("*$NN");
     assertCursorPosition(0, 4);
   }
+
+  @Test
+  public void moveWithArrows() {
+    setFileContents("abc", "abc");
+    type(KeyStroke.down());
+    assertCursorPosition(1, 0);
+    type(KeyStroke.right());
+    assertCursorPosition(1, 1);
+    type(KeyStroke.up());
+    assertCursorPosition(0, 1);
+    type(KeyStroke.left());
+    assertCursorPosition(0, 0);
+  }
+
+  @Test
+  public void typingNonLetterKeysInInsertModeHasNoEffect() {
+    typeString("i");
+    type(KeyStroke.up());
+    assertFileContents();
+  }
+
+  @Test
+  public void escapeExitsInsertMode() {
+    typeString("i");
+    type(KeyStroke.escape());
+    assertFalse(editor.isInInsertMode());
+  }
 }

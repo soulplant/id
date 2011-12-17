@@ -30,6 +30,7 @@ public class AppFrame extends JFrame implements KeyListener {
     setTitle("id");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new AppLayout());
+    setFocusTraversalKeysEnabled(false);
     getContentPane().add(fileListView, "filelist");
     getContentPane().add(spotlightView, "spotlight");
     getContentPane().add(stackView, "stack");
@@ -50,16 +51,23 @@ public class AppFrame extends JFrame implements KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
+    KeyStroke keyStroke = KeyStroke.fromKeyEvent(e);
+    logEventTranslationInfo(e, keyStroke);
     // NOTE KeyEvent.getKeyCode() is only defined in keyPressed when control
     // is down.
-    if (e.getKeyCode() == KeyEvent.VK_Q && e.isControlDown()) {
+    if (keyStroke.getKeyChar() == 'q' && keyStroke.isControlDown()) {
       System.exit(0);
     }
-    AppFrame.this.handler.handleKeyStroke(KeyStroke.fromKeyEvent(e));
+    AppFrame.this.handler.handleKeyStroke(keyStroke);
     AppFrame.this.spotlightView.repaint();
     AppFrame.this.fileListView.repaint();
     AppFrame.this.stackView.repaint();
     pack();
+  }
+
+  private void logEventTranslationInfo(KeyEvent event, KeyStroke keyStroke) {
+//    System.out.println("event: " + event);
+//    System.out.println("keystroke: " + keyStroke);
   }
 
   @Override

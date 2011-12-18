@@ -13,6 +13,7 @@ public class ItemListPanel extends JPanel {
   private int selectedIndex = -1;
 
   public ItemListPanel() {
+    setPreferredSize(new Dimension(200, 0));
   }
 
   public void setItems(List<String> items) {

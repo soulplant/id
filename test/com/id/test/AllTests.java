@@ -6,6 +6,7 @@ import org.junit.runners.Suite;
 import com.id.editor.EditorTest;
 import com.id.editor.EditorTypingTest;
 import com.id.editor.VisualTest;
+import com.id.file.CachingHighlightTest;
 import com.id.file.FileTest;
 import com.id.file.FileViewTest;
 import com.id.file.GraveyardTest;
@@ -16,6 +17,7 @@ import com.id.rendering.SlugTest;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ EditorTest.class, VisualTest.class, FileTest.class,
     FileViewTest.class, GraveyardTest.class, FuzzyFinderTest.class,
-    InMemoryFileSystemTest.class, EditorTypingTest.class, SlugTest.class })
+    InMemoryFileSystemTest.class, EditorTypingTest.class, SlugTest.class,
+    CachingHighlightTest.class })
 public class AllTests {
 }

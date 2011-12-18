@@ -11,13 +11,17 @@ import org.junit.Test;
 
 import com.id.file.File;
 import com.id.file.File.Listener;
+import com.id.file.ModifiedListener;
 import com.id.test.EditorTestBase;
 
 public class EditorTest extends EditorTestBase {
 
+  private ModifiedListener modifiedListener;
+
   @Before
   public void init() {
     setFileContents();
+    modifiedListener = mock(ModifiedListener.class);
   }
 
   @Test
@@ -172,9 +176,19 @@ public class EditorTest extends EditorTestBase {
     verify(listener).onLineInserted(0, "");
   }
 
+  @Test
   public void delete() {
     setFileContents("abc");
     editor.delete();
     assertEquals("bc", file.getLine(0));
+  }
+
+  @Test
+  public void fileModifiedListener() {
+    setFileContents("abc");
+    editor.addFileModifiedListener(modifiedListener);
+    editor.insert();
+    editor.onLetterTyped('a');
+    verify(modifiedListener).onModifiedStateChanged();
   }
 }

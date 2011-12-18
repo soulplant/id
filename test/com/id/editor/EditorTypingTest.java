@@ -4,11 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.id.events.KeyStroke;
+import com.id.file.ModifiedListener;
 import com.id.test.EditorTestBase;
 
 public class EditorTypingTest extends EditorTestBase {
@@ -410,5 +414,18 @@ public class EditorTypingTest extends EditorTestBase {
     setFileContents("abc", "abc");
     typeString("jVJ");
     assertFileContents("abc", "abc");
+  }
+
+  @Test
+  public void modifiedStatusGetsUpdatedWhenLettersAreInserted() {
+    setFileContents("abc");
+    ModifiedListener modifiedListener = mock(ModifiedListener.class);
+    editor.addFileModifiedListener(modifiedListener);
+    assertFalse(editor.isModified());
+    typeString("i");
+    assertFalse(editor.isModified());
+    typeString("a");
+    verify(modifiedListener).onModifiedStateChanged();
+    assertTrue(editor.isModified());
   }
 }

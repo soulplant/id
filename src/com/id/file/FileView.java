@@ -164,6 +164,10 @@ public class FileView implements File.Listener, ModifiedListener {
     file.addListener(listener);
   }
 
+  public void addModifiedListener(ModifiedListener listener) {
+    file.addModifiedListener(listener);
+  }
+
   public void joinRange(int start, int end) {
     int length = Math.min(getLineCount() - 1 - start, end - start + 1);
     for (int i = 0; i < length; i++) {
@@ -294,6 +298,10 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public void save(FileSystem fileSystem) {
-    fileSystem.save(file);
+    file.save(fileSystem);
+  }
+
+  public boolean isModified() {
+    return file.isModified();
   }
 }

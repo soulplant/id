@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.id.editor.Point;
 import com.id.git.FileDelta;
+import com.id.platform.FileSystem;
 
 public class File {
   public interface Listener {
@@ -99,7 +100,7 @@ public class File {
     }
   }
 
-  protected void fireModifiedStateChanged() {
+  private void fireModifiedStateChanged() {
     for (ModifiedListener l : modifiedListeners) {
       l.onModifiedStateChanged();
     }
@@ -238,5 +239,10 @@ public class File {
 
   public void setDiffMarkers(FileDelta delta) {
     graveyard.setDiffMarkers(delta);
+  }
+
+  public void save(FileSystem fileSystem) {
+    fileSystem.save(this);
+    patchwork.onSaved();
   }
 }

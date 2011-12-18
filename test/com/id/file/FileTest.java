@@ -13,6 +13,7 @@ import java.io.StringReader;
 import org.junit.Test;
 
 import com.id.editor.Point;
+import com.id.platform.InMemoryFileSystem;
 
 public class FileTest {
   @Test
@@ -66,6 +67,32 @@ public class FileTest {
     assertEquals("is", file.getLine(1));
     assertEquals(2, file.getLineCount());
     assertTrue(isAllStatus(Tombstone.Status.NORMAL, file));
+  }
+
+  @Test
+  public void isModified() {
+    File file = new File("a");
+    assertFalse(file.isModified());
+    file.startPatchAt(0, 0);
+    file.insertLine(0, "b");
+    assertTrue(file.isModified());
+    file.breakPatch();
+    assertTrue(file.isModified());
+  }
+
+  @Test
+  public void saveFiresModifiedChangedEvent() {
+    File file = new File("a");
+    file.setFilename("<temp>");
+
+    file.startPatchAt(0, 0);
+    file.insertLine(0, "hi");
+    file.breakPatch();
+    ModifiedListener listener = mock(ModifiedListener.class);
+    file.addModifiedListener(listener);
+    file.save(new InMemoryFileSystem());
+    verify(listener).onModifiedStateChanged();
+    assertFalse(file.isModified());
   }
 
   private static boolean isAllStatus(Tombstone.Status status, File file) {

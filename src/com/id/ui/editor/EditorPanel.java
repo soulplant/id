@@ -10,12 +10,14 @@ import javax.swing.JScrollPane;
 
 import com.id.editor.Editor;
 import com.id.editor.Point;
+import com.id.file.ModifiedListener;
 
 @SuppressWarnings("serial")
-public class EditorPanel extends JPanel implements Editor.Context {
+public class EditorPanel extends JPanel implements Editor.Context, ModifiedListener {
   private final TextPanel textPanel;
   private final Editor editor;
   private final JScrollPane scrollPane;
+  private final JLabel filenameLabel;
 
   public EditorPanel(Editor editor) {
     setLayout(new BorderLayout());
@@ -25,10 +27,18 @@ public class EditorPanel extends JPanel implements Editor.Context {
     panel.setLayout(new BorderLayout());
     panel.add(new MarkerPanel(editor), BorderLayout.LINE_START);
     panel.add(textPanel, BorderLayout.CENTER);
-    this.add(new JLabel(editor.getFilename()), BorderLayout.PAGE_START);
+    filenameLabel = new JLabel(editor.getFilename());
+    this.add(filenameLabel, BorderLayout.PAGE_START);
     scrollPane = new JScrollPane(panel);
     this.add(scrollPane, BorderLayout.CENTER);
     editor.setContext(this);
+    editor.addFileModifiedListener(this);
+  }
+
+  @Override
+  public void onModifiedStateChanged() {
+    String prefix = editor.isModified() ? "*" : "";
+    filenameLabel.setText(prefix + " " + editor.getFilename());
   }
 
   public boolean handleKeyPress(KeyEvent e) {

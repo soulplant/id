@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import com.id.editor.Editor;
 import com.id.events.KeyStroke;
+import com.id.file.ModifiedListener;
 import com.id.file.Tombstone;
 import com.id.fuzzy.FuzzyFinder;
 import com.id.fuzzy.FuzzyFinder.Listener;
@@ -94,7 +95,7 @@ public class ControllerTest {
     assertFalse(fuzzyFinder.isVisible());
     assertEquals(1, editors.size());
     assertEquals(0, editors.getFocusedIndex());
-    assertEquals("a", editors.get(0).getFilename());
+    assertEquals("./a", editors.get(0).getFilename());
   }
 
   @Test
@@ -135,10 +136,15 @@ public class ControllerTest {
 
   @Test
   public void filesGetSavedToTheFileSystem() {
-    controller.openFile("./a");
+    Editor editor = controller.openFile("./a");
     typeString("SXXX");
     type(KeyStroke.escape());
+    assertTrue(editor.isModified());
+    ModifiedListener listener = mock(ModifiedListener.class);
+    editor.addFileModifiedListener(listener);
     type(KeyStroke.fromControlChar('s'));
+    verify(listener).onModifiedStateChanged();
+    assertFalse(editor.isModified());
     assertEquals("XXX", fileSystem.getFile("./a").getLine(0));
   }
 

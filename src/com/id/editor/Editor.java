@@ -11,6 +11,7 @@ import com.id.file.File;
 import com.id.file.File.Listener;
 import com.id.file.FileView;
 import com.id.file.Grave;
+import com.id.file.ModifiedListener;
 import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
@@ -43,10 +44,12 @@ public class Editor implements KeyStrokeHandler {
   private final Cursor cursor;
   private final Visual visual;
   private boolean inInsertMode = false;
-  private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();
   private Context context = new EmptyContext();
   private Register register = null;
+
   private final EditorKeyHandler keyHandler;
+  private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();
+  private final List<ModifiedListener> fileModifiedListeners = new ArrayList<ModifiedListener>();
 
   public Editor(FileView fileView) {
     this.file = fileView;
@@ -397,6 +400,11 @@ public class Editor implements KeyStrokeHandler {
     file.addListener(listener);
   }
 
+  public void addFileModifiedListener(ModifiedListener listener) {
+    fileModifiedListeners.add(listener);
+    file.addModifiedListener(listener);
+  }
+
   public void setContext(Context context) {
     this.context = context;
   }
@@ -508,5 +516,9 @@ public class Editor implements KeyStrokeHandler {
 
   public void save(FileSystem fileSystem) {
     file.save(fileSystem);
+  }
+
+  public boolean isModified() {
+    return file.isModified();
   }
 }

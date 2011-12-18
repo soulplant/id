@@ -7,6 +7,7 @@ import com.id.editor.Point;
 import com.id.file.File.Listener;
 import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
+import com.id.platform.FileSystem;
 
 public class FileView implements File.Listener, ModifiedListener {
   private final File file;
@@ -290,5 +291,9 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public void setDiffMarkers(FileDelta delta) {
     file.setDiffMarkers(delta);
+  }
+
+  public void save(FileSystem fileSystem) {
+    fileSystem.save(file);
   }
 }

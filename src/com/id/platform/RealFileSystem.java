@@ -1,13 +1,14 @@
 package com.id.platform;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import com.id.file.File;
 
 public class RealFileSystem implements FileSystem {
-
   @Override
   public boolean isFile(String path) {
     return new java.io.File(path).isFile();
@@ -48,5 +49,22 @@ public class RealFileSystem implements FileSystem {
     }
     file.setFilename(filename);
     return file;
+  }
+
+  @Override
+  public void save(File file) {
+    if (file.getFilename() == null) {
+      throw new IllegalArgumentException("Can't save a file that doesn't have a name");
+    }
+    try {
+      FileWriter fileWriter = new FileWriter(file.getFilename());
+      BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+      for (String line : file.getLines()) {
+        bufferedWriter.write(line + "\n");
+      }
+      bufferedWriter.flush();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }

@@ -1,5 +1,7 @@
 package com.id.app;
 
+import java.util.Arrays;
+
 import com.id.editor.Editor;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
@@ -54,6 +56,17 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         importDiffs();
       }
     });
+    shortcuts.setShortcut(Arrays.asList(KeyStroke.fromControlChar('s')),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        saveFile();
+      }
+    });
+  }
+
+  public void saveFile() {
+    editors.getFocusedItem().save(fileSystem);
   }
 
   public void showFuzzyFinder() {

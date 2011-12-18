@@ -133,6 +133,15 @@ public class ControllerTest {
     controller.openFile("doesn't exist");
   }
 
+  @Test
+  public void filesGetSavedToTheFileSystem() {
+    controller.openFile("./a");
+    typeString("SXXX");
+    type(KeyStroke.escape());
+    type(KeyStroke.fromControlChar('s'));
+    assertEquals("XXX", fileSystem.getFile("./a").getLine(0));
+  }
+
   private void type(KeyStroke keyStroke) {
     controller.handleKeyStroke(keyStroke);
   }

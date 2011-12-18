@@ -8,4 +8,5 @@ public interface FileSystem {
   boolean isExistent(String path);
   File getFile(String path);
   String[] getSubdirectories(String path);
+  void save(File file);
 }

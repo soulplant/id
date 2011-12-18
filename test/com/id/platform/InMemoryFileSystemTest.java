@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.id.file.File;
+
 public class InMemoryFileSystemTest {
   private InMemoryFileSystem fileSystem;
 
@@ -25,5 +27,14 @@ public class InMemoryFileSystemTest {
   @Test
   public void gettingNonExistentFileShouldntCrash() {
     fileSystem.getFile("doesn't exist");
+  }
+
+  @Test
+  public void saveFile() {
+    fileSystem.insertFile("./a", "line1");
+    File file = fileSystem.getFile("./a");
+    file.changeLine(0, "changed");
+    fileSystem.save(file);
+    assertEquals("changed", fileSystem.getFile("./a").getLine(0));
   }
 }

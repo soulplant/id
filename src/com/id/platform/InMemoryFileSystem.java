@@ -55,12 +55,6 @@ class Node {
   public List<String> getContents() {
     return contents;
   }
-
-  public File getFile() {
-    File result = new File(getContents());
-    result.setFilename(getName());
-    return result;
-  }
 }
 
 public class InMemoryFileSystem implements FileSystem {
@@ -97,7 +91,9 @@ public class InMemoryFileSystem implements FileSystem {
     if (node == null) {
       return null;
     }
-    return node.getFile();
+    File file = new File(node.getContents());
+    file.setFilename(path);
+    return file;
   }
 
   @Override
@@ -131,5 +127,10 @@ public class InMemoryFileSystem implements FileSystem {
   @Override
   public boolean isExistent(String path) {
     return getNode(path) != null;
+  }
+
+  @Override
+  public void save(File file) {
+    insertFile(file.getFilename(), file.getLines());
   }
 }

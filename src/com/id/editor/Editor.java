@@ -13,6 +13,7 @@ import com.id.file.FileView;
 import com.id.file.Grave;
 import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
+import com.id.platform.FileSystem;
 
 public class Editor implements KeyStrokeHandler {
   public interface Context {
@@ -503,5 +504,9 @@ public class Editor implements KeyStrokeHandler {
 
   public void setDiffMarkers(FileDelta delta) {
     file.setDiffMarkers(delta);
+  }
+
+  public void save(FileSystem fileSystem) {
+    file.save(fileSystem);
   }
 }

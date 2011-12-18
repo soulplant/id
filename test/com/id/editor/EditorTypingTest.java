@@ -310,6 +310,14 @@ public class EditorTypingTest extends EditorTestBase {
   }
 
   @Test
+  public void ddYankSingleLine() {
+    setFileContents("abc");
+    typeString("ddp");
+    assertFileContents("abc");
+    assertCursorPosition(0, 0);
+  }
+
+  @Test
   public void autoIndent() {
     setFileContents("  abc");
     typeString("o");

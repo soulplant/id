@@ -36,6 +36,10 @@ public class EditorTestBase {
     assertArrayEquals(lines, file.getLines());
   }
 
+  protected void assertLineContents(int y, String line) {
+    assertEquals(line, editor.getLine(y));
+  }
+
   protected void assertCursorPosition(int y, int x) {
     assertEquals(y, editor.getCursorPosition().getY());
     assertEquals(x, editor.getCursorPosition().getX());

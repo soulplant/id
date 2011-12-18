@@ -307,6 +307,7 @@ public class Editor implements KeyStrokeHandler {
   }
 
   public void deleteLine() {
+    register = new Register(Visual.Mode.LINE, false, getCurrentLine());
     startPatch();
     file.removeLine(cursor.getY());
     file.breakPatch();

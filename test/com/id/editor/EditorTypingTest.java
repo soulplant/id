@@ -436,4 +436,11 @@ public class EditorTypingTest extends EditorTestBase {
     verify(modifiedListener).onModifiedStateChanged();
     assertTrue(editor.isModified());
   }
+
+  @Test
+  public void yankThenPutOverMultipleLinesRestoresMarkersToOriginalState() {
+    setFileContents("a", "b", "c", "d", "e");
+    typeString("VjjdP");
+    assertTrue(editor.isMarkersClear());
+  }
 }

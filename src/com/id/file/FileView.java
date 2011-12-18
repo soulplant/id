@@ -278,10 +278,11 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public void insertLines(int y, String... lines) {
-    int i = y;
-    for (String line : lines) {
-      insertLine(i, line);
-      i++;
+    // NOTE(koz): We insert lines in reverse order so the markers get restored
+    // to their original state.
+    for (int i = lines.length - 1; i >= 0; i--) {
+      String line = lines[i];
+      insertLine(y, line);
     }
   }
 
@@ -303,5 +304,9 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public boolean isModified() {
     return file.isModified();
+  }
+
+  public boolean isMarkersClear() {
+    return file.isMarkersClear();
   }
 }

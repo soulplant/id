@@ -522,4 +522,8 @@ public class Editor implements KeyStrokeHandler {
   public boolean isModified() {
     return file.isModified();
   }
+
+  public boolean isMarkersClear() {
+    return file.isMarkersClear();
+  }
 }

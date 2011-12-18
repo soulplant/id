@@ -120,4 +120,13 @@ public class Graveyard implements File.Listener {
       }
     }
   }
+
+  public boolean isAllStatusNormal() {
+    for (Tombstone tombstone : tombstones) {
+      if (tombstone.getStatus() != Tombstone.Status.NORMAL) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

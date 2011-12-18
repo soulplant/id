@@ -245,4 +245,8 @@ public class File {
     fileSystem.save(this);
     patchwork.onSaved();
   }
+
+  public boolean isMarkersClear() {
+    return graveyard.isAllGravesEmpty() && graveyard.isAllStatusNormal();
+  }
 }

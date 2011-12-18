@@ -163,7 +163,7 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public void joinRange(int start, int end) {
-    int length = Math.min(getLineCount() - 1, end - start + 1);
+    int length = Math.min(getLineCount() - 1 - start, end - start + 1);
     for (int i = 0; i < length; i++) {
       join(start);
     }

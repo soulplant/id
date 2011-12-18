@@ -404,4 +404,11 @@ public class EditorTypingTest extends EditorTestBase {
     type(KeyStroke.escape());
     assertFalse(editor.isInInsertMode());
   }
+
+  @Test
+  public void joinOnLastLineOfMultiLineFileShouldntCrash() {
+    setFileContents("abc", "abc");
+    typeString("jVJ");
+    assertFileContents("abc", "abc");
+  }
 }

@@ -15,8 +15,6 @@ import org.junit.Test;
 
 import com.id.editor.Editor;
 import com.id.events.KeyStroke;
-import com.id.file.Grave;
-import com.id.file.Graveyard;
 import com.id.file.Tombstone;
 import com.id.fuzzy.FuzzyFinder;
 import com.id.fuzzy.FuzzyFinder.Listener;

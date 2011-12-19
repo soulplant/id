@@ -5,23 +5,26 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.any;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.id.file.File;
-import com.id.file.File.Listener;
 import com.id.file.ModifiedListener;
 import com.id.test.EditorTestBase;
 
 public class EditorTest extends EditorTestBase {
 
   private ModifiedListener modifiedListener;
+  private File.Listener listener;
 
   @Before
   public void init() {
     setFileContents();
     modifiedListener = mock(ModifiedListener.class);
+    listener = mock(File.Listener.class);
   }
 
   @Test
@@ -170,7 +173,6 @@ public class EditorTest extends EditorTestBase {
   @Test
   public void attachListener() {
     setFileContents("abc");
-    Listener listener = mock(File.Listener.class);
     editor.addFileListener(listener);
     editor.addEmptyLinePrevious();
     verify(listener).onLineInserted(0, "");
@@ -190,5 +192,14 @@ public class EditorTest extends EditorTestBase {
     editor.insert();
     editor.onLetterTyped('a');
     verify(modifiedListener).onModifiedStateChanged();
+  }
+
+  @Test
+  public void itShouldOnlyFireOneTextChangedEventForTypingALetterInInsertMode() {
+    setFileContents("");
+    editor.addFileListener(listener);
+    editor.insert();
+    editor.onLetterTyped('a');
+    verify(listener).onLineChanged(anyInt(), any(String.class), any(String.class));
   }
 }

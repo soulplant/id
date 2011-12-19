@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.id.editor.Minibuffer;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
 import com.id.platform.FileSystem;
 
-public class FuzzyFinder implements KeyStrokeHandler {
+public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   public interface Listener {
     void onQueryChanged();
     void onSetVisible(boolean visible);
@@ -25,13 +26,14 @@ public class FuzzyFinder implements KeyStrokeHandler {
   private final List<String> filenames = new ArrayList<String>();
   private final FileSystem fileSystem;
   private boolean visible = false;
-  private String query = "";
+  private final Minibuffer minibuffer = new Minibuffer();
   private final List<Listener> listeners = new ArrayList<Listener>();
   private final ShortcutTree shortcuts = new ShortcutTree();
   private SelectionListener selectionListener;
 
   public FuzzyFinder(FileSystem fileSystem) {
     this.fileSystem = fileSystem;
+    minibuffer.addListener(this);
     shortcuts.setShortcut(Arrays.asList(KeyStroke.escape()), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -69,7 +71,7 @@ public class FuzzyFinder implements KeyStrokeHandler {
 
   public List<String> getMatches() {
     List<String> result = new ArrayList<String>();
-    Pattern pattern = Pattern.compile(".*" + query + ".*");
+    Pattern pattern = Pattern.compile(".*" + minibuffer.getText() + ".*");
     for (String candidate : filenames) {
       Matcher matcher = pattern.matcher(candidate);
       if (matcher.matches()) {
@@ -102,17 +104,7 @@ public class FuzzyFinder implements KeyStrokeHandler {
     if (shortcuts.stepAndExecute(keyStroke)) {
       return true;
     }
-    if (keyStroke.isLetter()) {
-      addToQuery(keyStroke.getKeyChar());
-      return true;
-    }
-    return false;
-  }
-
-  private void addToQuery(char keyChar) {
-    // TODO Handle backspace, up, down.
-    this.query = query + keyChar;
-    fireQueryChanged();
+    return minibuffer.handleKeyStroke(keyStroke);
   }
 
   private void fireQueryChanged() {
@@ -145,15 +137,25 @@ public class FuzzyFinder implements KeyStrokeHandler {
 
   // For testing.
   void setQuery(String query) {
-    this.query = query;
+    minibuffer.setText(query);
     fireQueryChanged();
   }
 
   public String getCurrentQuery() {
-    return query;
+    return minibuffer.getText();
   }
 
   public void clearQuery() {
-    this.query = "";
+    minibuffer.clear();
+  }
+
+  @Override
+  public void onDone() {
+    setVisible(false);
+  }
+
+  @Override
+  public void onTextChanged() {
+    fireQueryChanged();
   }
 }

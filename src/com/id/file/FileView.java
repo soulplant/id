@@ -284,6 +284,10 @@ public class FileView implements File.Listener, ModifiedListener {
     String topLine = getLine(y);
     String head = topLine.substring(0, x);
     String tail = topLine.substring(x);
+    if (!lineBreakOnLast && lines.length == 1) {
+      changeLine(y, head + lines[0] + tail);
+      return;
+    }
     changeLine(y, head + lines[0]);
     int lastInsertedLine = y;
     for (int i = 1; i < lines.length; i++) {

@@ -130,4 +130,17 @@ public class FileViewTest extends EditorTestBase {
     fileView.insertTextWithLineBreak(0, 0, "abc", "def");
     assertFileContents("abc", "def");
   }
+
+  @Test
+  public void findNextChar() {
+    setFileContents("this is a test");
+    assertEquals(4, fileView.findNextLetter(0, 0, ' '));
+    assertEquals(7, fileView.findNextLetter(0, 4, ' '));
+  }
+
+  @Test
+  public void findPreviousChar() {
+    setFileContents("abcded");
+    assertEquals(3, fileView.findPreviousLetter(0, 5, 'd'));
+  }
 }

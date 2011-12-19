@@ -23,6 +23,33 @@ public class Editor implements KeyStrokeHandler {
     int getViewportHeight();
   }
 
+  public enum FindMode {
+    NONE,
+    FIND_FORWARDS,
+    FIND_BACKWARDS,
+    TIL_FORWARDS,
+    TIL_BACKWARDS,;
+
+    public FindMode opposite() {
+      switch (this) {
+      case FIND_BACKWARDS: return FIND_FORWARDS;
+      case FIND_FORWARDS: return FIND_BACKWARDS;
+      case TIL_FORWARDS: return TIL_BACKWARDS;
+      case TIL_BACKWARDS: return TIL_FORWARDS;
+      case NONE: return NONE;
+      }
+      return null;
+    }
+
+    private int findIn(Cursor cursor, FileView file, char letter) {
+      switch (this) {
+      case FIND_FORWARDS: return file.findNextLetter(cursor.getY(), cursor.getX(), letter);
+      case FIND_BACKWARDS: return file.findPreviousLetter(cursor.getY(), cursor.getX(), letter);
+      default: return -1;
+      }
+    }
+  }
+
   class EmptyContext implements Context {
     @Override
     public void moveViewportToIncludePoint(Point point) {
@@ -50,6 +77,9 @@ public class Editor implements KeyStrokeHandler {
   private final EditorKeyHandler keyHandler;
   private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();
   private final List<ModifiedListener> fileModifiedListeners = new ArrayList<ModifiedListener>();
+  private FindMode findMode = FindMode.NONE;
+  private char lastFindLetter = 0;
+  private FindMode lastFindMode = FindMode.NONE;
 
   public Editor(FileView fileView) {
     this.file = fileView;
@@ -525,5 +555,48 @@ public class Editor implements KeyStrokeHandler {
 
   public boolean isMarkersClear() {
     return file.isMarkersClear();
+  }
+
+  public void enterFindMode(FindMode findMode) {
+    this.findMode = findMode;
+  }
+
+  public boolean isInFindMode() {
+    return findMode != FindMode.NONE;
+  }
+
+  public void exitFindMode() {
+    this.findMode = FindMode.NONE;
+  }
+
+  public void onFindLetter(char letter) {
+    findLetter(letter, this.findMode, true);
+  }
+
+  private void findLetter(char letter, FindMode findModeToFind, boolean remember) {
+    this.findMode = FindMode.NONE;
+    int x = findModeToFind.findIn(cursor, file, letter);
+    if (remember) {
+      this.lastFindMode = findModeToFind;
+      this.lastFindLetter = letter;
+    }
+    if (x == -1) {
+      return;
+    }
+    cursor.moveTo(cursor.getY(), x);
+  }
+
+  public void repeatLastFindForwards() {
+    if (lastFindLetter == 0) {
+      return;
+    }
+    findLetter(this.lastFindLetter, this.lastFindMode, false);
+  }
+
+  public void repeatLastFindBackwards() {
+    if (lastFindLetter == 0) {
+      return;
+    }
+    findLetter(this.lastFindLetter, this.lastFindMode.opposite(), false);
   }
 }

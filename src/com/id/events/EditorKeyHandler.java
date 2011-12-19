@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import com.id.editor.Editor;
 import com.id.editor.Visual;
+import com.id.editor.Editor.FindMode;
 
 public class EditorKeyHandler {
   private final ShortcutTree normalTree;
@@ -268,6 +269,34 @@ public class EditorKeyHandler {
         editor.upPage();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("f"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.enterFindMode(FindMode.FIND_FORWARDS);
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("F"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.enterFindMode(FindMode.FIND_BACKWARDS);
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString(";"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.repeatLastFindForwards();
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString(","),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.repeatLastFindBackwards();
+      }
+    });
 
     visualTree.setShortcut(KeyStroke.fromString("y"),
         new ShortcutTree.Action() {
@@ -318,6 +347,15 @@ public class EditorKeyHandler {
       if (handled) {
         return true;
       }
+    }
+
+    if (editor.isInFindMode()) {
+      if (!event.isLetter()) {
+        editor.exitFindMode();
+      } else {
+        editor.onFindLetter(event.getLetter());
+      }
+      return true;
     }
 
     this.editor = editor;

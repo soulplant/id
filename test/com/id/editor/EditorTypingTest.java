@@ -443,4 +443,47 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("VjjdP");
     assertTrue(editor.isMarkersClear());
   }
+
+  @Test
+  public void find() {
+    setFileContents("abcdabcd");
+    typeString("fd");
+    assertCursorPosition(0, 3);
+    assertFalse(editor.isInFindMode());
+  }
+
+  @Test
+  public void findRepeat() {
+    setFileContents("abcdabcd");
+    typeString("fd;");
+    assertCursorPosition(0, 7);
+  }
+
+  @Test
+  public void findRepeatThenGoBack() {
+    setFileContents("abcdabcd");
+    typeString("fd;,");
+    assertCursorPosition(0, 3);
+  }
+
+  @Test
+  public void findNonExistentCharExitsFindMode() {
+    setFileContents("abc");
+    typeString("fx");
+    assertFalse(editor.isInFindMode());
+  }
+
+  @Test
+  public void findBackwards() {
+    setFileContents("abc");
+    typeString("$Fa");
+    assertCursorPosition(0, 0);
+  }
+
+  @Test
+  public void findNonExistentCharCausesFindToBeRemembered() {
+    setFileContents("abc", "abcx");
+    typeString("fxj;");
+    assertCursorPosition(1, 3);
+  }
 }

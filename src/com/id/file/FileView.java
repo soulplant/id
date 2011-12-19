@@ -145,6 +145,26 @@ public class FileView implements File.Listener, ModifiedListener {
     return file.hasUndo();
   }
 
+  public int findNextLetter(int y, int startPos, char c) {
+    String line = getLine(y);
+    for (int i = startPos; i < line.length() - 1; i++) {
+      if (line.charAt(i + 1) == c) {
+        return i + 1;
+      }
+    }
+    return -1;
+  }
+
+  public int findPreviousLetter(int y, int startPos, char c) {
+    String line = getLine(y);
+    for (int i = startPos; i > 0; i--) {
+      if (line.charAt(i - 1) == c) {
+        return i - 1;
+      }
+    }
+    return -1;
+  }
+
   public int findNextLetter(int y, int startPos) {
     String line = getLine(y);
     for (int i = startPos; i < line.length() - 1; i++) {

@@ -8,6 +8,7 @@ public class Slug {
     public char letter;
     public boolean isVisual = false;
     public boolean isHighlight = false;
+    public boolean isSearchHighlight = false;
 //    public boolean isCursor = false;
 //    public boolean isWideCursor = false;
 
@@ -63,5 +64,13 @@ public class Slug {
 
   public boolean isHighlight(int i) {
     return entries.get(i).isHighlight;
+  }
+
+  public void setSearchHighlight(int i, boolean searchHighlight) {
+    entries.get(i).isSearchHighlight = searchHighlight;
+  }
+
+  public boolean isSearchHighlight(int i) {
+    return entries.get(i).isSearchHighlight;
   }
 }

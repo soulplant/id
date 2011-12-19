@@ -83,11 +83,16 @@ public class CachingHighlight implements Highlight, File.Listener {
     public String toString() {
       return "LineMatches[" + matches + "]";
     }
+
+    public int getMatchCount() {
+      return matches.size();
+    }
   }
 
   private final String word;
   private final List<LineMatches> lineMatches = new ArrayList<LineMatches>();
 
+  // TODO(koz): Make this take a File and add itself as a listener.
   public CachingHighlight(String word, List<String> lines) {
     this.word = word;
 
@@ -98,6 +103,9 @@ public class CachingHighlight implements Highlight, File.Listener {
 
   private LineMatches makeMatchFor(String line) {
     LineMatches matches = new LineMatches();
+    if (word.isEmpty()) {
+      return matches;
+    }
     int lastMatch = line.indexOf(word);
     while (lastMatch != -1) {
       matches.addMatch(new Match(lastMatch, word.length()));
@@ -128,6 +136,9 @@ public class CachingHighlight implements Highlight, File.Listener {
 
   @Override
   public Point getNextMatch(int y, int x) {
+    if (lineMatches.size() <= y) {
+      return null;
+    }
     int n = lineMatches.get(y).getNextMatch(x);
     if (n != -1) {
       return new Point(y, n);
@@ -161,5 +172,14 @@ public class CachingHighlight implements Highlight, File.Listener {
       }
     }
     return null;
+  }
+
+  @Override
+  public int getMatchCount() {
+    int result = 0;
+    for (LineMatches matches : lineMatches) {
+      result += matches.getMatchCount();
+    }
+    return result;
   }
 }

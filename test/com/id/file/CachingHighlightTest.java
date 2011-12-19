@@ -44,6 +44,29 @@ public class CachingHighlightTest {
     assertPointEquals(0, 4, highlight.getNextMatch(0, 0));
   }
 
+  @Test
+  public void itCountsOccurrencesOfTheHighlightTerm() {
+    File file = new File("abc abc def", "abc");
+    CachingHighlight highlight = new CachingHighlight("abc", file.getLineList());
+    assertEquals(3, highlight.getMatchCount());
+  }
+
+  @Test
+  public void itCountsOccurrencesCorrectlyAfterModifications() {
+    File file = new File("abc abc def", "abc");
+    CachingHighlight highlight = new CachingHighlight("abc", file.getLineList());
+    file.addListener(highlight);
+    file.removeLine(1);
+    assertEquals(2, highlight.getMatchCount());
+  }
+
+  @Test
+  public void itHandlesEmptyQueriesGracefully() {
+    File file = new File("abc");
+    CachingHighlight highlight = new CachingHighlight("", file.getLineList());
+    assertEquals(0, highlight.getMatchCount());
+  }
+
   private void assertPointEquals(int y, int x, Point point) {
     assertNotNull(point);
     assertEquals(y, point.getY());

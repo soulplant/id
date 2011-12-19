@@ -14,6 +14,7 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
   public interface Listener {
     void onDone();
     void onTextChanged();
+    void onQuit();
   }
 
   private final List<Listener> listeners = new ArrayList<Listener>();
@@ -34,10 +35,20 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
         escape();
       }
     });
+    shortcuts.setShortcut(Arrays.asList(KeyStroke.enter()), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        enter();
+      }
+    });
+  }
+
+  private void enter() {
+    fireDone();
   }
 
   private void escape() {
-    fireDone();
+    fireQuit();
   }
 
   @Override
@@ -69,6 +80,12 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
   @Override
   public void onLineChanged(int y, String oldLine, String newLine) {
     fireTextChanged();
+  }
+
+  private void fireQuit() {
+    for (Listener listener : listeners) {
+      listener.onQuit();
+    }
   }
 
   private void fireDone() {

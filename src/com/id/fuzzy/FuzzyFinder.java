@@ -155,6 +155,11 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   }
 
   @Override
+  public void onQuit() {
+    setVisible(false);
+  }
+
+  @Override
   public void onTextChanged() {
     fireQueryChanged();
   }

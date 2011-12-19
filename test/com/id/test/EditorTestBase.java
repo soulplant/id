@@ -45,8 +45,8 @@ public class EditorTestBase {
     assertEquals(x, editor.getCursorPosition().getX());
   }
 
-  protected void type(KeyStroke event) {
-    handler.handleKeyPress(event, editor);
+  protected void type(KeyStroke keyStroke) {
+    handler.handleKeyPress(keyStroke, editor);
   }
 
   protected void typeString(String letters) {
@@ -56,6 +56,6 @@ public class EditorTestBase {
   }
 
   protected void typeChar(char c) {
-    handler.handleKeyPress(KeyStroke.fromChar(c), editor);
+    type(KeyStroke.fromChar(c));
   }
 }

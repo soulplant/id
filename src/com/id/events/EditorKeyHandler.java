@@ -297,6 +297,13 @@ public class EditorKeyHandler {
         editor.repeatLastFindBackwards();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("/"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.enterSearch();
+      }
+    });
 
     visualTree.setShortcut(KeyStroke.fromString("y"),
         new ShortcutTree.Action() {
@@ -347,6 +354,10 @@ public class EditorKeyHandler {
       if (handled) {
         return true;
       }
+    }
+
+    if (editor.isInSearchMode() && editor.handleSearchKeyStroke(event)) {
+      return true;
     }
 
     if (editor.isInFindMode()) {

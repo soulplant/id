@@ -13,12 +13,13 @@ import com.id.file.FileViewTest;
 import com.id.file.GraveyardTest;
 import com.id.fuzzy.FuzzyFinderTest;
 import com.id.platform.InMemoryFileSystemTest;
+import com.id.rendering.EditorRendererTest;
 import com.id.rendering.SlugTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ EditorTest.class, VisualTest.class, FileTest.class,
     FileViewTest.class, GraveyardTest.class, FuzzyFinderTest.class,
     InMemoryFileSystemTest.class, EditorTypingTest.class, SlugTest.class,
-    CachingHighlightTest.class, MinibufferTest.class })
+    CachingHighlightTest.class, MinibufferTest.class, EditorRendererTest.class })
 public class AllTests {
 }

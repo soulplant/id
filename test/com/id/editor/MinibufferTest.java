@@ -25,7 +25,7 @@ public class MinibufferTest {
     minibuffer.addListener(listener);
     typeString("testing");
     type(KeyStroke.escape());
-    verify(listener).onDone();
+    verify(listener).onQuit();
   }
 
   @Test

@@ -60,7 +60,7 @@ public class Matrix {
         if (slug.isVisual(x)) {
           g.setColor(Color.GRAY);
           g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
-        } else if (slug.isHighlight(x)) {
+        } else if (slug.isHighlight(x) || slug.isSearchHighlight(x)) {
           g.setColor(Color.CYAN);
           g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
         }
@@ -103,5 +103,13 @@ public class Matrix {
 
   public void setHighlight(int y, int x, boolean highlight) {
     slugs.get(y).setHighlight(x, highlight);
+  }
+
+  public void setSearchHighlight(int y, int x, boolean searchHighlight) {
+    slugs.get(y).setSearchHighlight(x, searchHighlight);
+  }
+
+  public boolean isSearchHighlight(int y, int x) {
+    return slugs.get(y).isSearchHighlight(x);
   }
 }

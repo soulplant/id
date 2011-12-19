@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.id.editor.Editor;
 import com.id.editor.Visual;
+import com.id.events.KeyStroke;
 import com.id.file.File;
 import com.id.file.FileView;
 
@@ -85,6 +86,15 @@ public class EditorRendererTest {
     assertMatrixContents("ab");
     assertTrue(matrix.isHighlight(0, 0));
     assertFalse(matrix.isHighlight(0, 1));
+  }
+
+  @Test
+  public void checkSearch() {
+    setFileContents("abc");
+    editor.enterSearch();
+    editor.handleSearchKeyStroke(KeyStroke.fromChar('a'));
+    renderMatrix(new Rectangle(0, 0, 20, 20), 10, 10);
+    assertTrue(matrix.isSearchHighlight(0, 0));
   }
 
   private void renderMatrix(Rectangle screen, int fontWidthPx, int fontHeightPx) {

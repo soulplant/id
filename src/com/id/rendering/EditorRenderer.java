@@ -58,6 +58,9 @@ public class EditorRenderer {
       if (editor.isHighlight(lineY, i)) {
         matrix.setHighlight(matrixY, i, true);
       }
+      if (editor.isSearchHighlight(lineY, i)) {
+        matrix.setSearchHighlight(matrixY, i, true);
+      }
     }
   }
 }

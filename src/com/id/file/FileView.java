@@ -333,4 +333,8 @@ public class FileView implements File.Listener, ModifiedListener {
   public boolean isMarkersClear() {
     return file.isMarkersClear();
   }
+
+  public File getFile() {
+    return file;
+  }
 }

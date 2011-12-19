@@ -80,6 +80,7 @@ public class Editor implements KeyStrokeHandler {
   private FindMode findMode = FindMode.NONE;
   private char lastFindLetter = 0;
   private FindMode lastFindMode = FindMode.NONE;
+  private Search currentSearch = null;
 
   public Editor(FileView fileView) {
     this.file = fileView;
@@ -598,5 +599,45 @@ public class Editor implements KeyStrokeHandler {
       return;
     }
     findLetter(this.lastFindLetter, this.lastFindMode.opposite(), false);
+  }
+
+  public boolean isSearchHighlight(int y, int x) {
+    return currentSearch != null && currentSearch.isHighlight(y, x);
+  }
+
+  public void enterSearch() {
+    this.currentSearch = new Search(new Minibuffer(), file.getFile(), cursor.getPoint(), new Search.Listener() {
+      @Override
+      public void onHighlightChanged() {
+        // Do nothing - highlight is read at render time and we need not notify
+        // anybody of this change.
+      }
+
+      @Override
+      public void onDone() {
+        setHighlight(currentSearch.getQuery());
+        exitSearch();
+      }
+
+      @Override
+      public void onMoveTo(int y, int x) {
+        cursor.moveTo(y, x);
+      }
+    });
+  }
+
+  public void exitSearch() {
+    this.currentSearch = null;
+  }
+
+  public boolean isInSearchMode() {
+    return this.currentSearch != null;
+  }
+
+  public boolean handleSearchKeyStroke(KeyStroke keyStroke) {
+    if (!isInSearchMode()) {
+      throw new IllegalStateException();
+    }
+    return this.currentSearch.handleKeyStroke(keyStroke);
   }
 }

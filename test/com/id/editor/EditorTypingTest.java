@@ -486,4 +486,31 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("fxj;");
     assertCursorPosition(1, 3);
   }
+
+  @Test
+  public void search() {
+    setFileContents("abc", "def", "ghi", "abc");
+    typeString("/def");
+    assertTrue(editor.isInSearchMode());
+    assertTrue(editor.isSearchHighlight(1, 0));
+    typeString("g");
+    assertFalse(editor.isSearchHighlight(1, 0));
+    type(KeyStroke.backspace());
+    assertTrue(editor.isSearchHighlight(1, 0));
+  }
+
+  @Test
+  public void searchMovement() {
+    setFileContents("abc", "def", "ghi", "abc");
+    typeString("/def");
+    assertCursorPosition(1, 0);
+  }
+
+  @Test
+  public void searchShouldModifyTheHighlight() {
+    setFileContents("abc", "def", "def");
+    typeString("/def");
+    type(KeyStroke.enter());
+    assertTrue(editor.isHighlight(2, 0));
+  }
 }

@@ -10,6 +10,6 @@ public class RealRepository implements Repository {
 
   @Override
   public Diff getDiffTo(String rev) {
-    return Diff.fromLines(Util.exec("git diff -- " + getHead()));
+    return Diff.fromLines(Util.exec("git diff " + getHead()));
   }
 }

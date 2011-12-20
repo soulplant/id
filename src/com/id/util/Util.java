@@ -25,7 +25,7 @@ public class Util {
 
   public static List<String> exec(String command) {
     try {
-      Process process = Runtime.getRuntime().exec("git diff HEAD^");
+      Process process = Runtime.getRuntime().exec(command);
       BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
       List<String> result = new ArrayList<String>();
       String line;

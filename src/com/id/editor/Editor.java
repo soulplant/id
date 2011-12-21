@@ -656,4 +656,8 @@ public class Editor implements KeyStrokeHandler {
     }
     return this.currentSearch.handleKeyStroke(keyStroke);
   }
+
+  public int getHighlightMatchCount() {
+    return highlight.getMatchCount();
+  }
 }

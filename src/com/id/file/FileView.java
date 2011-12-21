@@ -320,7 +320,7 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public List<String> getLineList() {
-    return file.getLineList();
+    return getLineRange(start, end);
   }
 
   private void fireOnLineInserted(int y, String line) {

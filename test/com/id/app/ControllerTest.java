@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.id.editor.Editor;
@@ -33,6 +32,7 @@ public class ControllerTest {
   private FuzzyFinder fuzzyFinder;
   private Listener fuzzyListener;
   private InMemoryRepository repo;
+  private HighlightState highlightState;
 
   @Before
   public void setup() {
@@ -41,7 +41,8 @@ public class ControllerTest {
     fuzzyFinder = new FuzzyFinder(fileSystem);
     fuzzyListener = mock(FuzzyFinder.Listener.class);
     repo = new InMemoryRepository();
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repo);
+    highlightState = new HighlightState();
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repo, highlightState);
 
     fileSystem.insertFile("./a", "aaa");
     fileSystem.insertFile("./b", "bbb");
@@ -157,12 +158,12 @@ public class ControllerTest {
   }
 
   @Test
-  @Ignore  // Not implemented.
   public void highlightIsGlobal() {
     controller.openFile("./a");
     typeString("*");  // Sets highlight to 'aaa'.
     controller.openFile("./b");
     typeString("Saaa");
+    assertEquals("aaa", editors.get(1).getLine(0));
     assertTrue(editors.get(1).isHighlight(0, 0));
   }
 

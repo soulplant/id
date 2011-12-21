@@ -206,7 +206,7 @@ public class EditorTest extends EditorTestBase {
   @Test
   public void highlights() {
     setFileContents("abc", "def");
-    editor.setHighlight("abc");
+    editor.setHighlightPattern("abc");
     assertTrue(editor.isHighlight(0, 0));
     assertFalse(editor.isHighlight(1, 0));
     fileView.changeLine(0, "babc");
@@ -220,7 +220,7 @@ public class EditorTest extends EditorTestBase {
   @Test
   public void getNextHighlightPoint() {
     setFileContents("abc asdf", "def", "abc");
-    editor.setHighlight("abc");
+    editor.setHighlightPattern("abc");
     editor.next();
     assertEquals(2, editor.getCursorPosition().getY());
     assertEquals(0, editor.getCursorPosition().getX());

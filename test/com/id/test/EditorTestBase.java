@@ -3,6 +3,7 @@ package com.id.test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+import com.id.app.HighlightState;
 import com.id.editor.Editor;
 import com.id.events.EditorKeyHandler;
 import com.id.events.KeyStroke;
@@ -28,7 +29,7 @@ public class EditorTestBase {
     lastFileContents = lines;
     file = new File(lines);
     fileView = new FileView(file);
-    editor = new Editor(fileView);
+    editor = new Editor(fileView, new HighlightState());
     handler = new EditorKeyHandler();
   }
 

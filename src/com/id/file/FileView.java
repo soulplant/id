@@ -187,6 +187,9 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public void addListener(File.Listener listener) {
+    if (listeners.contains(listener)) {
+      throw new IllegalStateException();
+    }
     listeners.add(listener);
   }
 

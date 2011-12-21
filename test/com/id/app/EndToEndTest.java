@@ -24,6 +24,7 @@ public class EndToEndTest {
   private File tempDir;
   private RealFileSystem fileSystem;
   private BashShell shell;
+  private HighlightState highlightState;
 
   @Before
   public void setup() throws IOException {
@@ -33,7 +34,8 @@ public class EndToEndTest {
     fileSystem = new RealFileSystem(tempDir);
     repository = new GitRepository(shell);
     fuzzyFinder = new FuzzyFinder(fileSystem);
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repository);
+    highlightState = new HighlightState();
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState);
     repository.init();
   }
 

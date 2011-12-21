@@ -1,12 +1,15 @@
 package com.id.rendering;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.awt.Rectangle;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.id.app.HighlightState;
 import com.id.editor.Editor;
 import com.id.editor.Visual;
 import com.id.events.KeyStroke;
@@ -81,7 +84,7 @@ public class EditorRendererTest {
   @Test
   public void checkHighlight() {
     setFileContents("ab");
-    editor.setHighlight("a");
+    editor.setHighlightPattern("a");
     renderMatrix(new Rectangle(0, 0, 20, 10), 10, 10);
     assertMatrixContents("ab");
     assertTrue(matrix.isHighlight(0, 0));
@@ -125,6 +128,6 @@ public class EditorRendererTest {
   private void setFileContents(String... lines) {
     file = new File(lines);
     fileView = new FileView(file);
-    editor = new Editor(fileView);
+    editor = new Editor(fileView, new HighlightState());
   }
 }

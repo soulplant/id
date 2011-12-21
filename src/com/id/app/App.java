@@ -12,8 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import com.id.editor.Editor;
-import com.id.file.File;
-import com.id.file.FileView;
 import com.id.fuzzy.FuzzyFinder;
 import com.id.git.GitRepository;
 import com.id.git.Repository;
@@ -43,26 +41,18 @@ public class App {
     Repository repository = new GitRepository(shell);
     FuzzyFinder fuzzyFinder = new FuzzyFinder(fileSystem);
     fuzzyFinder.addPathToIndex(".");
-    final Controller controller = new Controller(editors, fileSystem, fuzzyFinder, repository);
+    HighlightState highlightState = new HighlightState();
+    final Controller controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState);
 
     final EditorSwapperView spotlightView = new EditorSwapperView(editors);
     final FileListView fileListView = new FileListView(editors);
-    JLabel stack = new JLabel("HI");
+    JLabel stack = new JLabel("TODO implement stack");
     final AppFrame frame = new AppFrame(fileListView, spotlightView, stack, controller);
     FuzzyFinderFrame fuzzyFinderFrame = new FuzzyFinderFrame(fuzzyFinder, frame);
     fuzzyFinder.addListener(fuzzyFinderFrame);
 
     editors.addListener(fileListView);
     editors.addListener(spotlightView);
-
-    // Add some files.
-    File file = new File("first");
-    file.setFilename("first");
-    File file2 = new File("second", "second");
-    file2.setFilename("second");
-    editors.add(new Editor(new FileView(file)));
-    editors.add(new Editor(new FileView(file2)));
-    editors.moveUp();
 
     frame.setVisible(true);
   }

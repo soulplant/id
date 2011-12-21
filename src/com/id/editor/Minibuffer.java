@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.id.app.HighlightState;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
@@ -26,7 +27,7 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
   public Minibuffer() {
     file = new File("");
     fileView = new FileView(file);
-    editor = new Editor(fileView);
+    editor = new Editor(fileView, new HighlightState());
     editor.insert();
     editor.addFileListener(this);
     shortcuts.setShortcut(Arrays.asList(KeyStroke.escape()), new ShortcutTree.Action() {

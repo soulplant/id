@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 
+import com.id.app.HighlightState;
 import com.id.editor.Editor;
 import com.id.file.File.Listener;
 import com.id.test.EditorTestBase;
@@ -135,7 +136,7 @@ public class FileViewTest extends EditorTestBase {
   private void setupWith(int start, int end, String... lines) {
     file = new File(lines);
     fileView = new FileView(file, start, end);
-    editor = new Editor(fileView);
+    editor = new Editor(fileView, new HighlightState());
     listener = mock(File.Listener.class);
   }
 }

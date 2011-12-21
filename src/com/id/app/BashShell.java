@@ -7,10 +7,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RealShell implements Shell {
+public class BashShell implements Shell {
   private final File workingDirectory;
 
-  public RealShell(File workingDirectory) {
+  public BashShell(File workingDirectory) {
     this.workingDirectory = workingDirectory;
   }
 
@@ -30,8 +30,8 @@ public class RealShell implements Shell {
       while ((line = br.readLine()) != null) {
         result.add(line);
       }
-//      System.out.println("Command[" + workingDirectory + "] = " + command);
-//      System.out.println("results[" + process.exitValue() + "] = " + result);
+      System.out.println("Command[" + workingDirectory + "] = " + command);
+      System.out.println("results[" + process.exitValue() + "] = " + result);
       return result;
     } catch (IOException e) {
       e.printStackTrace();

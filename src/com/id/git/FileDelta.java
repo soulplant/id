@@ -29,14 +29,12 @@ public class FileDelta {
     int offset = 0;
 
     for (String line : fileDeltaLines) {
-      if (!atHunk) {
-        if (line.startsWith("@@")) {
-          atHunk = true;
-        }
+      if (line.startsWith("@@")) {
+        atHunk = true;
+        offset = parseOffset(line);
         continue;
       }
-      if (line.startsWith("@@")) {
-        offset = parseOffset(line);
+      if (!atHunk) {
         continue;
       }
       String text = line.substring(1);
@@ -44,7 +42,7 @@ public class FileDelta {
         result.addNewLine(offset, text);
         offset++;
       } else if (line.startsWith("-")) {
-        result.addDeletedLine(offset - 2, text);
+        result.addDeletedLine(offset - 1, text);
       } else {
         offset++;
       }
@@ -55,7 +53,9 @@ public class FileDelta {
   private static int parseOffset(String line) {
     // We want the third int out of, eg:
     // @@ -6,7 +6,9 @@ import java.awt.Graphics;
-    return Integer.parseInt(line.split(" ")[2].substring(1).split(",")[0]);
+    // NOTE(koz): We subtract one because patches used 1-based indexing,
+    // but our code uses 0-based indexing.
+    return Integer.parseInt(line.split(" ")[2].substring(1).split(",")[0]) - 1;
   }
 
   public Map<Integer, String> getAdditions() {
@@ -64,5 +64,10 @@ public class FileDelta {
 
   public Map<Integer, List<String>> getDeletions() {
     return deletions;
+  }
+
+  @Override
+  public String toString() {
+    return "FileDelta[" + additions + ", " + deletions + "]";
   }
 }

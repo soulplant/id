@@ -93,10 +93,10 @@ public class CachingHighlight implements Highlight, File.Listener {
   private final List<LineMatches> lineMatches = new ArrayList<LineMatches>();
 
   // TODO(koz): Make this take a File and add itself as a listener.
-  public CachingHighlight(String word, List<String> lines) {
+  public CachingHighlight(String word, File file) {
     this.word = word;
 
-    for (String line : lines) {
+    for (String line : file.getLines()) {
       lineMatches.add(makeMatchFor(line));
     }
   }
@@ -181,5 +181,10 @@ public class CachingHighlight implements Highlight, File.Listener {
       result += matches.getMatchCount();
     }
     return result;
+  }
+
+  @Override
+  public void setHighlightPattern(String pattern) {
+    // TODO
   }
 }

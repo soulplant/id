@@ -155,6 +155,15 @@ public class ControllerTest {
     typeString("ta");
   }
 
+  @Test
+  public void highlightIsGlobal() {
+    controller.openFile("./a");
+    typeString("*");  // Sets highlight to 'aaa'.
+    controller.openFile("./b");
+    typeString("Saaa");
+    assertTrue(editors.get(1).isHighlight(0, 0));
+  }
+
   private void type(KeyStroke keyStroke) {
     controller.handleKeyStroke(keyStroke);
   }

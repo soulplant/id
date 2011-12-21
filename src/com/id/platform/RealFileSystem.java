@@ -70,10 +70,15 @@ public class RealFileSystem implements FileSystem {
     if (file.getFilename() == null) {
       throw new IllegalArgumentException("Can't save a file that doesn't have a name");
     }
+    save(file.getFilename(), file.getLines());
+  }
+
+  @Override
+  public void save(String filename, String... contents) {
     try {
-      FileWriter fileWriter = new FileWriter(file(file.getFilename()));
+      FileWriter fileWriter = new FileWriter(file(filename));
       BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-      for (String line : file.getLines()) {
+      for (String line : contents) {
         bufferedWriter.write(line + "\n");
       }
       bufferedWriter.flush();

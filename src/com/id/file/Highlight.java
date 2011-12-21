@@ -7,4 +7,5 @@ public interface Highlight extends File.Listener {
   Point getNextMatch(int y, int x);
   Point getPreviousMatch(int y, int x);
   int getMatchCount();
+  void setHighlightPattern(String pattern);
 }

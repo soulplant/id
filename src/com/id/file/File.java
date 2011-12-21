@@ -204,7 +204,7 @@ public class File {
   }
 
   public void setHighlight(String word) {
-    setHighlight(new CachingHighlight(word, this.getLineList()));
+    setHighlight(new CachingHighlight(word, this));
   }
 
   private void setHighlight(Highlight highlight) {

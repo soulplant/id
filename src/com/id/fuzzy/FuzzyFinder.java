@@ -53,6 +53,10 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   }
 
   public void selectCurrentItem() {
+    if (getMatches().isEmpty()) {
+      setVisible(false);
+      return;
+    }
     fireItemSelected();
   }
 

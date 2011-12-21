@@ -37,4 +37,9 @@ public class EmptyHighlight implements Highlight {
   public int getMatchCount() {
     return 0;
   }
+
+  @Override
+  public void setHighlightPattern(String pattern) {
+    // Do nothing.
+  }
 }

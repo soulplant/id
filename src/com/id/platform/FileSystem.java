@@ -9,4 +9,5 @@ public interface FileSystem {
   File getFile(String path);
   String[] getSubdirectories(String path);
   void save(File file);
+  void save(String filename, String... contents);
 }

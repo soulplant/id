@@ -133,4 +133,9 @@ public class InMemoryFileSystem implements FileSystem {
   public void save(File file) {
     insertFile(file.getFilename(), file.getLines());
   }
+
+  @Override
+  public void save(String filename, String... contents) {
+    insertFile(filename, contents);
+  }
 }

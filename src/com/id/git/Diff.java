@@ -49,4 +49,9 @@ public class Diff {
   public Set<String> getModifiedFiles() {
     return fileDeltas.keySet();
   }
+
+  @Override
+  public String toString() {
+    return "Diff[" + fileDeltas + "]";
+  }
 }

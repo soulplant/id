@@ -10,10 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.id.editor.Editor;
-import com.id.events.KeyStroke;
 import com.id.file.Tombstone;
 import com.id.fuzzy.FuzzyFinder;
-import com.id.git.RealRepository;
+import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.RealFileSystem;
 
@@ -24,21 +23,18 @@ public class EndToEndTest {
   private Controller controller;
   private File tempDir;
   private RealFileSystem fileSystem;
-  private RealShell shell;
+  private BashShell shell;
 
   @Before
   public void setup() throws IOException {
     tempDir = createTempDirectory();
-    shell = new RealShell(tempDir);
-    File a = new File(tempDir, "a");
-    a.createNewFile();
-    initGitRepo();
+    shell = new BashShell(tempDir);
     editors = new ListModel<Editor>();
     fileSystem = new RealFileSystem(tempDir);
-    repository = new RealRepository(shell);
+    repository = new GitRepository(shell);
     fuzzyFinder = new FuzzyFinder(fileSystem);
-    fuzzyFinder.addPathToIndex(".");
     controller = new Controller(editors, fileSystem, fuzzyFinder, repository);
+    repository.init();
   }
 
   @After
@@ -47,26 +43,31 @@ public class EndToEndTest {
   }
 
   @Test
-  public void openDiffsWith1() {
-    controller.openFile("a");
-    typeString("ithis is a test");
-    type(KeyStroke.escape());
-    type(KeyStroke.fromControlChar('s'));
-    typeString("q1");
+  public void deletedLinesCreateGraves() throws IOException {
+    fileSystem.save("a", "1", "2", "3", "4", "5", "6", "7", "a1", "a2", "a3");
+    repository.commitAll(null);
+    fileSystem.save("a", "1", "2", "3", "4", "5", "6", "7", "a1");
+
+    controller.importDiffs();
     Editor editor = editors.get(0);
     assertEquals("a", editor.getFilename());
-    assertEquals(Tombstone.Status.NEW, editor.getStatus(0));
+    assertEquals(2, editor.getGrave(7).size());
+    assertEquals(Tombstone.Status.NORMAL, editor.getStatus(0));
   }
 
-  private void typeString(String string) {
-    for (int i = 0; i < string.length(); i++) {
-      char c = string.charAt(i);
-      type(KeyStroke.fromChar(c));
-    }
-  }
+  @Test
+  public void deletedLinesShowUp() {
+    fileSystem.save("a", "a1", "a2", "a3", "a4", "a5");
+    repository.commitAll(null);
+    fileSystem.save("a", "a1", "a4");
 
-  private void type(KeyStroke keyStroke) {
-    controller.handleKeyStroke(keyStroke);
+    controller.importDiffs();
+    Editor editor = editors.get(0);
+    assertEquals("a", editor.getFilename());
+    assertEquals(2, editor.getGrave(0).size());
+    assertEquals(1, editor.getGrave(1).size());
+    assertEquals(Tombstone.Status.NORMAL, editor.getStatus(0));
+    assertEquals(Tombstone.Status.NORMAL, editor.getStatus(1));
   }
 
   private File createTempDirectory() throws IOException {
@@ -77,15 +78,6 @@ public class EndToEndTest {
       file.mkdir();
     }
     return file;
-  }
-
-  private void initGitRepo() throws IOException {
-    shell.exec("ls .");
-    shell.exec("pwd");
-    shell.exec("git init");
-    shell.exec("git add .");
-    shell.exec("git commit -m initial");
-    shell.exec("git show --stat");
   }
 
   private void exec(String string) throws IOException {

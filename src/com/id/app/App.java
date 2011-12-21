@@ -15,7 +15,7 @@ import com.id.editor.Editor;
 import com.id.file.File;
 import com.id.file.FileView;
 import com.id.fuzzy.FuzzyFinder;
-import com.id.git.RealRepository;
+import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
 import com.id.platform.RealFileSystem;
@@ -37,8 +37,8 @@ public class App {
   private static void startApp() {
     final ListModel<Editor> editors = new ListModel<Editor>();
     FileSystem fileSystem = new RealFileSystem();
-    RealShell shell = new RealShell(null);
-    Repository repository = new RealRepository(shell);
+    BashShell shell = new BashShell(null);
+    Repository repository = new GitRepository(shell);
     FuzzyFinder fuzzyFinder = new FuzzyFinder(fileSystem);
     fuzzyFinder.addPathToIndex(".");
     final Controller controller = new Controller(editors, fileSystem, fuzzyFinder, repository);

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.id.editor.Point;
-import com.id.file.File.Listener;
 import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
@@ -14,10 +13,12 @@ public class FileView implements File.Listener, ModifiedListener {
   private final File file;
   private int start;
   private int end;
+  private final List<File.Listener> listeners = new ArrayList<File.Listener>();
 
   public FileView(File file) {
     this(file, 0, file.getLineCount() - 1);
   }
+
   public FileView(File file, int start, int end) {
     this.file = file;
     this.start = start;
@@ -42,6 +43,10 @@ public class FileView implements File.Listener, ModifiedListener {
     file.changeLine(start + y, line);
   }
 
+  public String removeLine(int y) {
+    return file.removeLine(start + y);
+  }
+
   @Override
   public void onLineInserted(int y, String line) {
     if (y < start) {
@@ -49,6 +54,7 @@ public class FileView implements File.Listener, ModifiedListener {
       end++;
     } else if (start <= y && y <= end + 1) {
       end++;
+      fireOnLineInserted(y - start, line);
     }
   }
 
@@ -59,12 +65,15 @@ public class FileView implements File.Listener, ModifiedListener {
       end--;
     } else if (start <= y && y <= end) {
       end--;
+      fireOnLineRemoved(y - start, line);
     }
   }
 
   @Override
   public void onLineChanged(int y, String oldLine, String newLine) {
-    // Do nothing.
+    if (start <= y && y <= end) {
+      fireOnLineChanged(y - start, oldLine, newLine);
+    }
   }
 
   @Override
@@ -105,10 +114,6 @@ public class FileView implements File.Listener, ModifiedListener {
     String newLine = line.substring(0, x) + line.substring(substringMax);
     changeLine(y, newLine);
     return line.substring(x, substringMax);
-  }
-
-  public String removeLine(int y) {
-    return file.removeLine(start + y);
   }
 
   public void splitLine(int y, int x, String paddingText) {
@@ -181,12 +186,12 @@ public class FileView implements File.Listener, ModifiedListener {
     return line.indexOf(" ", x);
   }
 
-  public void addListener(Listener listener) {
-    file.addListener(listener);
+  public void addListener(File.Listener listener) {
+    listeners.add(listener);
   }
 
-  public void removeListener(Listener listener) {
-    file.removeListener(listener);
+  public void removeListener(File.Listener listener) {
+    listeners.remove(listener);
   }
 
   public void addModifiedListener(ModifiedListener listener) {
@@ -235,7 +240,6 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public void appendText(int y, String text) {
     changeLine(y, getLine(y) + text);
-
   }
 
   public void insertText(int y, int x, String... lines) {
@@ -317,5 +321,23 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public List<String> getLineList() {
     return file.getLineList();
+  }
+
+  private void fireOnLineInserted(int y, String line) {
+    for (File.Listener listener : listeners) {
+      listener.onLineInserted(y, line);
+    }
+  }
+
+  private void fireOnLineRemoved(int y, String line) {
+    for (File.Listener listener : listeners) {
+      listener.onLineRemoved(y, line);
+    }
+  }
+
+  private void fireOnLineChanged(int y, String oldLine, String newLine) {
+    for (File.Listener listener : listeners) {
+      listener.onLineChanged(y, oldLine, newLine);
+    }
   }
 }

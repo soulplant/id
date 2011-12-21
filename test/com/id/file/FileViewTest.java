@@ -1,12 +1,18 @@
 package com.id.file;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 
+import com.id.editor.Editor;
+import com.id.file.File.Listener;
 import com.id.test.EditorTestBase;
 
 public class FileViewTest extends EditorTestBase {
+  private Listener listener;
+
   @Test
   public void viewShrinksWhenLinesGetRemoved() {
     FileView fileView = new FileView(new File("a", "b", "c"), 0, 1);
@@ -116,5 +122,20 @@ public class FileViewTest extends EditorTestBase {
   public void findPreviousChar() {
     setFileContents("abcded");
     assertEquals(3, fileView.findPreviousLetter(0, 5, 'd'));
+  }
+
+  @Test
+  public void itShouldFireOffsetEvents() {
+    setupWith(1, 2, "a", "b", "c", "d");
+    fileView.addListener(listener);
+    fileView.changeLine(0, "hi");
+    verify(listener).onLineChanged(0, "b", "hi");
+  }
+
+  private void setupWith(int start, int end, String... lines) {
+    file = new File(lines);
+    fileView = new FileView(file, start, end);
+    editor = new Editor(fileView);
+    listener = mock(File.Listener.class);
   }
 }

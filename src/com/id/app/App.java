@@ -37,7 +37,8 @@ public class App {
   private static void startApp() {
     final ListModel<Editor> editors = new ListModel<Editor>();
     FileSystem fileSystem = new RealFileSystem();
-    Repository repository = new RealRepository();
+    RealShell shell = new RealShell(null);
+    Repository repository = new RealRepository(shell);
     FuzzyFinder fuzzyFinder = new FuzzyFinder(fileSystem);
     fuzzyFinder.addPathToIndex(".");
     final Controller controller = new Controller(editors, fileSystem, fuzzyFinder, repository);

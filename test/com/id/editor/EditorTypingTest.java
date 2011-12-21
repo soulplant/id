@@ -513,4 +513,9 @@ public class EditorTypingTest extends EditorTestBase {
     type(KeyStroke.enter());
     assertTrue(editor.isHighlight(2, 0));
   }
+
+  @Test
+  public void test() {
+    typeString("1");
+  }
 }

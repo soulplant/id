@@ -1,6 +1,7 @@
 package com.id.file;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.id.editor.Point;
@@ -282,6 +283,10 @@ public class FileView implements File.Listener, ModifiedListener {
       return;
     }
     String topLine = getLine(y);
+    if (x > topLine.length()) {
+      System.out.println("topLine.length = " + topLine.length() + ", x = " + x);
+      System.out.println("insertText(" + y + ", " + x + ", " + lineBreakOnLast + ", " + Arrays.asList(lines) + ")");
+    }
     String head = topLine.substring(0, x);
     String tail = topLine.substring(x);
     if (!lineBreakOnLast && lines.length == 1) {

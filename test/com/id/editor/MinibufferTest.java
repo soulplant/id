@@ -43,6 +43,14 @@ public class MinibufferTest {
     assertEquals("", minibuffer.getText());
   }
 
+  @Test
+  public void itCanBeClearedAndTypedInFromScratch() {
+    typeString("a");
+    minibuffer.clear();
+    typeString("b");
+    assertEquals("b", minibuffer.getText());
+  }
+
   private void type(KeyStroke keyStroke) {
     minibuffer.handleKeyStroke(keyStroke);
   }

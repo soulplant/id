@@ -9,19 +9,33 @@ import java.io.IOException;
 import com.id.file.File;
 
 public class RealFileSystem implements FileSystem {
+  private final java.io.File workingDirectory;
+
+  public RealFileSystem(java.io.File workingDirectory) {
+    this.workingDirectory = workingDirectory;
+  }
+
+  public RealFileSystem() {
+    this(null);
+  }
+
+  private java.io.File file(String path) {
+    return new java.io.File(workingDirectory, path);
+  }
+
   @Override
   public boolean isFile(String path) {
-    return new java.io.File(path).isFile();
+    return file(path).isFile();
   }
 
   @Override
   public boolean isDirectory(String path) {
-    return new java.io.File(path).isDirectory();
+    return file(path).isDirectory();
   }
 
   @Override
   public boolean isExistent(String path) {
-    return new java.io.File(path).exists();
+    return file(path).exists();
   }
 
   @Override
@@ -34,13 +48,13 @@ public class RealFileSystem implements FileSystem {
 
   @Override
   public String[] getSubdirectories(String path) {
-    return new java.io.File(path).list();
+    return file(path).list();
   }
 
   private File loadFile(String filename) {
     File file;
     try {
-      FileReader fileReader = new FileReader(filename);
+      FileReader fileReader = new FileReader(file(filename));
       BufferedReader bufferedReader = new BufferedReader(fileReader);
       file = File.loadFrom(bufferedReader);
     } catch (IOException e) {
@@ -57,7 +71,7 @@ public class RealFileSystem implements FileSystem {
       throw new IllegalArgumentException("Can't save a file that doesn't have a name");
     }
     try {
-      FileWriter fileWriter = new FileWriter(file.getFilename());
+      FileWriter fileWriter = new FileWriter(file(file.getFilename()));
       BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
       for (String line : file.getLines()) {
         bufferedWriter.write(line + "\n");

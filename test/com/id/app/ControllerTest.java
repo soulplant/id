@@ -148,6 +148,13 @@ public class ControllerTest {
     assertEquals("XXX", fileSystem.getFile("./a").getLine(0));
   }
 
+  @Test
+  public void regression_bringUpFuzzyFinderTwice() {
+    typeString("ta");
+    type(KeyStroke.enter());
+    typeString("ta");
+  }
+
   private void type(KeyStroke keyStroke) {
     controller.handleKeyStroke(keyStroke);
   }

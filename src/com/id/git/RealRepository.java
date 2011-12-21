@@ -1,8 +1,14 @@
 package com.id.git;
 
-import com.id.util.Util;
+import com.id.app.Shell;
 
 public class RealRepository implements Repository {
+  private final Shell shell;
+
+  public RealRepository(Shell shell) {
+    this.shell = shell;
+  }
+
   @Override
   public String getHead() {
     return "HEAD";
@@ -10,6 +16,6 @@ public class RealRepository implements Repository {
 
   @Override
   public Diff getDiffTo(String rev) {
-    return Diff.fromLines(Util.exec("git diff " + getHead()));
+    return Diff.fromLines(shell.exec("git diff " + getHead()));
   }
 }

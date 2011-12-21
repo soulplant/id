@@ -101,7 +101,12 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
   }
 
   public void clear() {
-    file.changeLine(0, "");
+    if (file.getLineCount() != 1) {
+      throw new IllegalStateException("Minibuffer's file has "
+          + file.getLineCount() + " lines instead of 1.");
+    }
+    editor.escape();
+    editor.substituteLine();
   }
 
   public void setText(String text) {

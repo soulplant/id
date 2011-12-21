@@ -3,6 +3,7 @@ package com.id.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import com.id.app.ControllerTest;
 import com.id.editor.CachingHighlightTest;
 import com.id.editor.EditorFileViewTest;
 import com.id.editor.EditorTest;
@@ -22,6 +23,6 @@ import com.id.rendering.SlugTest;
     FileViewTest.class, GraveyardTest.class, FuzzyFinderTest.class,
     InMemoryFileSystemTest.class, EditorTypingTest.class, SlugTest.class,
     CachingHighlightTest.class, MinibufferTest.class, EditorRendererTest.class,
-    EditorFileViewTest.class })
+    EditorFileViewTest.class, ControllerTest.class })
 public class AllTests {
 }

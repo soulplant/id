@@ -48,6 +48,10 @@ public class AppFrame extends JFrame implements KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
+    // The editor doesn't care about shift being pressed.
+    if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+      return;
+    }
     KeyStroke keyStroke = KeyStroke.fromKeyEvent(e);
     logEventTranslationInfo(e, keyStroke);
     // NOTE KeyEvent.getKeyCode() is only defined in keyPressed when control

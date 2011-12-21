@@ -1,9 +1,10 @@
-package com.id.file;
+package com.id.editor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.id.editor.Point;
+import com.id.file.File;
+import com.id.file.File.Listener;
 
 public class CachingHighlight implements Highlight, File.Listener {
   private static class Match {

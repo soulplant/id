@@ -1,6 +1,5 @@
-package com.id.file;
+package com.id.editor;
 
-import com.id.editor.Point;
 
 public class EmptyHighlight implements Highlight {
   @Override

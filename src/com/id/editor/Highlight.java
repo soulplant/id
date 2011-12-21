@@ -1,6 +1,6 @@
-package com.id.file;
+package com.id.editor;
 
-import com.id.editor.Point;
+import com.id.file.File;
 
 public interface Highlight extends File.Listener {
   boolean isHighlighted(int y, int x);

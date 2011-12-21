@@ -5,10 +5,7 @@ import java.util.Arrays;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
-import com.id.file.CachingHighlight;
-import com.id.file.EmptyHighlight;
 import com.id.file.File;
-import com.id.file.Highlight;
 
 public class Search implements KeyStrokeHandler, Minibuffer.Listener {
   public interface Listener {

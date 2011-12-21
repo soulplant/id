@@ -1,10 +1,12 @@
-package com.id.file;
+package com.id.editor;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.id.editor.CachingHighlight;
 import com.id.editor.Point;
+import com.id.file.File;
 
 public class CachingHighlightTest {
   @Test

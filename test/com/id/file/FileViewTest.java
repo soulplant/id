@@ -1,12 +1,9 @@
 package com.id.file;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.id.editor.Point;
 import com.id.test.EditorTestBase;
 
 public class FileViewTest extends EditorTestBase {
@@ -61,32 +58,9 @@ public class FileViewTest extends EditorTestBase {
   }
 
   @Test
-  public void highlights() {
-    setFileContents("abc", "def");
-    fileView.setHighlight("abc");
-    assertTrue(fileView.isHighlighted(0, 0));
-    assertFalse(fileView.isHighlighted(1, 0));
-    fileView.changeLine(0, "babc");
-    assertFalse(fileView.isHighlighted(0, 0));
-    assertTrue(fileView.isHighlighted(0, 1));
-    fileView.clearHighlight();
-    assertFalse(fileView.isHighlighted(0, 0));
-    assertFalse(fileView.isHighlighted(0, 1));
-  }
-
-  @Test
   public void getWordUnderCursor() {
     setFileContents("abc asdf", "def");
     assertEquals("abc", fileView.getWordUnder(0, 1));
-  }
-
-  @Test
-  public void getNextHighlightPoint() {
-    setFileContents("abc asdf", "def", "abc");
-    fileView.setHighlight("abc");
-    Point point = fileView.getNextHighlightPoint(0, 0);
-    assertEquals(2, point.getY());
-    assertEquals(0, point.getX());
   }
 
   @Test

@@ -9,8 +9,11 @@ import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.file.File;
 import com.id.file.File.Listener;
+import com.id.file.CachingHighlight;
+import com.id.file.EmptyHighlight;
 import com.id.file.FileView;
 import com.id.file.Grave;
+import com.id.file.Highlight;
 import com.id.file.ModifiedListener;
 import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
@@ -81,6 +84,7 @@ public class Editor implements KeyStrokeHandler {
   private char lastFindLetter = 0;
   private FindMode lastFindMode = FindMode.NONE;
   private Search currentSearch = null;
+  private Highlight highlight = new EmptyHighlight();
 
   public Editor(FileView fileView) {
     this.file = fileView;
@@ -98,6 +102,7 @@ public class Editor implements KeyStrokeHandler {
       }
     });
     keyHandler = new EditorKeyHandler();
+    addFileListener(highlight);
   }
 
   public String getLine(int y) {
@@ -432,6 +437,11 @@ public class Editor implements KeyStrokeHandler {
     file.addListener(listener);
   }
 
+  private void removeFileListener(Listener listener) {
+    fileListeners.remove(listener);
+    file.removeListener(listener);
+  }
+
   public void addFileModifiedListener(ModifiedListener listener) {
     fileModifiedListeners.add(listener);
     file.addModifiedListener(listener);
@@ -463,19 +473,25 @@ public class Editor implements KeyStrokeHandler {
   }
 
   public void setHighlight(String word) {
-    file.setHighlight(word);
+    setHighlight(new CachingHighlight(word, file.getLineList()));
+  }
+
+  private void setHighlight(Highlight highlight) {
+    removeFileListener(highlight);
+    this.highlight = highlight;
+    addFileListener(highlight);
   }
 
   public boolean isHighlight(int y, int x) {
-    return file.isHighlighted(y, x);
+    return highlight.isHighlighted(y, x);
   }
 
   public void highlightWordUnderCursor() {
-    file.setHighlight(file.getWordUnder(cursor.getY(), cursor.getX()));
+    setHighlight(file.getWordUnder(cursor.getY(), cursor.getX()));
   }
 
   public void clearHighlight() {
-    file.clearHighlight();
+    setHighlight(new EmptyHighlight());
   }
 
   public void recenter() {
@@ -483,14 +499,14 @@ public class Editor implements KeyStrokeHandler {
   }
 
   public void next() {
-    Point point = file.getNextHighlightPoint(cursor.getY(), cursor.getX());
+    Point point = highlight.getNextMatch(cursor.getY(), cursor.getX());
     if (point != null) {
       cursor.moveTo(point);
     }
   }
 
   public void previous() {
-    Point point = file.getPreviousHighlightPoint(cursor.getY(), cursor.getX());
+    Point point = highlight.getPreviousMatch(cursor.getY(), cursor.getX());
     if (point != null) {
       cursor.moveTo(point);
     }

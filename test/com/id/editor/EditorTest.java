@@ -202,4 +202,27 @@ public class EditorTest extends EditorTestBase {
     editor.onLetterTyped('a');
     verify(listener).onLineChanged(anyInt(), any(String.class), any(String.class));
   }
+
+  @Test
+  public void highlights() {
+    setFileContents("abc", "def");
+    editor.setHighlight("abc");
+    assertTrue(editor.isHighlight(0, 0));
+    assertFalse(editor.isHighlight(1, 0));
+    fileView.changeLine(0, "babc");
+    assertFalse(editor.isHighlight(0, 0));
+    assertTrue(editor.isHighlight(0, 1));
+    editor.clearHighlight();
+    assertFalse(editor.isHighlight(0, 0));
+    assertFalse(editor.isHighlight(0, 1));
+  }
+
+  @Test
+  public void getNextHighlightPoint() {
+    setFileContents("abc asdf", "def", "abc");
+    editor.setHighlight("abc");
+    editor.next();
+    assertEquals(2, editor.getCursorPosition().getY());
+    assertEquals(0, editor.getCursorPosition().getX());
+  }
 }

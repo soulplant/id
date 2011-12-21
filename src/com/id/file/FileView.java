@@ -185,6 +185,10 @@ public class FileView implements File.Listener, ModifiedListener {
     file.addListener(listener);
   }
 
+  public void removeListener(Listener listener) {
+    file.removeListener(listener);
+  }
+
   public void addModifiedListener(ModifiedListener listener) {
     file.addModifiedListener(listener);
   }
@@ -199,18 +203,6 @@ public class FileView implements File.Listener, ModifiedListener {
   private void join(int y) {
     String nextLine = removeLine(y + 1);
     changeLine(y, getLine(y) + nextLine);
-  }
-
-  public void setHighlight(String word) {
-    file.setHighlight(word);
-  }
-
-  public boolean isHighlighted(int y, int x) {
-    return file.isHighlighted(start + y, x);
-  }
-
-  public void clearHighlight() {
-    file.clearHighlight();
   }
 
   public String getWordUnder(int y, int x) {
@@ -239,26 +231,6 @@ public class FileView implements File.Listener, ModifiedListener {
 
   private boolean isWordCharacter(char c) {
     return Character.isLetterOrDigit(c);
-  }
-
-  public Point getNextHighlightPoint(int y, int x) {
-    Point point = file.getNextHighlightPoint(start + y, x);
-    if (point != null && isInView(point)) {
-      return point.offset(-start, 0);
-    }
-    return null;
-  }
-
-  private boolean isInView(Point point) {
-    return start <= point.getY() && point.getY() <= end;
-  }
-
-  public Point getPreviousHighlightPoint(int y, int x) {
-    Point point = file.getPreviousHighlightPoint(start + y, x);
-    if (point != null && isInView(point)) {
-      return point.offset(-start, 0);
-    }
-    return null;
   }
 
   public void appendText(int y, String text) {
@@ -341,5 +313,9 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public File getFile() {
     return file;
+  }
+
+  public List<String> getLineList() {
+    return file.getLineList();
   }
 }

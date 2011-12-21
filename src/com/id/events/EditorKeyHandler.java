@@ -361,10 +361,10 @@ public class EditorKeyHandler {
     }
 
     if (editor.isInFindMode()) {
-      if (!event.isLetter()) {
-        editor.exitFindMode();
-      } else {
+      if (event.isLetter()) {
         editor.onFindLetter(event.getLetter());
+      } else {
+        editor.exitFindMode();
       }
       return true;
     }

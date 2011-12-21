@@ -19,8 +19,10 @@ import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
 import com.id.platform.RealFileSystem;
+import com.id.ui.app.AppFrame;
 import com.id.ui.app.EditorSwapperView;
 import com.id.ui.app.FileListView;
+import com.id.ui.app.FuzzyFinderFrame;
 
 public class App {
   public static final Font FONT = loadFont();

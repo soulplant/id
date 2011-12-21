@@ -3,7 +3,6 @@ package com.id.ui.app;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.id.app.ItemListPanel;
 import com.id.app.ListModel;
 import com.id.editor.Editor;
 

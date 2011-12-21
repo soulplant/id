@@ -1,4 +1,4 @@
-package com.id.app;
+package com.id.ui.app;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import com.id.app.App;
 
 @SuppressWarnings("serial")
 public class ItemListPanel extends JPanel {

@@ -1,4 +1,4 @@
-package com.id.app;
+package com.id.ui.app;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -11,9 +11,6 @@ import javax.swing.JFrame;
 
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
-import com.id.ui.app.AppLayout;
-import com.id.ui.app.EditorSwapperView;
-import com.id.ui.app.FileListView;
 
 @SuppressWarnings("serial")
 public class AppFrame extends JFrame implements KeyListener {

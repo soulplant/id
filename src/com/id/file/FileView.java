@@ -343,4 +343,36 @@ public class FileView implements File.Listener, ModifiedListener {
       listener.onLineChanged(y, oldLine, newLine);
     }
   }
+
+  public Point getNextModifiedPoint(int y, int x) {
+    boolean acceptNextModified = false;
+    for (int i = y; i < getLineCount(); i++) {
+      if (hasModifiedMarkers(i)) {
+        if (acceptNextModified) {
+          return new Point(i, 0);
+        }
+      } else {
+        acceptNextModified = true;
+      }
+    }
+    return null;
+  }
+
+  private boolean hasModifiedMarkers(int y) {
+    return getStatus(y) != Tombstone.Status.NORMAL || !getGrave(y).isEmpty();
+  }
+
+  public Point getPreviousModifiedPoint(int y, int x) {
+    boolean acceptPreviousModified = false;
+    for (int i = y; i >= 0; i--) {
+      if (hasModifiedMarkers(i)) {
+        if (acceptPreviousModified) {
+          return new Point(i, 0);
+        }
+      } else {
+        acceptPreviousModified = true;
+      }
+    }
+    return null;
+  }
 }

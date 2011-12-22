@@ -520,4 +520,15 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("*\\*");
     assertTrue(editor.isHighlight(0, 0));
   }
+
+  @Test
+  public void goToChangeMarkersWithNextAndPrevious() {
+    setFileContents("a", "a", "a");
+    typeString("jShi");
+    type(KeyStroke.escape());
+    typeString("kn");
+    assertCursorPosition(1, 0);
+    typeString("jN");
+    assertCursorPosition(1, 0);
+  }
 }

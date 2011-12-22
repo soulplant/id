@@ -501,14 +501,32 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   }
 
   public void next() {
-    Point point = highlight.getNextMatch(cursor.getY(), cursor.getX());
+    // TODO(koz): We should distinguish between having a search with no matches
+    // and not having a search.
+    if (highlight.getMatchCount() > 0) {
+      Point point = highlight.getNextMatch(cursor.getY(), cursor.getX());
+      if (point != null) {
+        cursor.moveTo(point);
+      }
+      return;
+    }
+    Point point = file.getNextModifiedPoint(cursor.getY(), cursor.getX());
     if (point != null) {
       cursor.moveTo(point);
     }
   }
 
   public void previous() {
-    Point point = highlight.getPreviousMatch(cursor.getY(), cursor.getX());
+    // TODO(koz): We should distinguish between having a search with no matches
+    // and not having a search.
+    if (highlight.getMatchCount() > 0) {
+      Point point = highlight.getPreviousMatch(cursor.getY(), cursor.getX());
+      if (point != null) {
+        cursor.moveTo(point);
+      }
+      return;
+    }
+    Point point = file.getPreviousModifiedPoint(cursor.getY(), cursor.getX());
     if (point != null) {
       cursor.moveTo(point);
     }

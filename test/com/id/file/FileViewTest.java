@@ -1,6 +1,7 @@
 package com.id.file;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -8,6 +9,7 @@ import org.junit.Test;
 
 import com.id.app.HighlightState;
 import com.id.editor.Editor;
+import com.id.editor.Point;
 import com.id.file.File.Listener;
 import com.id.test.EditorTestBase;
 
@@ -131,6 +133,28 @@ public class FileViewTest extends EditorTestBase {
     fileView.addListener(listener);
     fileView.changeLine(0, "hi");
     verify(listener).onLineChanged(0, "b", "hi");
+  }
+
+  @Test
+  public void itCanFindTheNextModifiedRegion() {
+    setFileContents("blah", "blah2");
+    fileView.changeLine(1, "hi");
+    Point point = fileView.getNextModifiedPoint(0, 0);
+    assertNotNull(point);
+    assertEquals(1, point.getY());
+  }
+
+  @Test
+  public void itCanFindModifiedRegionsThatDontIncludeTheOneItsIn() {
+    setFileContents("blah", "blah2", "blah3");
+    fileView.changeLine(0, "hi");
+    fileView.changeLine(2, "hi");
+    Point point = fileView.getPreviousModifiedPoint(2, 0);
+    assertNotNull(point);
+    assertEquals(0, point.getY());
+    point = fileView.getNextModifiedPoint(0, 0);
+    assertNotNull(point);
+    assertEquals(2, point.getY());
   }
 
   private void setupWith(int start, int end, String... lines) {

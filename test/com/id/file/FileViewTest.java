@@ -157,6 +157,12 @@ public class FileViewTest extends EditorTestBase {
     assertEquals(2, point.getY());
   }
 
+  @Test
+  public void underscoreIsConsideredAnIdentifierLetter() {
+    setFileContents("a_c");
+    assertEquals("a_c", fileView.getWordUnder(0, 0));
+  }
+
   private void setupWith(int start, int end, String... lines) {
     file = new File(lines);
     fileView = new FileView(file, start, end);

@@ -238,7 +238,7 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   private boolean isWordCharacter(char c) {
-    return Character.isLetterOrDigit(c);
+    return Character.isLetterOrDigit(c) || c == '_';
   }
 
   public void appendText(int y, String text) {

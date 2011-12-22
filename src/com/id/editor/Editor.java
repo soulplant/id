@@ -295,8 +295,18 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   }
 
   public void insertStart() {
-    cursor.moveTo(cursor.getY(), 0);
+    cursor.moveTo(cursor.getY(), getFirstNonWhitespace(cursor.getY()));
     insert();
+  }
+
+  private int getFirstNonWhitespace(int y) {
+    String line = getLine(y);
+    for (int i = 0; i < line.length(); i++) {
+      if (!isWhitespace(line.charAt(i))) {
+        return i;
+      }
+    }
+    return line.length();
   }
 
   private int getCurrentLineLength() {

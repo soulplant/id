@@ -531,4 +531,18 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("jN");
     assertCursorPosition(1, 0);
   }
+
+  @Test
+  public void bigInsertSkipsWhitespace() {
+    setFileContents("  s  ");
+    typeString("Ix");
+    assertFileContents("  xs  ");
+  }
+
+  @Test
+  public void bigInsertInsertsAtEndIfTheLineIsAllWhitespace() {
+    setFileContents("    ");
+    typeString("Ix");
+    assertFileContents("    x");
+  }
 }

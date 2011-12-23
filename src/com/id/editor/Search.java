@@ -97,6 +97,9 @@ public class Search implements KeyStrokeHandler, Minibuffer.Listener {
 
   @Override
   public void onQuit() {
+    // TODO(koz): This should move the scroll region to exactly where it was
+    // before the search.
+    listener.onMoveTo(startPoint.getY(), startPoint.getX());
     listener.onSearchCancelled();
   }
 

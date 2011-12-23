@@ -545,4 +545,12 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("Ix");
     assertFileContents("    x");
   }
+
+  @Test
+  public void escapePreventsSearchFromSettingANewHighlightPattern() {
+    setFileContents("abc");
+    typeString("/ab");
+    type(KeyStroke.escape());
+    assertFalse(editor.isHighlight(0, 0));
+  }
 }

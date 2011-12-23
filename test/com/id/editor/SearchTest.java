@@ -109,6 +109,14 @@ public class SearchTest extends EditorTestBase {
     verify(listener, never()).onMoveTo(0, 0);
   }
 
+  @Test
+  public void escapeCancelsSearch() {
+    setFileContents("dog");
+    typeString("do");
+    type(KeyStroke.escape());
+    verify(listener).onSearchCancelled();
+  }
+
   @Override
   protected void type(KeyStroke keyStroke) {
     search.handleKeyStroke(keyStroke);

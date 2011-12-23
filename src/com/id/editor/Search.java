@@ -9,9 +9,10 @@ import com.id.file.File;
 
 public class Search implements KeyStrokeHandler, Minibuffer.Listener {
   public interface Listener {
-    void onDone();
+    void onSearchCompleted();
     void onHighlightChanged();
     void onMoveTo(int y, int x);
+    void onSearchCancelled();
   }
 
   private final Minibuffer minibuffer;
@@ -77,7 +78,8 @@ public class Search implements KeyStrokeHandler, Minibuffer.Listener {
 
   @Override
   public void onDone() {
-    listener.onDone();
+    listener.onMoveTo(startPoint.getY(), startPoint.getX());
+    listener.onSearchCompleted();
   }
 
   @Override
@@ -95,8 +97,7 @@ public class Search implements KeyStrokeHandler, Minibuffer.Listener {
 
   @Override
   public void onQuit() {
-    listener.onMoveTo(startPoint.getY(), startPoint.getX());
-    listener.onDone();
+    listener.onSearchCancelled();
   }
 
   public String getQuery() {

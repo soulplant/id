@@ -660,7 +660,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
       }
 
       @Override
-      public void onDone() {
+      public void onSearchCompleted() {
         setHighlightPattern(currentSearch.getQuery());
         exitSearch();
       }
@@ -668,6 +668,11 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
       @Override
       public void onMoveTo(int y, int x) {
         cursor.moveTo(y, x);
+      }
+
+      @Override
+      public void onSearchCancelled() {
+        exitSearch();
       }
     });
   }

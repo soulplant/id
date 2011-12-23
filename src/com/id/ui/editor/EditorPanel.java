@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.id.app.Constants;
 import com.id.editor.Editor;
 import com.id.editor.Point;
 import com.id.file.ModifiedListener;
@@ -74,5 +75,12 @@ public class EditorPanel extends JPanel implements Editor.Context, ModifiedListe
   @Override
   public int getViewportHeight() {
     return getHeight() / 14;
+  }
+
+  @Override
+  public boolean isVisible(Point point) {
+    return textPanel.getVisibleRect().contains(
+        point.getX() * Constants.CHAR_WIDTH,
+        point.getY() * Constants.CHAR_HEIGHT);
   }
 }

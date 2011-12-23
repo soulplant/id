@@ -22,6 +22,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     void moveViewportToIncludePoint(Point point);
     void recenterScreenOnPoint(Point point);
     int getViewportHeight();
+    boolean isVisible(Point point);
   }
 
   public enum FindMode {
@@ -66,6 +67,11 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     public int getViewportHeight() {
       return 10;
     }
+
+    @Override
+    public boolean isVisible(Point point) {
+      return true;
+    }
   }
 
   private final FileView file;
@@ -101,7 +107,10 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
 
       @Override
       public void onJumped(int y, int x) {
-        // TODO Recenter the screen on (y, x).
+        Point point = new Point(y, x);
+        if (!context.isVisible(point)) {
+          context.recenterScreenOnPoint(point);
+        }
       }
     });
     keyHandler = new EditorKeyHandler();
@@ -667,7 +676,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
 
       @Override
       public void onMoveTo(int y, int x) {
-        cursor.moveTo(y, x);
+        cursor.jumpTo(y, x);
       }
 
       @Override

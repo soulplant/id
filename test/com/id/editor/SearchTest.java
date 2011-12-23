@@ -40,12 +40,6 @@ public class SearchTest extends EditorTestBase {
   }
 
   @Test
-  public void itFiresAnEventWhenTheQueryChanges() {
-    typeString("t");
-    verify(listener).onHighlightChanged();
-  }
-
-  @Test
   public void itChangesWithTheFileThatItsGiven() {
     setFileContents("dog");
     typeString("cat");

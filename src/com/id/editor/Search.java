@@ -10,7 +10,6 @@ import com.id.file.File;
 public class Search implements KeyStrokeHandler, Minibuffer.Listener {
   public interface Listener {
     void onSearchCompleted();
-    void onHighlightChanged();
     void onMoveTo(int y, int x);
     void onSearchCancelled();
   }
@@ -88,7 +87,6 @@ public class Search implements KeyStrokeHandler, Minibuffer.Listener {
     highlight = new CachingHighlight(minibuffer.getText(), file.getLineList());
     moveTo(highlight.getNextMatch(startPoint.getY(), startPoint.getX()));
     file.addListener(highlight);
-    listener.onHighlightChanged();
   }
 
   public boolean isHighlight(int y, int x) {

@@ -663,12 +663,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   public void enterSearch() {
     this.currentSearch = new Search(new Minibuffer(), file.getFile(), cursor.getPoint(), new Search.Listener() {
       @Override
-      public void onHighlightChanged() {
-        // Do nothing - highlight is read at render time and we need not notify
-        // anybody of this change.
-      }
-
-      @Override
       public void onSearchCompleted() {
         setHighlightPattern(currentSearch.getQuery());
         exitSearch();

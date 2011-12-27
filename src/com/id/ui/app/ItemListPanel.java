@@ -11,6 +11,8 @@ import com.id.app.App;
 
 @SuppressWarnings("serial")
 public class ItemListPanel extends JPanel {
+  private static final int ITEM_HEIGHT_PX = 15;
+  private static final int BOTTOM_PADDING_PX = 3;
   private final List<String> items = new ArrayList<String>();
   private int selectedIndex = -1;
 
@@ -22,7 +24,7 @@ public class ItemListPanel extends JPanel {
     this.items.clear();
     this.items.addAll(items);
     moveSelection(0);
-    setPreferredSize(new Dimension(200, 30 * this.items.size()));
+    setPreferredSize(new Dimension(200, ITEM_HEIGHT_PX * this.items.size()));
   }
 
   public void down() {
@@ -49,9 +51,9 @@ public class ItemListPanel extends JPanel {
     App.configureFont(g);
     int i = 0;
     for (String item : items) {
-      g.drawString(item, 0, 30 * (i + 1));
+      g.drawString(item, 0, ITEM_HEIGHT_PX * (i + 1) - BOTTOM_PADDING_PX);
       if (selectedIndex == i) {
-        g.drawRect(0, 30 * i, g.getClipBounds().width - 1, 30);
+        g.drawRect(0, ITEM_HEIGHT_PX * i, g.getClipBounds().width - 1, ITEM_HEIGHT_PX);
       }
       i++;
     }

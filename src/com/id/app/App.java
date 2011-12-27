@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -75,8 +77,11 @@ public class App {
   public static Font loadFont() {
     Font font = null;
     try {
-      font = Font.createFont(Font.TRUETYPE_FONT, new java.io.File(
-          "resources/Inconsolata.ttf"));
+      ClassLoader classLoader = App.class.getClassLoader();
+      URL fontUrl = classLoader.getResource("Inconsolata.ttf");
+      System.out.println("fontUrl: " + fontUrl);
+      InputStream fontInputStream = fontUrl.openStream();
+      font = Font.createFont(Font.TRUETYPE_FONT, fontInputStream);
     } catch (FontFormatException e) {
       e.printStackTrace();
     } catch (IOException e) {

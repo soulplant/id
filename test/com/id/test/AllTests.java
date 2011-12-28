@@ -10,6 +10,7 @@ import com.id.editor.EditorTest;
 import com.id.editor.EditorTypingTest;
 import com.id.editor.MinibufferTest;
 import com.id.editor.VisualTest;
+import com.id.events.KeyStrokeParserTest;
 import com.id.file.FileTest;
 import com.id.file.FileViewTest;
 import com.id.file.GraveyardTest;
@@ -23,6 +24,6 @@ import com.id.rendering.SlugTest;
     FileViewTest.class, GraveyardTest.class, FuzzyFinderTest.class,
     InMemoryFileSystemTest.class, EditorTypingTest.class, SlugTest.class,
     CachingHighlightTest.class, MinibufferTest.class, EditorRendererTest.class,
-    EditorFileViewTest.class, ControllerTest.class })
+    EditorFileViewTest.class, ControllerTest.class, KeyStrokeParserTest.class })
 public class AllTests {
 }

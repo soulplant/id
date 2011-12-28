@@ -401,7 +401,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   }
 
   public void moveCursorToEndOfLine() {
-    int x = getCurrentLineLength() - (isInInsertMode() ? 0 : 1);
+    int x = Math.max(0, getCurrentLineLength() - (isInInsertMode() ? 0 : 1));
     cursor.moveTo(cursor.getY(), x);
   }
 
@@ -476,10 +476,12 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
       substitute();
       return;
     }
+    int indentLength = getIndentForLine(cursor.getY()).length();
     moveCursorToStartOfLine();
     startPatch();
-    file.removeText(cursor.getY(), 0);
-    insert();
+    file.removeText(cursor.getY(), indentLength);
+    appendEnd();
+    justInsertedAutoIndent = true;
   }
 
   public void addFileListener(Listener listener) {

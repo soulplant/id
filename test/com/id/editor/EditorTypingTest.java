@@ -631,4 +631,24 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("xjxjxVggU");
     assertFileContents("abc", "def", "ghi");
   }
+
+  @Test
+  public void substituteLinePreservesAutoIndenting() {
+    setFileContents("  abc");
+    typeString("S");
+    assertFileContents("  ");
+  }
+
+  @Test
+  public void substitutingALineConstitutesLeavingUnnecessaryAutoIndenting() {
+    setFileContents("  abc");
+    typeString("S<ESC>");
+    assertFileContents("");
+  }
+
+  @Test
+  public void endOfLineWorksOnEmptyLine() {
+    setFileContents("");
+    typeString("$");
+  }
 }

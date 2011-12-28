@@ -91,6 +91,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   private Search currentSearch = null;
   private Highlight highlight = new EmptyHighlight();
   private final HighlightState highlightState;
+  private boolean justInsertedAutoIndent = false;
 
   public Editor(FileView fileView, HighlightState highlightState) {
     this.file = fileView;
@@ -176,6 +177,10 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     }
     if (isInInsertMode()) {
       inInsertMode = false;
+      if (justInsertedAutoIndent) {
+        file.changeLine(cursor.getY(), "");
+      }
+      justInsertedAutoIndent = false;
       file.breakPatch();
       cursor.moveBy(0, -1);
       applyCursorConstraints();
@@ -191,6 +196,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     String text = "" + keyChar;
     file.insertText(cursor.getY(), cursor.getX(), text);
     cursor.moveBy(0, text.length());
+    justInsertedAutoIndent = false;
   }
 
   private void startPatch() {
@@ -226,19 +232,24 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   }
 
   public void addEmptyLine() {
-    addLineAt(cursor.getY() + 1, getIndentForLine(cursor.getY()));
+    addLineAt(1, getIndentForLine(cursor.getY()));
   }
 
   public void addEmptyLinePrevious() {
-    addLineAt(cursor.getY(), getIndentForLine(cursor.getY()));
+    addLineAt(0, getIndentForLine(cursor.getY()));
   }
 
-  private void addLineAt(int y, String text) {
+  private void addLineAt(int dy, String text) {
     startPatchIfNecessary();
     if (file.isEmpty()) {
       file.insertLine(0, "");
     }
+    int y = cursor.getY() + dy;
+    if (justInsertedAutoIndent) {
+      file.changeLine(cursor.getY(), "");
+    }
     file.insertLine(Math.min(file.getLineCount(), y), text);
+    justInsertedAutoIndent = true;
     cursor.moveTo(y, 0);
     appendEnd();
   }
@@ -333,10 +344,15 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
       addEmptyLine();
       return;
     }
-    String indentText = getIndentForLine(cursor.getY());
+    int oldY = cursor.getY();
+    String indentText = getIndentForLine(oldY);
     file.splitLine(cursor.getY(), cursor.getX(), indentText);
     cursor.moveBy(1, 0);
-    cursor.moveTo(cursor.getY(), indentText.length());
+    cursor.moveXTo(indentText.length());
+    if (justInsertedAutoIndent) {
+      file.changeLine(oldY, "");
+    }
+    justInsertedAutoIndent = true;
   }
 
   public String getFilename() {

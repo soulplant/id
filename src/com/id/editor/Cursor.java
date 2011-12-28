@@ -26,6 +26,10 @@ public class Cursor {
     fireOnMoved(y, x);
   }
 
+  public void moveXTo(int x) {
+    moveTo(point.getY(), x);
+  }
+
   private void fireOnMoved(int y, int x) {
     fireOnJumped(y, x);
   }

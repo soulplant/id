@@ -576,4 +576,42 @@ public class EditorTypingTest extends EditorTestBase {
     type(KeyStroke.enter());
     assertCursorPosition(0, 1);
   }
+
+  @Test
+  public void enterOnALineWithNothingButAutoIndentationShouldClearThatLine() {
+    setFileContents("  abc");
+    typeString("o");
+    type(KeyStroke.enter());
+    assertEquals("", editor.getLine(1));
+  }
+
+  @Test
+  public void enterOnALineWithNothingButAutoIndentationShouldWorkWhenSplittingLines() {
+    setFileContents("  abc");
+    typeString("fbi");
+    type(KeyStroke.enter());
+    assertFileContents(
+        "  a",
+        "  bc");
+    type(KeyStroke.enter());
+    assertFileContents(
+        "  a",
+        "",
+        "  bc");
+    typeString("X");
+    type(KeyStroke.enter());
+    assertFileContents(
+        "  a",
+        "",
+        "  X",
+        "  bc");
+  }
+
+  @Test
+  public void escapeFromLineWithNothingButAutoIndentationShouldClearTheLine() {
+    setFileContents("  abc");
+    typeString("o");
+    type(KeyStroke.escape());
+    assertFileContents("  abc", "");
+  }
 }

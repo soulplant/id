@@ -16,14 +16,14 @@ public class EditorFileViewTest {
   @Test
   public void itShouldntCountMatchesOutsideTheViewRange() {
     setup(0, 1, "a", "b", "c");
-    editor.setHighlightPattern("c");
+    editor.setHighlightPattern(Patterns.partWord("c"));
     assertEquals(0, editor.getHighlightMatchCount());
   }
 
   @Test
   public void whenTheViewChangesSizeTheHighlightShouldUpdateAutomatically() {
     setup(0, 1, "a", "b", "c");
-    editor.setHighlightPattern("c");
+    editor.setHighlightPattern(Patterns.partWord("c"));
     file.insertLine(2, "c");
     assertEquals(1, editor.getHighlightMatchCount());
     file.removeLine(2);

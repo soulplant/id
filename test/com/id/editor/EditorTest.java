@@ -3,10 +3,10 @@ package com.id.editor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.any;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -206,7 +206,7 @@ public class EditorTest extends EditorTestBase {
   @Test
   public void highlights() {
     setFileContents("abc", "def");
-    editor.setHighlightPattern("abc");
+    editor.setHighlightPattern(Patterns.partWord("abc"));
     assertTrue(editor.isHighlight(0, 0));
     assertFalse(editor.isHighlight(1, 0));
     fileView.changeLine(0, "babc");
@@ -220,7 +220,7 @@ public class EditorTest extends EditorTestBase {
   @Test
   public void getNextHighlightPoint() {
     setFileContents("abc asdf", "def", "abc");
-    editor.setHighlightPattern("abc");
+    editor.setHighlightPattern(Patterns.partWord("abc"));
     editor.next();
     assertEquals(2, editor.getCursorPosition().getY());
     assertEquals(0, editor.getCursorPosition().getX());

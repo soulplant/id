@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.id.app.HighlightState;
 import com.id.editor.Editor;
+import com.id.editor.Patterns;
 import com.id.editor.Visual;
 import com.id.events.KeyStroke;
 import com.id.file.File;
@@ -84,7 +85,7 @@ public class EditorRendererTest {
   @Test
   public void checkHighlight() {
     setFileContents("ab");
-    editor.setHighlightPattern("a");
+    editor.setHighlightPattern(Patterns.partWord("a"));
     renderMatrix(new Rectangle(0, 0, 20, 10), 10, 10);
     assertMatrixContents("ab");
     assertTrue(matrix.isHighlight(0, 0));

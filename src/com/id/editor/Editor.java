@@ -2,6 +2,7 @@ package com.id.editor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.id.app.HighlightState;
 import com.id.editor.Visual.Mode;
@@ -493,7 +494,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     applyCursorConstraints();
   }
 
-  public void setHighlightPattern(String pattern) {
+  public void setHighlightPattern(Pattern pattern) {
     highlightState.setHighlightPattern(pattern);
   }
 
@@ -508,11 +509,16 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   }
 
   public void highlightWordUnderCursor() {
-    setHighlightPattern(file.getWordUnder(cursor.getY(), cursor.getX()));
+    setHighlightPattern(Patterns.wholeWord(file.getWordUnder(cursor.getY(), cursor.getX())));
   }
 
   public void clearHighlight() {
-    setHighlightPattern("");
+    setHighlightPattern(null);
+  }
+
+  @Override
+  public void onHighlightStateChanged() {
+    setHighlight(new CachingHighlight(highlightState.getHighlightPattern(), file.getLineList()));
   }
 
   public void recenter() {
@@ -664,7 +670,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     this.currentSearch = new Search(new Minibuffer(), file.getFile(), cursor.getPoint(), new Search.Listener() {
       @Override
       public void onSearchCompleted() {
-        setHighlightPattern(currentSearch.getQuery());
+        setHighlightPattern(Patterns.partWord(currentSearch.getQuery()));
         exitSearch();
       }
 
@@ -697,11 +703,5 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
 
   public int getHighlightMatchCount() {
     return highlight.getMatchCount();
-  }
-
-  @Override
-  public void onHighlightStateChanged() {
-    setHighlight(new CachingHighlight(highlightState.getHighlightPattern(),
-        file.getLineList()));
   }
 }

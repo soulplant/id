@@ -1,6 +1,7 @@
 package com.id.editor;
 
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
@@ -77,14 +78,13 @@ public class Search implements KeyStrokeHandler, Minibuffer.Listener {
 
   @Override
   public void onDone() {
-    listener.onMoveTo(startPoint.getY(), startPoint.getX());
     listener.onSearchCompleted();
   }
 
   @Override
   public void onTextChanged() {
     file.removeListener(highlight);
-    highlight = new CachingHighlight(minibuffer.getText(), file.getLineList());
+    highlight = new CachingHighlight(Pattern.compile(minibuffer.getText()), file.getLineList());
     moveTo(highlight.getNextMatch(startPoint.getY(), startPoint.getX()));
     file.addListener(highlight);
   }

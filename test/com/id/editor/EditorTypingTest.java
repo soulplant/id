@@ -561,4 +561,19 @@ public class EditorTypingTest extends EditorTestBase {
     type(KeyStroke.escape());
     assertCursorPosition(0, 0);
   }
+
+  @Test
+  public void searchIsIncrementalAndMatchesPartsOfWords() {
+    setFileContents("abc");
+    typeString("/b");
+    assertCursorPosition(0, 1);
+  }
+
+  @Test
+  public void enterLeavesCursorWhereItIsInSearchMode() {
+    setFileContents("abc");
+    typeString("/b");
+    type(KeyStroke.enter());
+    assertCursorPosition(0, 1);
+  }
 }

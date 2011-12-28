@@ -2,10 +2,17 @@ package com.id.editor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.id.file.File;
 
 public class CachingHighlight implements Highlight, File.Listener {
+  public enum MatchKind {
+    PARTIAL,
+    COMPLETE,
+  }
+
   private static class Match {
     public final int start;
     public final int length;
@@ -89,11 +96,15 @@ public class CachingHighlight implements Highlight, File.Listener {
     }
   }
 
-  private final String word;
+  private final Pattern pattern;
   private final List<LineMatches> lineMatches = new ArrayList<LineMatches>();
 
-  public CachingHighlight(String word, List<String> lines) {
-    this.word = word;
+  public static CachingHighlight forLiteralWord(String word, List<String> lines) {
+    return new CachingHighlight(Pattern.compile("\\b" + Pattern.quote(word) + "\\b"), lines);
+  }
+
+  public CachingHighlight(Pattern pattern, List<String> lines) {
+    this.pattern = pattern;
 
     for (String line : lines) {
       lineMatches.add(makeMatchFor(line));
@@ -102,13 +113,12 @@ public class CachingHighlight implements Highlight, File.Listener {
 
   private LineMatches makeMatchFor(String line) {
     LineMatches matches = new LineMatches();
-    if (word.isEmpty()) {
+    if (pattern == null) {
       return matches;
     }
-    int lastMatch = line.indexOf(word);
-    while (lastMatch != -1) {
-      matches.addMatch(new Match(lastMatch, word.length()));
-      lastMatch = line.indexOf(word, lastMatch + 1);
+    Matcher matcher = pattern.matcher(line);
+    while (matcher.find()) {
+      matches.addMatch(new Match(matcher.start(), matcher.end() - matcher.start()));
     }
     return matches;
   }

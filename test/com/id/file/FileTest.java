@@ -95,6 +95,14 @@ public class FileTest {
     assertFalse(file.isModified());
   }
 
+  @Test
+  public void undoLineInsertLine() {
+    File file = new File();
+    file.insertLine(0, "hi");
+    file.undoLine(0);
+    assertEquals(0, file.getLineCount());
+  }
+
   private static boolean isAllStatus(Tombstone.Status status, File file) {
     for (int i = 0; i < file.getLineCount(); i++) {
       if (file.getStatus(i) != status) {

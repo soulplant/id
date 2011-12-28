@@ -79,6 +79,10 @@ public class Graveyard implements File.Listener {
     return graves.get(y);
   }
 
+  public Tombstone getTombstone(int y) {
+    return tombstones.get(y);
+  }
+
   public int size() {
     return tombstones.size();
   }

@@ -99,6 +99,12 @@ public class EditorKeyHandler {
         editor.undo();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("U"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.undoLine();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("r"), new ShortcutTree.Action() {
       @Override
       public void execute() {

@@ -222,4 +222,34 @@ public class File {
   public boolean isMarkersClear() {
     return graveyard.isAllGravesEmpty() && graveyard.isAllStatusNormal();
   }
+
+  public void undoLine(int y) {
+    List<Tombstone> tombstones = getGrave(y).getTombstones();
+    getGrave(y).clear();
+    switch (getStatus(y)) {
+    case NEW:
+      removeLine(y);
+      break;
+    case MODIFIED:
+      String originalLine = graveyard.getTombstone(y).getOriginal();
+      changeLine(y, originalLine);
+      break;
+    case NORMAL:
+      // Do nothing.
+      break;
+    }
+    int i = 1;
+    for (Tombstone tombstone : tombstones) {
+      plantTombstone(y + i++, tombstone);
+    }
+  }
+
+  private void plantTombstone(int y, Tombstone tombstone) {
+    insertLine(y, tombstone.getOriginal());
+    graveyard.getTombstone(y).reset();
+  }
+
+  public void dumpGraveyard() {
+    System.out.println(graveyard);
+  }
 }

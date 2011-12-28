@@ -21,7 +21,11 @@ public class Tombstone {
 
   @Override
   public String toString() {
-    return "Tombstone['" + current + "', '" + original + "']";
+    return "Tombstone[" + quote(current) + ", " + quote(original) + "]";
+  }
+
+  private String quote(String string) {
+    return string == null ? string + "" : "'" + string + "'";
   }
 
   public Status getStatus() {

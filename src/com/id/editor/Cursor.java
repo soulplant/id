@@ -100,4 +100,12 @@ public class Cursor {
   public void removeListener(Listener listener) {
     listeners.remove(listener);
   }
+
+  public boolean isInRangeY(int min, int max) {
+    return point.isInRangeY(min, max);
+  }
+
+  public boolean isInRangeX(int min, int max) {
+    return point.isInRangeX(min, max);
+  }
 }

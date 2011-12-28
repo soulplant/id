@@ -59,4 +59,12 @@ public class Point {
   public String toString() {
     return "[" + y + ", " + x + "]";
   }
+
+  public boolean isInRangeY(int min, int max) {
+    return min <= y && y <= max;
+  }
+
+  public boolean isInRangeX(int min, int max) {
+    return min <= x && x <= max;
+  }
 }

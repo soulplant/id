@@ -9,6 +9,7 @@ import com.id.events.EditorKeyHandler;
 import com.id.events.KeyStroke;
 import com.id.file.File;
 import com.id.file.FileView;
+import com.id.file.Tombstone;
 
 public class EditorTestBase {
   protected EditorKeyHandler handler;
@@ -16,6 +17,7 @@ public class EditorTestBase {
   protected FileView fileView;
   protected File file;
   protected String[] lastFileContents;
+  private boolean okForChangeMarkersToBeInconsistentAfterUndo = false;
 
   protected void ensureUndoGoesToLastFileContents() {
     type(KeyStroke.escape());
@@ -23,6 +25,13 @@ public class EditorTestBase {
       typeString("u");
     }
     assertFileContents(lastFileContents);
+    if (!okForChangeMarkersToBeInconsistentAfterUndo) {
+      assertAllStatus(Tombstone.Status.NORMAL);
+    }
+  }
+
+  protected void setOkForChangeMarkersToBeInconsistentAfterUndo() {
+    okForChangeMarkersToBeInconsistentAfterUndo = true;
   }
 
   protected void setFileContents(String... lines) {
@@ -58,5 +67,11 @@ public class EditorTestBase {
 
   protected void typeChar(char c) {
     type(KeyStroke.fromChar(c));
+  }
+
+  protected void assertAllStatus(Tombstone.Status status) {
+    for (int y = 0; y < editor.getLineCount(); y++) {
+      assertEquals(status, editor.getStatus(y));
+    }
   }
 }

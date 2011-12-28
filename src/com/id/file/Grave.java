@@ -14,6 +14,7 @@ public class Grave {
     this.tombstones = tombstones;
     this.history = history;
   }
+
   @Override
   public String toString() {
     return "Grave" + tombstones;
@@ -74,11 +75,16 @@ public class Grave {
   private List<Integer> getHistory() {
     return history;
   }
-  private List<Tombstone> getTombstones() {
-    return tombstones;
+
+  public List<Tombstone> getTombstones() {
+    return new ArrayList<Tombstone>(tombstones);
   }
 
   public int size() {
     return tombstones.size();
+  }
+
+  public void clear() {
+    tombstones.clear();
   }
 }

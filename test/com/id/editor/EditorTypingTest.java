@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import com.id.events.KeyStroke;
 import com.id.file.ModifiedListener;
+import com.id.file.Tombstone;
 import com.id.test.EditorTestBase;
 
 public class EditorTypingTest extends EditorTestBase {
@@ -23,7 +24,8 @@ public class EditorTypingTest extends EditorTestBase {
   }
 
   @After
-  public void checkUndo() {
+  public void checkConsistency() {
+    assertTrue(editor.isCursorInBounds());
     ensureUndoGoesToLastFileContents();
   }
 
@@ -613,5 +615,42 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("o");
     type(KeyStroke.escape());
     assertFileContents("  abc", "");
+  }
+
+  @Test
+  public void undoLineForInsertedLine() {
+    typeString("iabc");
+    type(KeyStroke.escape());
+    typeString("U");
+    assertFileContents();
+  }
+
+  @Test
+  public void undoLineForDeletedLines() {
+    setFileContents("abc", "def", "ghi");
+    typeString("jVjd");
+    typeString("U");
+    assertFileContents("abc", "def", "ghi");
+    assertAllStatus(Tombstone.Status.NORMAL);
+    // TODO(koz): Figure out if it's possible to implement U in such a way that
+    // this isn't necessary without blowing the complexity budget.
+    setOkForChangeMarkersToBeInconsistentAfterUndo();
+  }
+
+  @Test
+  public void undoLineDoesntCauseFileToBecomeUnmodified() {
+    setFileContents("abc", "def", "ghi");
+    typeString("lCd");
+    type(KeyStroke.escape());
+    typeString("jU");
+    assertTrue(editor.isModified());
+    assertTrue(file.isModified());
+  }
+
+  @Test
+  public void testIsCursorInBounds() {
+    setFileContents("abc");
+    typeString("A");
+    assertTrue(editor.isCursorInBounds());
   }
 }

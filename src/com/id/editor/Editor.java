@@ -162,6 +162,18 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     cursor.constrainX(0, getCurrentLineLength() - isInNormalMode);
   }
 
+  public boolean isCursorInBounds() {
+    if (file.getLineCount() == 0) {
+      return true;
+    }
+    if (getCurrentLineLength() == 0) {
+      return cursor.getX() == 0;
+    }
+    int isInNormalMode = isInInsertMode() ? 0 : 1;
+    return cursor.isInRangeY(0, file.getLineCount() - 1) &&
+        cursor.isInRangeX(0, getCurrentLineLength() - isInNormalMode);
+  }
+
   private String getCurrentLine() {
     return file.getLine(cursor.getY());
   }
@@ -719,5 +731,11 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
 
   public int getHighlightMatchCount() {
     return highlight.getMatchCount();
+  }
+
+  public void undoLine() {
+    startPatch();
+    file.undoLine(cursor.getY());
+    file.breakPatch();
   }
 }

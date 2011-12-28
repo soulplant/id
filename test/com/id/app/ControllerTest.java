@@ -167,6 +167,14 @@ public class ControllerTest {
     assertTrue(editors.get(1).isHighlight(0, 0));
   }
 
+  @Test
+  public void openingTheSameFileAgainRefocusesTheSpotlightOntoThatEditor() {
+    controller.openFile("./a");
+    controller.openFile("./b");
+    controller.openFile("./a");
+    assertEquals(0, editors.getFocusedIndex());
+  }
+
   private void type(KeyStroke keyStroke) {
     controller.handleKeyStroke(keyStroke);
   }

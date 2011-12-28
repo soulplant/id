@@ -40,7 +40,7 @@ public class ListModel<T> {
     setFocusedIndex(focusedIndex + 1);
   }
 
-  private void setFocusedIndex(int index) {
+  public void setFocusedIndex(int index) {
     int clampedIndex = Math.min(items.size() - 1, Math.max(index, 0));
     if (focusedIndex == clampedIndex) {
       return;

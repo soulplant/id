@@ -87,6 +87,10 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   public Editor openFile(String filename) {
+    Editor existingEditor = attemptToFocusExistingEditor(filename);
+    if (existingEditor != null) {
+      return existingEditor;
+    }
     File file = fileSystem.getFile(filename);
     if (file == null) {
       return null;
@@ -94,6 +98,16 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     Editor editor = new Editor(new FileView(file), highlightState);
     editors.add(editor);
     return editor;
+  }
+
+  private Editor attemptToFocusExistingEditor(String filename) {
+    for (int i = 0; i < editors.size(); i++) {
+      if (filename.equals(editors.get(i).getFilename())) {
+        editors.setFocusedIndex(i);
+        return editors.get(i);
+      }
+    }
+    return null;
   }
 
   public void closeCurrentFile() {

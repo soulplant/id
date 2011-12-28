@@ -60,8 +60,8 @@ public class EditorTestBase {
   }
 
   protected void typeString(String letters) {
-    for (int i = 0; i < letters.length(); i++) {
-      typeChar(letters.charAt(i));
+    for (KeyStroke stroke : KeyStroke.fromString(letters)) {
+      type(stroke);
     }
   }
 

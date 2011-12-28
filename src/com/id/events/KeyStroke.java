@@ -1,7 +1,6 @@
 package com.id.events;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class KeyStroke {
   }
 
   public static KeyStroke fromControlChar(char c) {
-    return new KeyStroke(c, 0, KeyEvent.CTRL_MASK);
+    return fromChar(c).withControl();
   }
 
   public static KeyStroke fromKeyEvent(KeyEvent event) {
@@ -135,6 +134,14 @@ public class KeyStroke {
     return letter * (modifiers + 1);
   }
 
+  public KeyStroke withShift() {
+    return new KeyStroke(letter, code, modifiers | KeyEvent.SHIFT_MASK);
+  }
+
+  private KeyStroke withControl() {
+    return new KeyStroke(letter, code, modifiers | KeyEvent.CTRL_MASK);
+  }
+
   private void maybeAppend(StringBuffer buffer, String string, boolean append) {
     if (append) {
       buffer.append(string).append(", ");
@@ -149,11 +156,7 @@ public class KeyStroke {
   }
 
   public static List<KeyStroke> fromString(String string) {
-    List<KeyStroke> result = new ArrayList<KeyStroke>();
-    for (int i = 0; i < string.length(); i++) {
-      result.add(KeyStroke.fromChar(string.charAt(i)));
-    }
-    return result;
+    return KeyStrokeParser.parseKeyStrokes(string);
   }
 
   public static KeyStroke backspace() {

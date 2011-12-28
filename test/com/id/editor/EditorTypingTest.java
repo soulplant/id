@@ -212,7 +212,7 @@ public class EditorTypingTest extends EditorTestBase {
     assertTrue(editor.isHighlight(0, 0));
     assertFalse(editor.isHighlight(1, 0));
     assertTrue(editor.isHighlight(2, 0));
-    typeString("\\");
+    typeString("\\\\");
     assertFalse(editor.isHighlight(0, 0));
     assertFalse(editor.isHighlight(1, 0));
     assertFalse(editor.isHighlight(2, 0));
@@ -612,24 +612,20 @@ public class EditorTypingTest extends EditorTestBase {
   @Test
   public void escapeFromLineWithNothingButAutoIndentationShouldClearTheLine() {
     setFileContents("  abc");
-    typeString("o");
-    type(KeyStroke.escape());
+    typeString("o<ESC>");
     assertFileContents("  abc", "");
   }
 
   @Test
   public void undoLineForInsertedLine() {
-    typeString("iabc");
-    type(KeyStroke.escape());
-    typeString("U");
+    typeString("iabc<ESC>U");
     assertFileContents();
   }
 
   @Test
   public void undoLineForDeletedLines() {
     setFileContents("abc", "def", "ghi");
-    typeString("jVjd");
-    typeString("U");
+    typeString("jVjdU");
     assertFileContents("abc", "def", "ghi");
     assertAllStatus(Tombstone.Status.NORMAL);
   }
@@ -637,9 +633,7 @@ public class EditorTypingTest extends EditorTestBase {
   @Test
   public void undoLineDoesntCauseFileToBecomeUnmodified() {
     setFileContents("abc", "def", "ghi");
-    typeString("lCd");
-    type(KeyStroke.escape());
-    typeString("jU");
+    typeString("lCd<ESC>jU");
     assertTrue(editor.isModified());
     assertTrue(file.isModified());
   }

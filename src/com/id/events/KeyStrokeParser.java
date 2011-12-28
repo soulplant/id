@@ -42,7 +42,7 @@ public class KeyStrokeParser {
         return;
       }
       String innerText = input.substring(1, i);
-      setResult(parseAngledBracketsText(innerText), i);
+      setResult(parseAngledBracketsText(innerText), i + 1);
       return;
     }
     setResult(KeyStroke.fromChar(c), 1);
@@ -72,6 +72,10 @@ public class KeyStrokeParser {
       return KeyStroke.down();
     } else if (innerText.equals("RIGHT")) {
       return KeyStroke.right();
+    } else if (innerText.equals("BS")) {
+      return KeyStroke.backspace();
+    } else if (innerText.equals("TAB")) {
+      return KeyStroke.tab();
     }
     return null;
   }

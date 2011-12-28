@@ -18,6 +18,12 @@ public class KeyStrokeParserTest {
     assertTrue(getFrontKeyStroke("<C-X>").isControlDown());
   }
 
+  @Test
+  public void remaining() {
+    assertEquals("", new KeyStrokeParser("<C-x>").getRemainingInput());
+    assertEquals("", new KeyStrokeParser("<CR>").getRemainingInput());
+  }
+
   private void check(String string, KeyStroke keyStroke) {
     assertEquals(keyStroke, getFrontKeyStroke(string));
   }

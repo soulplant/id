@@ -32,8 +32,7 @@ public class EditorTypingTest extends EditorTestBase {
   @Test
   public void changeLine() {
     setFileContents("abc");
-    typeString("lCabc");
-    type(KeyStroke.escape());
+    typeString("lCabc<ESC>");
     assertEquals("aabc", file.getLine(0));
     assertFalse(editor.isInInsertMode());
   }
@@ -52,7 +51,6 @@ public class EditorTypingTest extends EditorTestBase {
   public void deleteAndRetype() {
     setFileContents("abc", "def");
     typeString("Dadefg");
-    type(KeyStroke.escape());
     assertFileContents("defg", "def");
   }
 
@@ -123,7 +121,7 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("vi");
     assertFalse(editor.isInInsertMode());
     assertTrue(editor.isInVisual());
-    type(KeyStroke.escape());
+    typeString("<ESC>");
     assertFalse(editor.isInVisual());
   }
 
@@ -191,9 +189,9 @@ public class EditorTypingTest extends EditorTestBase {
   @Test
   public void pageDown() {
     setFileContents("abc", "def", "ghi");
-    type(KeyStroke.fromControlChar('f'));
+    typeString("<C-f>");
     assertEquals(2, editor.getCursorPosition().getY());
-    type(KeyStroke.fromControlChar('b'));
+    typeString("<C-b>");
     assertEquals(0, editor.getCursorPosition().getY());
   }
 
@@ -328,41 +326,35 @@ public class EditorTypingTest extends EditorTestBase {
     assertEquals(2, editor.getCursorPosition().getX());
     typeString("abc");
     assertFileContents("  abc", "  abc");
-    type(KeyStroke.escape());
-    typeString("Oabc");
+    typeString("<ESC>Oabc");
     assertFileContents("  abc", "  abc", "  abc");
   }
 
   @Test
   public void autoIndentWithEnter() {
     setFileContents();
-    typeString("i  abc");
-    type(KeyStroke.enter());
-    typeString("abc");
+    typeString("i  abc<CR>abc");
     assertFileContents("  abc", "  abc");
   }
 
   @Test
   public void tabInsertsTwoSpaces() {
     setFileContents();
-    typeString("i");
-    type(KeyStroke.tab());
+    typeString("i<TAB>");
     assertFileContents("  ");
   }
 
   @Test
   public void tabAlignsToIndentationLevel() {
     setFileContents(" ");
-    typeString("A");
-    type(KeyStroke.tab());
+    typeString("A<TAB>");
     assertFileContents("  ");
   }
 
   @Test
   public void tabOnEndOfLine() {
     setFileContents("abc");
-    typeString("A");
-    type(KeyStroke.tab());
+    typeString("A<TAB>");
     assertFileContents("abc ");
     type(KeyStroke.tab());
     assertFileContents("abc   ");
@@ -371,8 +363,7 @@ public class EditorTypingTest extends EditorTestBase {
   @Test
   public void backspaceSoftTabsAtStartOfLine() {
     setFileContents("  abc");
-    typeString("la");
-    type(KeyStroke.backspace());
+    typeString("la<BS>");
     assertFileContents("abc");
     assertCursorPosition(0, 0);
   }
@@ -380,8 +371,7 @@ public class EditorTypingTest extends EditorTestBase {
   @Test
   public void dontBackspaceSoftTabsAtEndOfLine() {
     setFileContents("abc   ");
-    typeString("A");
-    type(KeyStroke.backspace());
+    typeString("A<BS>");
     assertFileContents("abc  ");
   }
 
@@ -407,15 +397,13 @@ public class EditorTypingTest extends EditorTestBase {
 
   @Test
   public void typingNonLetterKeysInInsertModeHasNoEffect() {
-    typeString("i");
-    type(KeyStroke.up());
+    typeString("i<UP>");
     assertFileContents();
   }
 
   @Test
   public void escapeExitsInsertMode() {
-    typeString("i");
-    type(KeyStroke.escape());
+    typeString("i<ESC>");
     assertFalse(editor.isInInsertMode());
   }
 
@@ -497,7 +485,7 @@ public class EditorTypingTest extends EditorTestBase {
     assertTrue(editor.isSearchHighlight(1, 0));
     typeString("g");
     assertFalse(editor.isSearchHighlight(1, 0));
-    type(KeyStroke.backspace());
+    typeString("<BS>");
     assertTrue(editor.isSearchHighlight(1, 0));
   }
 
@@ -511,8 +499,7 @@ public class EditorTypingTest extends EditorTestBase {
   @Test
   public void searchShouldModifyTheHighlight() {
     setFileContents("abc", "def", "def");
-    typeString("/def");
-    type(KeyStroke.enter());
+    typeString("/def<CR>");
     assertTrue(editor.isHighlight(2, 0));
   }
 
@@ -526,9 +513,7 @@ public class EditorTypingTest extends EditorTestBase {
   @Test
   public void goToChangeMarkersWithNextAndPrevious() {
     setFileContents("a", "a", "a");
-    typeString("jShi");
-    type(KeyStroke.escape());
-    typeString("kn");
+    typeString("jShi<ESC>kn");
     assertCursorPosition(1, 0);
     typeString("jN");
     assertCursorPosition(1, 0);
@@ -551,16 +536,14 @@ public class EditorTypingTest extends EditorTestBase {
   @Test
   public void escapePreventsSearchFromSettingANewHighlightPattern() {
     setFileContents("abc");
-    typeString("/bc");
-    type(KeyStroke.escape());
+    typeString("/bc<ESC>");
     assertFalse(editor.isHighlight(0, 2));
   }
 
   @Test
   public void escapeFromSearchReturnsCursorToOriginalPosition() {
     setFileContents("abc");
-    typeString("/bc");
-    type(KeyStroke.escape());
+    typeString("/bc<ESC>");
     assertCursorPosition(0, 0);
   }
 
@@ -574,28 +557,25 @@ public class EditorTypingTest extends EditorTestBase {
   @Test
   public void enterLeavesCursorWhereItIsInSearchMode() {
     setFileContents("abc");
-    typeString("/b");
-    type(KeyStroke.enter());
+    typeString("/b<CR>");
     assertCursorPosition(0, 1);
   }
 
   @Test
   public void enterOnALineWithNothingButAutoIndentationShouldClearThatLine() {
     setFileContents("  abc");
-    typeString("o");
-    type(KeyStroke.enter());
+    typeString("o<CR>");
     assertEquals("", editor.getLine(1));
   }
 
   @Test
   public void enterOnALineWithNothingButAutoIndentationShouldWorkWhenSplittingLines() {
     setFileContents("  abc");
-    typeString("fbi");
-    type(KeyStroke.enter());
+    typeString("fbi<CR>");
     assertFileContents(
         "  a",
         "  bc");
-    type(KeyStroke.enter());
+    typeString("<CR>");
     assertFileContents(
         "  a",
         "",

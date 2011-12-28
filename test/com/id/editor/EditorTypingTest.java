@@ -658,4 +658,22 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("VJ");
     assertFileContents("abc def");
   }
+
+  @Test
+  public void wipeAwayMarkers() {
+    setFileContents("abc");
+    typeString("Sx<ESC>W");
+    assertAllStatus(Tombstone.Status.NORMAL);
+    // Wiping change markers leaves them in an inconsistent state.
+    setOkForChangeMarkersToBeInconsistentAfterUndo();
+  }
+
+  @Test
+  public void wipeAwayMarkersRange() {
+    setFileContents("abc", "def", "ghi");
+    typeString("xjxjxVggW");
+    assertAllStatus(Tombstone.Status.NORMAL);
+    // Wiping change markers leaves them in an inconsistent state.
+    setOkForChangeMarkersToBeInconsistentAfterUndo();
+  }
 }

@@ -105,6 +105,12 @@ public class EditorKeyHandler {
         editor.undoLine();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("W"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.wipe();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("r"), new ShortcutTree.Action() {
       @Override
       public void execute() {

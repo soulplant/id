@@ -748,4 +748,15 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     applyCursorConstraints();
     file.breakPatch();
   }
+
+  public void wipe() {
+    if (isInVisual()) {
+      int startY = visual.getStartPoint().getY();
+      int endY = visual.getEndPoint().getY();
+      visual.toggleMode(Visual.Mode.NONE);
+      file.wipeRange(startY, endY);
+    } else {
+      file.wipe(cursor.getY());
+    }
+  }
 }

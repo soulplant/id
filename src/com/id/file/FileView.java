@@ -405,7 +405,17 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public void undoLineRange(int startY, int endY) {
     for (int i = endY; i >= startY; i--) {
-      file.undoLine(start + i);
+      undoLine(i);
     }
+  }
+
+  public void wipeRange(int startY, int endY) {
+    for (int i = endY; i >= startY; i--) {
+      wipe(i);
+    }
+  }
+
+  public void wipe(int y) {
+    file.wipe(start + y);
   }
 }

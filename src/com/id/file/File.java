@@ -254,4 +254,8 @@ public class File {
   public void dumpGraveyard() {
     System.out.println(graveyard);
   }
+
+  public void wipe(int y) {
+    graveyard.resetRange(y, y);
+  }
 }

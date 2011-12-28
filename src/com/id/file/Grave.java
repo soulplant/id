@@ -53,7 +53,7 @@ public class Grave {
     return history.get(history.size() - 1);
   }
 
-  private Tombstone getFreshestTombstone() {
+  public Tombstone getFreshestTombstone() {
     if (history.isEmpty()) {
       return null;
     }

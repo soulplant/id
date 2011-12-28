@@ -632,9 +632,6 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("U");
     assertFileContents("abc", "def", "ghi");
     assertAllStatus(Tombstone.Status.NORMAL);
-    // TODO(koz): Figure out if it's possible to implement U in such a way that
-    // this isn't necessary without blowing the complexity budget.
-    setOkForChangeMarkersToBeInconsistentAfterUndo();
   }
 
   @Test

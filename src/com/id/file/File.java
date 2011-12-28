@@ -224,8 +224,19 @@ public class File {
   }
 
   public void undoLine(int y) {
-    List<Tombstone> tombstones = getGrave(y).getTombstones();
-    getGrave(y).clear();
+    Grave grave = getGrave(y);
+    if (grave.isEmpty()) {
+      // Nothing to do but change the line back to what it was.
+      revertStatus(y);
+      return;
+    }
+    Tombstone tombstone = grave.getFreshestTombstone();
+    insertLine(y + 1, tombstone.getCurrent());
+    undoLine(y + 1);
+    undoLine(y);
+  }
+
+  private void revertStatus(int y) {
     switch (getStatus(y)) {
     case NEW:
       removeLine(y);
@@ -238,15 +249,6 @@ public class File {
       // Do nothing.
       break;
     }
-    int i = 1;
-    for (Tombstone tombstone : tombstones) {
-      plantTombstone(y + i++, tombstone);
-    }
-  }
-
-  private void plantTombstone(int y, Tombstone tombstone) {
-    insertLine(y, tombstone.getOriginal());
-    graveyard.getTombstone(y).reset();
   }
 
   public void dumpGraveyard() {

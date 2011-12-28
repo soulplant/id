@@ -200,7 +200,7 @@ public class EditorTypingTest extends EditorTestBase {
     setFileContents("abc", "def", "ghi");
     typeString("jVJ");
     assertFalse(editor.isInVisual());
-    assertFileContents("abc", "defghi");
+    assertFileContents("abc", "def ghi");
   }
 
   @Test
@@ -650,5 +650,12 @@ public class EditorTypingTest extends EditorTestBase {
   public void endOfLineWorksOnEmptyLine() {
     setFileContents("");
     typeString("$");
+  }
+
+  @Test
+  public void joinCompactsWhitespace() {
+    setFileContents("abc", "    def");
+    typeString("VJ");
+    assertFileContents("abc def");
   }
 }

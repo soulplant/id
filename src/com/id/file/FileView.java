@@ -210,7 +210,30 @@ public class FileView implements File.Listener, ModifiedListener {
 
   private void join(int y) {
     String nextLine = removeLine(y + 1);
-    changeLine(y, getLine(y) + nextLine);
+    changeLine(y, removeTrailingWhitespace(getLine(y)) + " " + removeLeadingWhitespace(nextLine));
+  }
+
+  private String removeLeadingWhitespace(String line) {
+    for (int i = 0; i < line.length(); i++) {
+      if (!isWhitespace(line.charAt(i))) {
+        return line.substring(i);
+      }
+    }
+    return "";
+  }
+
+  private String removeTrailingWhitespace(String line) {
+    for (int i = line.length() - 1; i >= 0; i--) {
+      if (!isWhitespace(line.charAt(i))) {
+        return line.substring(0, i + 1);
+      }
+    }
+    return "";
+  }
+
+  private boolean isWhitespace(char c) {
+    // TODO(koz): Make more robust.
+    return c == ' ';
   }
 
   public String getWordUnder(int y, int x) {

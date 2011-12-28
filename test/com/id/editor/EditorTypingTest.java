@@ -650,4 +650,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("A");
     assertTrue(editor.isCursorInBounds());
   }
+
+  @Test
+  public void undoLineWorksOverVisualRange() {
+    setFileContents("abc", "def", "ghi");
+    typeString("xjxjxVggU");
+    assertFileContents("abc", "def", "ghi");
+  }
 }

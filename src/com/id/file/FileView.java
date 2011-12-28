@@ -379,4 +379,10 @@ public class FileView implements File.Listener, ModifiedListener {
   public void undoLine(int y) {
     file.undoLine(start + y);
   }
+
+  public void undoLineRange(int startY, int endY) {
+    for (int i = endY; i >= startY; i--) {
+      file.undoLine(start + i);
+    }
+  }
 }

@@ -735,7 +735,15 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
 
   public void undoLine() {
     startPatch();
-    file.undoLine(cursor.getY());
+    if (isInVisual()) {
+      int startY = visual.getStartPoint().getY();
+      int endY = visual.getEndPoint().getY();
+      visual.toggleMode(Visual.Mode.NONE);
+      file.undoLineRange(startY, endY);
+    } else {
+      file.undoLine(cursor.getY());
+    }
+    applyCursorConstraints();
     file.breakPatch();
   }
 }

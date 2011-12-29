@@ -225,6 +225,12 @@ public class EditorKeyHandler {
         editor.toggleVisual(Visual.Mode.LINE);
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("cw"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeWord();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("C"), new ShortcutTree.Action() {
       @Override
       public void execute() {

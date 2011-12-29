@@ -676,4 +676,11 @@ public class EditorTypingTest extends EditorTestBase {
     // Wiping change markers leaves them in an inconsistent state.
     setOkForChangeMarkersToBeInconsistentAfterUndo();
   }
+
+  @Test
+  public void changeWord() {
+    setFileContents("this is a test");
+    typeString("cwthat");
+    assertFileContents("that is a test");
+  }
 }

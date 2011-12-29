@@ -759,4 +759,11 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
       file.wipe(cursor.getY());
     }
   }
+
+  public void changeWord() {
+    startPatch();
+    int x = file.findNextSpace(cursor.getY(), cursor.getX());
+    file.removeText(cursor.getY(), cursor.getX(), x);
+    insert();
+  }
 }

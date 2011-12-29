@@ -234,13 +234,25 @@ public class EditorKeyHandler {
     normalTree.setShortcut(KeyStroke.fromString("c$"), new ShortcutTree.Action() {
       @Override
       public void execute() {
-        editor.changeLine();
+        editor.changeToEndOfLine();
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("dw"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.deleteWord();
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("d$"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.deleteToEndOfLine();
       }
     });
     normalTree.setShortcut(KeyStroke.fromString("C"), new ShortcutTree.Action() {
       @Override
       public void execute() {
-        editor.changeLine();
+        editor.changeToEndOfLine();
       }
     });
     normalTree.setShortcut(KeyStroke.fromString("D"), new ShortcutTree.Action() {

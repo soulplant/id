@@ -163,7 +163,7 @@ public class EditorTest extends EditorTestBase {
   public void changeLine() {
     setFileContents("abc");
     editor.right();
-    editor.changeLine();
+    editor.changeToEndOfLine();
     assertEquals("a", file.getLine(0));
     editor.escape();
     editor.undo();

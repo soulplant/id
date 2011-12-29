@@ -379,7 +379,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     return visual.contains(new Point(y, x));
   }
 
-  public void changeLine() {
+  public void changeToEndOfLine() {
     startPatch();
     file.removeText(cursor.getY(), cursor.getX());
     append();
@@ -761,9 +761,27 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   }
 
   public void changeWord() {
+    int x = file.findNextWordBreak(cursor.getY(), cursor.getX());
+    if (x == -1) {
+      changeToEndOfLine();
+      return;
+    }
     startPatch();
-    int x = file.findNextSpace(cursor.getY(), cursor.getX());
     file.removeText(cursor.getY(), cursor.getX(), x);
     insert();
+  }
+
+  public void deleteWord() {
+    int x = file.findNextWordBreak(cursor.getY(), cursor.getX());
+    if (x == -1) {
+      deleteToEndOfLine();
+      return;
+    }
+    if (getCurrentLineLength() > x && Character.isWhitespace(getCurrentLine().charAt(x))) {
+      x++;
+    }
+    startPatch();
+    file.removeText(cursor.getY(), cursor.getX(), x);
+    file.breakPatch();
   }
 }

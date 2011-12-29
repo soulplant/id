@@ -418,4 +418,18 @@ public class FileView implements File.Listener, ModifiedListener {
   public void wipe(int y) {
     file.wipe(start + y);
   }
+
+  public int findNextWordBreak(int y, int x) {
+    String line = getLine(y);
+    boolean foundLetter = !Character.isWhitespace(line.charAt(x));
+    for (int i = x; i < line.length(); i++) {
+      char c = line.charAt(i);
+      if (!Character.isWhitespace(c)) {
+        foundLetter = true;
+      } else if (foundLetter) {
+        return i;
+      }
+    }
+    return -1;
+  }
 }

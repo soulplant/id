@@ -682,6 +682,15 @@ public class EditorTypingTest extends EditorTestBase {
     setFileContents("this is a test");
     typeString("cwthat");
     assertFileContents("that is a test");
+    assertTrue(editor.isInInsertMode());
+  }
+
+  @Test
+  public void changeWordAtEndOfLine() {
+    setFileContents("test");
+    typeString("cw");
+    assertFileContents("");
+    assertTrue(editor.isInInsertMode());
   }
 
   @Test
@@ -689,5 +698,29 @@ public class EditorTypingTest extends EditorTestBase {
     setFileContents("this is a test");
     typeString("c$that");
     assertFileContents("that");
+    assertTrue(editor.isInInsertMode());
+  }
+
+  @Test
+  public void deleteWord() {
+    setFileContents("this is a test");
+    typeString("dw");
+    assertFileContents("is a test");
+    assertFalse(editor.isInInsertMode());
+  }
+
+  @Test
+  public void deleteWordAtEndOfLine() {
+    setFileContents("blah");
+    typeString("dw");
+    assertFileContents("");
+  }
+
+  @Test
+  public void deleteEndOfLine() {
+    setFileContents("tabcd efgh ijkl");
+    typeString("lD");
+    assertFileContents("t");
+    assertFalse(editor.isInInsertMode());
   }
 }

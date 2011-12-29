@@ -683,4 +683,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("cwthat");
     assertFileContents("that is a test");
   }
+
+  @Test
+  public void changeToEndOfLine() {
+    setFileContents("this is a test");
+    typeString("c$that");
+    assertFileContents("that");
+  }
 }

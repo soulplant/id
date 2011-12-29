@@ -16,7 +16,6 @@ import com.id.editor.Editor;
 class FileListEntryView extends JPanel {
   private static final int BOTTOM_PADDING_PX = 3;
   private static final int LEFT_PADDING_PX = 3;
-  private static final int SPACE_BETWEEN_INDICATOR_AND_TEXT = 6;
 
   private final Editor editor;
   private final boolean focused;

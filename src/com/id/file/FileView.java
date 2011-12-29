@@ -260,8 +260,36 @@ public class FileView implements File.Listener, ModifiedListener {
     return i;
   }
 
+  public String getFilenameUnder(int y, int x) {
+    int start = findFilenameStart(y, x);
+    int end = findFilenameEnd(y, x);
+    return getLine(y).substring(start, end + 1);
+  }
+
+  private int findFilenameEnd(int y, int x) {
+    String line = getLine(y);
+    int i = x;
+    while (i < line.length() - 1 && isFilenameCharacter(line.charAt(i + 1))) {
+      i++;
+    }
+    return i;
+  }
+
+  private int findFilenameStart(int y, int x) {
+    String line = getLine(y);
+    int i = x;
+    while (i > 0 && isFilenameCharacter(line.charAt(i - 1))) {
+      i--;
+    }
+    return i;
+  }
+
   private boolean isWordCharacter(char c) {
-    return Character.isLetterOrDigit(c) || c == '_';
+    return Character.isLetterOrDigit(c) || c == '_' || c == '.';
+  }
+
+  private boolean isFilenameCharacter(char c) {
+    return isWordCharacter(c) || c == '/';
   }
 
   public void appendText(int y, String text) {

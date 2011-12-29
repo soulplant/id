@@ -19,11 +19,15 @@ import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
 
 public class Editor implements KeyStrokeHandler, HighlightState.Listener {
-  public interface Context {
+  public interface EditorView {
     void moveViewportToIncludePoint(Point point);
     void recenterScreenOnPoint(Point point);
     int getViewportHeight();
     boolean isVisible(Point point);
+  }
+
+  public interface EditorEnvironment {
+    void openFile(String filename);
   }
 
   public enum FindMode {
@@ -53,7 +57,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     }
   }
 
-  class EmptyContext implements Context {
+  class EmptyView implements EditorView {
     @Override
     public void moveViewportToIncludePoint(Point point) {
       // Do nothing.
@@ -75,11 +79,19 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     }
   }
 
+  class EmptyEditorEnvironment implements EditorEnvironment {
+    @Override
+    public void openFile(String filename) {
+      // Do nothing.
+    }
+  }
+
   private final FileView file;
   private final Cursor cursor;
   private final Visual visual;
   private boolean inInsertMode = false;
-  private Context context = new EmptyContext();
+  private EditorView view = new EmptyView();
+  private EditorEnvironment environment = new EmptyEditorEnvironment();
   private Register register = null;
 
   private final EditorKeyHandler keyHandler;
@@ -104,18 +116,22 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     cursor.addListner(new Cursor.Listener() {
       @Override
       public void onMoved(int y, int x) {
-        context.moveViewportToIncludePoint(new Point(y, x));
+        view.moveViewportToIncludePoint(new Point(y, x));
       }
 
       @Override
       public void onJumped(int y, int x) {
         Point point = new Point(y, x);
-        if (!context.isVisible(point)) {
-          context.recenterScreenOnPoint(point);
+        if (!view.isVisible(point)) {
+          view.recenterScreenOnPoint(point);
         }
       }
     });
     keyHandler = new EditorKeyHandler();
+  }
+
+  public void setEnvironment(EditorEnvironment environment) {
+    this.environment = environment;
   }
 
   public String getLine(int y) {
@@ -499,17 +515,17 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     file.addModifiedListener(listener);
   }
 
-  public void setContext(Context context) {
-    this.context = context;
+  public void setContext(EditorView context) {
+    this.view = context;
   }
 
   public void downPage() {
-    cursor.moveBy(context.getViewportHeight() - 1, 0);
+    cursor.moveBy(view.getViewportHeight() - 1, 0);
     applyCursorConstraints();
   }
 
   public void upPage() {
-    cursor.moveBy(-(context.getViewportHeight() - 1), 0);
+    cursor.moveBy(-(view.getViewportHeight() - 1), 0);
     applyCursorConstraints();
   }
 
@@ -552,7 +568,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   }
 
   public void recenter() {
-    context.recenterScreenOnPoint(cursor.getPoint());
+    view.recenterScreenOnPoint(cursor.getPoint());
   }
 
   public void next() {
@@ -783,5 +799,9 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     startPatch();
     file.removeText(cursor.getY(), cursor.getX(), x);
     file.breakPatch();
+  }
+
+  public void openFileUnderCursor() {
+    environment.openFile(file.getFilenameUnder(cursor.getY(), cursor.getX()));
   }
 }

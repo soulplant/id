@@ -73,6 +73,14 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
     addAllFilesUnder(path);
   }
 
+  public void addCurrentPathToIndex() {
+    paths.add("");
+    for (String filename : fileSystem.getSubdirectories("")) {
+      addAllFilesUnder(filename);
+    }
+    return;
+  }
+
   public List<String> getMatches() {
     List<String> result = new ArrayList<String>();
     Pattern pattern = Pattern.compile(".*" + minibuffer.getText() + ".*");
@@ -91,8 +99,8 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
     }
     if (fileSystem.isDirectory(path)) {
       for (String filename : fileSystem.getSubdirectories(path)) {
-        String subDirectory = path + "/" + filename;
-        addAllFilesUnder(subDirectory);
+        String subdirectory = path + "/" + filename;
+        addAllFilesUnder(subdirectory);
       }
     } else if (fileSystem.isFile(path)) {
       filenames.add(path);

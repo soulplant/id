@@ -67,6 +67,9 @@ public class InMemoryFileSystem implements FileSystem {
   }
 
   private Node getNode(String path) {
+    if (path.isEmpty()) {
+      return root;
+    }
     String[] parts = path.split("/");
 
     Node node = root;

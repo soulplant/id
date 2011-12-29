@@ -14,7 +14,7 @@ import com.id.editor.Point;
 import com.id.file.ModifiedListener;
 
 @SuppressWarnings("serial")
-public class EditorPanel extends JPanel implements Editor.Context, ModifiedListener {
+public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedListener {
   private final TextPanel textPanel;
   private final Editor editor;
   private final JScrollPane scrollPane;

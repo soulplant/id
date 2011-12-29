@@ -25,6 +25,13 @@ public class InMemoryFileSystemTest {
   }
 
   @Test
+  public void bareNames() {
+    fileSystem.insertFile("a", "line 1");
+    assertTrue(fileSystem.isFile("a"));
+    assertEquals(1, fileSystem.getSubdirectories("").length);
+  }
+
+  @Test
   public void gettingNonExistentFileShouldntCrash() {
     fileSystem.getFile("doesn't exist");
   }

@@ -3,6 +3,7 @@ package com.id.app;
 import java.util.Arrays;
 
 import com.id.editor.Editor;
+import com.id.editor.Editor.EditorEnvironment;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
@@ -96,6 +97,12 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
       return null;
     }
     Editor editor = new Editor(new FileView(file), highlightState);
+    editor.setEnvironment(new EditorEnvironment() {
+      @Override
+      public void openFile(String filename) {
+        Controller.this.openFile(filename);
+      }
+    });
     editors.add(editor);
     return editor;
   }

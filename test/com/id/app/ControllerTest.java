@@ -44,15 +44,17 @@ public class ControllerTest {
     highlightState = new HighlightState();
     controller = new Controller(editors, fileSystem, fuzzyFinder, repo, highlightState);
 
-    fileSystem.insertFile("./a", "aaa");
-    fileSystem.insertFile("./b", "bbb");
-    fuzzyFinder.addPathToIndex(".");
+    fileSystem.insertFile("a", "aaa");
+    fileSystem.insertFile("b", "bbb");
+    fileSystem.insertFile("src/c.cc", "ccc");
+    fileSystem.insertFile("src/d.cc", "ddd");
+    fuzzyFinder.addCurrentPathToIndex();
   }
 
   @Test
   public void moveBetweenFilesEditingThem() {
-    controller.openFile("./a");
-    controller.openFile("./b");
+    controller.openFile("a");
+    controller.openFile("b");
     assertEquals("aaa", editors.get(0).getLine(0));
     assertEquals("bbb", editors.get(1).getLine(0));
     typeString("SxKx");
@@ -92,12 +94,11 @@ public class ControllerTest {
 
   @Test
   public void selectFromFuzzyFinderOpensFile() {
-    typeString("ta");
-    type(KeyStroke.enter());
+    typeString("ta<CR>");
     assertFalse(fuzzyFinder.isVisible());
     assertEquals(1, editors.size());
     assertEquals(0, editors.getFocusedIndex());
-    assertEquals("./a", editors.get(0).getFilename());
+    assertEquals("a", editors.get(0).getFilename());
   }
 
   @Test
@@ -110,8 +111,8 @@ public class ControllerTest {
 
   @Test
   public void closeCurrentFile() {
-    controller.openFile("./a");
-    controller.openFile("./b");
+    controller.openFile("a");
+    controller.openFile("b");
     controller.closeCurrentFile();
     assertEquals(1, editors.size());
   }
@@ -123,7 +124,7 @@ public class ControllerTest {
     fileDelta.addNewLine(0, "aaa");  // First line of "./a" is new.
     fileDelta.addDeletedLine(0, "deleted 1");  // We deleted two lines from the end of a.
     fileDelta.addDeletedLine(0, "deleted 2");
-    fileDeltas.put("./a", fileDelta);
+    fileDeltas.put("a", fileDelta);
     Diff diff = new Diff(fileDeltas);
     repo.setDiffResult(diff);
     controller.importDiffs();
@@ -138,7 +139,7 @@ public class ControllerTest {
 
   @Test
   public void filesGetSavedToTheFileSystem() {
-    Editor editor = controller.openFile("./a");
+    Editor editor = controller.openFile("a");
     typeString("SXXX");
     type(KeyStroke.escape());
     assertTrue(editor.isModified());
@@ -147,7 +148,7 @@ public class ControllerTest {
     type(KeyStroke.fromControlChar('s'));
     verify(listener).onModifiedStateChanged();
     assertFalse(editor.isModified());
-    assertEquals("XXX", fileSystem.getFile("./a").getLine(0));
+    assertEquals("XXX", fileSystem.getFile("a").getLine(0));
   }
 
   @Test
@@ -159,9 +160,9 @@ public class ControllerTest {
 
   @Test
   public void highlightIsGlobal() {
-    controller.openFile("./a");
+    controller.openFile("a");
     typeString("*");  // Sets highlight to 'aaa'.
-    controller.openFile("./b");
+    controller.openFile("b");
     typeString("Saaa");
     assertEquals("aaa", editors.get(1).getLine(0));
     assertTrue(editors.get(1).isHighlight(0, 0));
@@ -169,10 +170,17 @@ public class ControllerTest {
 
   @Test
   public void openingTheSameFileAgainRefocusesTheSpotlightOntoThatEditor() {
-    controller.openFile("./a");
-    controller.openFile("./b");
-    controller.openFile("./a");
+    controller.openFile("a");
+    controller.openFile("b");
+    controller.openFile("a");
     assertEquals(0, editors.getFocusedIndex());
+  }
+
+  @Test
+  public void gf() {
+    controller.openFile("a");
+    typeString("Ssrc/c.cc<ESC>gf");
+    assertEquals("src/c.cc", editors.getFocusedItem().getFilename());
   }
 
   private void type(KeyStroke keyStroke) {
@@ -181,7 +189,7 @@ public class ControllerTest {
 
   private void typeString(String string) {
     for (KeyStroke keyStroke : KeyStroke.fromString(string)) {
-      controller.handleKeyStroke(keyStroke);
+      type(keyStroke);
     }
   }
 }

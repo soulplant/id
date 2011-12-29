@@ -20,16 +20,24 @@ public class FuzzyFinderTest {
   private FuzzyFinder fuzzyFinder;
   private Listener listener;
   private SelectionListener selectionListener;
+
   @Before
   public void setup() {
+    setupWithFiles(
+        "src/browser/ui/chrome.h",
+        "src/browser/ui/chrome.cc",
+        "src/test",
+        "src/blah.gyp");
+  }
+
+  private void setupWithFiles(String... filenames) {
     fileSystem = new InMemoryFileSystem();
     fuzzyFinder = new FuzzyFinder(fileSystem);
     listener = mock(FuzzyFinder.Listener.class);
     selectionListener = mock(FuzzyFinder.SelectionListener.class);
-    fileSystem.insertFile("src/browser/ui/chrome.h");
-    fileSystem.insertFile("src/browser/ui/chrome.cc");
-    fileSystem.insertFile("src/test");
-    fileSystem.insertFile("src/blah.gyp");
+    for (String filename : filenames) {
+      fileSystem.insertFile(filename);
+    }
   }
 
   @Test
@@ -65,6 +73,14 @@ public class FuzzyFinderTest {
     fuzzyFinder.setVisible(true);
     type(KeyStroke.enter());
     assertFalse(fuzzyFinder.isVisible());
+  }
+
+  @Test
+  public void bareWords() {
+    setupWithFiles("a", "b");
+    fuzzyFinder.addCurrentPathToIndex();
+    typeString("a");
+    assertEquals(1, fuzzyFinder.getMatches().size());
   }
 
   private void type(KeyStroke keyStroke) {

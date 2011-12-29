@@ -40,7 +40,7 @@ public class RealFileSystem implements FileSystem {
 
   @Override
   public File getFile(String path) {
-    if (!isExistent(path)) {
+    if (!isExistent("./" + path)) {
       return null;
     }
     return loadFile(path);

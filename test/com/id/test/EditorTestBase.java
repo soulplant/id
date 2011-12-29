@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 
 import com.id.app.HighlightState;
 import com.id.editor.Editor;
+import com.id.editor.Register;
 import com.id.events.EditorKeyHandler;
 import com.id.events.KeyStroke;
 import com.id.file.File;
@@ -38,7 +39,7 @@ public class EditorTestBase {
     lastFileContents = lines;
     file = new File(lines);
     fileView = new FileView(file);
-    editor = new Editor(fileView, new HighlightState());
+    editor = new Editor(fileView, new HighlightState(), new Register());
     handler = new EditorKeyHandler();
   }
 

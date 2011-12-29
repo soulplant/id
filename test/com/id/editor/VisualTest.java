@@ -71,7 +71,7 @@ public class VisualTest {
     visual.toggleMode(Visual.Mode.CHAR);
     cursor.moveTo(1, 1);
     File file = new File("abc", "def");
-    Register register = visual.getRegister(new FileView(file));
+    TextFragment register = visual.getRegister(new FileView(file));
     assertEquals(2, register.getLineCount());
     assertEquals("bc", register.getLine(0));
     assertEquals("de", register.getLine(1));
@@ -83,7 +83,7 @@ public class VisualTest {
     visual.toggleMode(Visual.Mode.CHAR);
     cursor.moveTo(0, 2);
     File file = new File("abc");
-    Register register = visual.getRegister(new FileView(file));
+    TextFragment register = visual.getRegister(new FileView(file));
     assertEquals(1, register.getLineCount());
     assertEquals("bc", register.getLine(0));
   }
@@ -94,7 +94,7 @@ public class VisualTest {
     visual.toggleMode(Visual.Mode.LINE);
     cursor.moveTo(1, 1);
     File file = new File("abc", "def");
-    Register register = visual.getRegister(new FileView(file));
+    TextFragment register = visual.getRegister(new FileView(file));
     assertEquals(2, register.getLineCount());
     assertEquals("abc", register.getLine(0));
     assertEquals("def", register.getLine(1));

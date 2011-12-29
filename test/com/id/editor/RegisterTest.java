@@ -11,7 +11,7 @@ import com.id.file.FileView;
 public class RegisterTest {
   @Test
   public void insertsCharwiseContentsIntoALine() {
-    Register register = new Register(Visual.Mode.CHAR, false, "woo");
+    TextFragment register = new TextFragment(Visual.Mode.CHAR, false, "woo");
     File file = new File("abc", "def");
     FileView fileView = new FileView(file);
     register.put(0, 1, fileView);
@@ -20,7 +20,7 @@ public class RegisterTest {
 
   @Test
   public void insertsLinewiseContentsIntoLines() {
-    Register register = new Register(Visual.Mode.LINE, false, "woo", "a", "test");
+    TextFragment register = new TextFragment(Visual.Mode.LINE, false, "woo", "a", "test");
     File file = new File("abc", "def");
     FileView fileView = new FileView(file);
     register.put(1, 0, fileView);
@@ -39,7 +39,7 @@ public class RegisterTest {
 
   @Test
   public void insertMultilineCharwiseContentsInsertsLinebreaks() {
-    Register register = new Register(Visual.Mode.CHAR, false, "woo", "a", "test");
+    TextFragment register = new TextFragment(Visual.Mode.CHAR, false, "woo", "a", "test");
     File file = new File("abc", "def");
     FileView fileView = new FileView(file);
     register.put(0, 2, fileView);
@@ -48,7 +48,7 @@ public class RegisterTest {
 
   @Test
   public void emptyRegistersDoNothing() {
-    Register register = new Register(Visual.Mode.CHAR, false);
+    TextFragment register = new TextFragment(Visual.Mode.CHAR, false);
     File file = new File("abc", "def");
     FileView fileView = new FileView(file);
     register.put(0, 2, fileView);

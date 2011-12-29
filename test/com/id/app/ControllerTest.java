@@ -183,6 +183,15 @@ public class ControllerTest {
     assertEquals("src/c.cc", editors.getFocusedItem().getFilename());
   }
 
+  @Test
+  public void yankRegisterIsGlobal() {
+    controller.openFile("a");
+    typeString("Vy");
+    Editor b = controller.openFile("b");
+    typeString("P");
+    assertEquals("aaa", b.getLine(0));
+  }
+
   private void type(KeyStroke keyStroke) {
     controller.handleKeyStroke(keyStroke);
   }

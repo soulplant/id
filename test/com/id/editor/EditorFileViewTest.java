@@ -33,6 +33,6 @@ public class EditorFileViewTest {
   private void setup(int start, int end, String... lines) {
     file = new File(lines);
     fileView = new FileView(file, start, end);
-    editor = new Editor(fileView, new HighlightState());
+    editor = new Editor(fileView, new HighlightState(), new Register());
   }
 }

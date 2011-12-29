@@ -92,7 +92,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   private boolean inInsertMode = false;
   private EditorView view = new EmptyView();
   private EditorEnvironment environment = new EmptyEditorEnvironment();
-  private Register register = null;
 
   private final EditorKeyHandler keyHandler;
   private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();
@@ -104,10 +103,12 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   private Highlight highlight = new EmptyHighlight();
   private final HighlightState highlightState;
   private boolean justInsertedAutoIndent = false;
+  private final Register register;
 
-  public Editor(FileView fileView, HighlightState highlightState) {
+  public Editor(FileView fileView, HighlightState highlightState, Register register) {
     this.file = fileView;
     this.highlightState = highlightState;
+    this.register = register;
     this.cursor = new Cursor();
     this.visual = new Visual(this.cursor);
     this.highlightState.addListener(this);
@@ -409,7 +410,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   }
 
   public void deleteLine() {
-    register = new Register(Visual.Mode.LINE, false, getCurrentLine());
+    register.setContents(new TextFragment(Visual.Mode.LINE, false, getCurrentLine()));
     startPatch();
     file.removeLine(cursor.getY());
     file.breakPatch();
@@ -456,12 +457,12 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   public void delete(boolean breakPatch) {
     startPatch();
     if (isInVisual()) {
-      register = visual.getRegister(file);
+      register.setContents(visual.getRegister(file));
       visual.removeFrom(file);
       cursor.moveTo(visual.getStartPoint().getY(), visual.getStartPoint().getX());
       visual.toggleMode(Visual.Mode.NONE);
     } else {
-      register = new Register(Visual.Mode.CHAR, false, "" + getCharUnderCursor());
+      register.setContents(new TextFragment(Visual.Mode.CHAR, false, "" + getCharUnderCursor()));
       file.removeText(cursor.getY(), cursor.getX(), 1);
     }
     if (breakPatch) {
@@ -612,20 +613,20 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   }
 
   public void put() {
-    if (register == null) {
+    if (register.isEmpty()) {
       return;
     }
     startPatch();
-    register.put(cursor.getY(), cursor.getX(), file);
+    register.getContents().put(cursor.getY(), cursor.getX(), file);
     file.breakPatch();
   }
 
   public void putBefore() {
-    if (register == null) {
+    if (register.isEmpty()) {
       return;
     }
     startPatch();
-    register.putBefore(cursor.getY(), cursor.getX(), file);
+    register.getContents().putBefore(cursor.getY(), cursor.getX(), file);
     file.breakPatch();
   }
 
@@ -633,7 +634,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     if (!isInVisual()) {
       throw new IllegalStateException();
     }
-    register = visual.getRegister(file);
+    register.setContents(visual.getRegister(file));
     toggleVisual(Visual.Mode.NONE);
   }
 

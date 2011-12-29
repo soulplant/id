@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.id.app.HighlightState;
 import com.id.editor.Editor;
 import com.id.editor.Patterns;
+import com.id.editor.Register;
 import com.id.editor.Visual;
 import com.id.events.KeyStroke;
 import com.id.file.File;
@@ -136,6 +137,6 @@ public class EditorRendererTest {
   private void setFileContents(String... lines) {
     file = new File(lines);
     fileView = new FileView(file);
-    editor = new Editor(fileView, new HighlightState());
+    editor = new Editor(fileView, new HighlightState(), new Register());
   }
 }

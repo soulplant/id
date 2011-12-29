@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.id.editor.Editor;
 import com.id.editor.Editor.EditorEnvironment;
+import com.id.editor.Register;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
@@ -21,6 +22,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   private final FuzzyFinder fuzzyFinder;
   private final Repository repository;
   private final HighlightState highlightState;
+  private final Register register = new Register();
 
   public Controller(ListModel<Editor> editors, FileSystem fileSystem,
       FuzzyFinder fuzzyFinder, Repository repository,
@@ -96,7 +98,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     if (file == null) {
       return null;
     }
-    Editor editor = new Editor(new FileView(file), highlightState);
+    Editor editor = new Editor(new FileView(file), highlightState, register);
     editor.setEnvironment(new EditorEnvironment() {
       @Override
       public void openFile(String filename) {

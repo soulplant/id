@@ -75,7 +75,7 @@ public class Visual {
     return mode.contains(this, point);
   }
 
-  public Register getRegister(FileView fileView) {
+  public TextFragment getRegister(FileView fileView) {
     List<String> lines = new ArrayList<String>();
     int startLine = getStartPoint().getY();
     int endLine = getEndPoint().getY();
@@ -106,9 +106,9 @@ public class Visual {
     }
   }
 
-  private Register makeRegister(List<String> lines) {
+  private TextFragment makeRegister(List<String> lines) {
     String[] array = new String[lines.size()];
-    return new Register(mode, false, lines.toArray(array));
+    return new TextFragment(mode, false, lines.toArray(array));
   }
 
   public void removeFrom(FileView file) {

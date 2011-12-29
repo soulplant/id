@@ -80,7 +80,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
   @Override
   public boolean isVisible(Point point) {
     return textPanel.getVisibleRect().contains(
-        point.getX() * Constants.CHAR_WIDTH,
-        point.getY() * Constants.CHAR_HEIGHT);
+        point.getX() * Constants.CHAR_WIDTH_PX,
+        point.getY() * Constants.CHAR_HEIGHT_PX);
   }
 }

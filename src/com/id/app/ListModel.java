@@ -1,10 +1,11 @@
 package com.id.app;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
-public class ListModel<T> {
+public class ListModel<T> implements Iterable<T> {
   public interface Listener<T> {
     void onAdded(int i, T t);
     void onFocusChanged(int i, T t);
@@ -106,5 +107,27 @@ public class ListModel<T> {
 
   public boolean isEmpty() {
     return items.isEmpty();
+  }
+
+  @Override
+  public Iterator<T> iterator() {
+    return new Iterator<T>() {
+      private int i = 0;
+
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public T next() {
+        return get(i++);
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
   }
 }

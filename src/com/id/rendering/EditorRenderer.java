@@ -50,6 +50,9 @@ public class EditorRenderer {
   private void setLine(int matrixY, int startX, int length, Matrix matrix, int lineY) {
     String line = editor.getLine(lineY);
     line = safeSubstring(line, startX, length);
+    if (hasTrailingWhitespace(line)) {
+      matrix.setWhitespaceIndicator(matrixY, line.length() - 1, true);
+    }
     for (int i = 0; i < Math.min(matrix.getWidth(), line.length()); i++) {
       matrix.setLetter(matrixY, i, line.charAt(i));
       if (editor.isInVisual(lineY, i)) {
@@ -62,5 +65,12 @@ public class EditorRenderer {
         matrix.setSearchHighlight(matrixY, i, true);
       }
     }
+  }
+
+  private boolean hasTrailingWhitespace(String line) {
+    if (line.isEmpty()) {
+      return false;
+    }
+    return Character.isWhitespace(line.charAt(line.length() - 1));
   }
 }

@@ -64,6 +64,10 @@ public class Matrix {
           g.setColor(Color.CYAN);
           g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
         }
+        if (slug.isWhitespaceIndicator(x)) {
+          g.setColor(Color.GRAY);
+          g.fillRect(boxX + charWidthPx, boxY, 2, charHeightPx);
+        }
       }
       // NOTE drawString() takes the bottom y coordinate of the rect to draw the text in.
       int textY = (lineOffset + y + 1) * charHeightPx - fontDescentPx;
@@ -111,5 +115,13 @@ public class Matrix {
 
   public boolean isSearchHighlight(int y, int x) {
     return slugs.get(y).isSearchHighlight(x);
+  }
+
+  public void setWhitespaceIndicator(int y, int x, boolean b) {
+    slugs.get(y).setWhitespaceIndicator(x, b);
+  }
+
+  public boolean isWhitespaceIndicator(int y, int x) {
+    return slugs.get(y).isWhitespaceIndicator(x);
   }
 }

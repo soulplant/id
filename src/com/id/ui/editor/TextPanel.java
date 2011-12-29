@@ -71,7 +71,11 @@ public class TextPanel extends JPanel {
     int cursorXPx = point.getX() * fontWidthPx;
     int cursorWidthPx = editor.isInInsertMode() ? 2 : fontWidthPx;
     int cursorHeightPx = fontHeightPx;
-    g.drawRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
+    if (editor.isInInsertMode()) {
+      g.fillRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
+    } else {
+      g.drawRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
+    }
     drawOutlineBox(g);
   }
 

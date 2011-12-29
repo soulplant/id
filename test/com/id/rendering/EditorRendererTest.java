@@ -101,6 +101,13 @@ public class EditorRendererTest {
     assertTrue(matrix.isSearchHighlight(0, 0));
   }
 
+  @Test
+  public void testTrailingWhitespaceIndicator() {
+    setFileContents("abc  ");
+    renderMatrix(new Rectangle(0, 0, 50, 50), 10, 10);
+    assertTrue(matrix.isWhitespaceIndicator(0, 4));
+  }
+
   private void renderMatrix(Rectangle screen, int fontWidthPx, int fontHeightPx) {
     renderer = new EditorRenderer(editor, screen, fontWidthPx, fontHeightPx, 0);
     matrix = renderer.render();

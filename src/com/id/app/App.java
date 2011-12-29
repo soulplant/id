@@ -42,7 +42,7 @@ public class App {
     BashShell shell = new BashShell(null);
     Repository repository = new GitRepository(shell);
     FuzzyFinder fuzzyFinder = new FuzzyFinder(fileSystem);
-    fuzzyFinder.addPathToIndex(".");
+    fuzzyFinder.addCurrentPathToIndex();
     HighlightState highlightState = new HighlightState();
     final Controller controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState);
 

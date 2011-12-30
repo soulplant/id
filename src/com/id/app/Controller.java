@@ -23,15 +23,17 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   private final Repository repository;
   private final HighlightState highlightState;
   private final Register register = new Register();
+  private final ListModel<Editor> stack;
 
   public Controller(ListModel<Editor> editors, FileSystem fileSystem,
       FuzzyFinder fuzzyFinder, Repository repository,
-      HighlightState highlightState) {
+      HighlightState highlightState, ListModel<Editor> stack) {
     this.editors = editors;
     this.fileSystem = fileSystem;
     this.fuzzyFinder = fuzzyFinder;
     this.repository = repository;
     this.highlightState = highlightState;
+    this.stack = stack;
     fuzzyFinder.setSelectionListener(this);
     shortcuts.setShortcut(KeyStroke.fromString("J"), new ShortcutTree.Action() {
       @Override
@@ -104,9 +106,18 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
       public void openFile(String filename) {
         Controller.this.openFile(filename);
       }
+
+      @Override
+      public void addSnippet(FileView fileView) {
+        Controller.this.addSnippet(fileView);
+      }
     });
     editors.add(editor);
     return editor;
+  }
+
+  protected void addSnippet(FileView fileView) {
+    stack.add(new Editor(fileView, highlightState, register));
   }
 
   private Editor attemptToFocusExistingEditor(String filename) {

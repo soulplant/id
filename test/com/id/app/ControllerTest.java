@@ -33,16 +33,18 @@ public class ControllerTest {
   private Listener fuzzyListener;
   private InMemoryRepository repo;
   private HighlightState highlightState;
+  private ListModel<Editor> stack;
 
   @Before
   public void setup() {
     editors = new ListModel<Editor>();
+    stack = new ListModel<Editor>();
     fileSystem = new InMemoryFileSystem();
     fuzzyFinder = new FuzzyFinder(fileSystem);
     fuzzyListener = mock(FuzzyFinder.Listener.class);
     repo = new InMemoryRepository();
     highlightState = new HighlightState();
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repo, highlightState);
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repo, highlightState, stack);
 
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");
@@ -190,6 +192,13 @@ public class ControllerTest {
     Editor b = controller.openFile("b");
     typeString("P");
     assertEquals("aaa", b.getLine(0));
+  }
+
+  @Test
+  public void addSnippet() {
+    controller.openFile("a");
+    typeString("V;");
+    assertEquals(1, stack.size());
   }
 
   private void type(KeyStroke keyStroke) {

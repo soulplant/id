@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import com.id.editor.Editor;
@@ -23,6 +22,7 @@ import com.id.ui.app.AppFrame;
 import com.id.ui.app.EditorSwapperView;
 import com.id.ui.app.FileListView;
 import com.id.ui.app.FuzzyFinderFrame;
+import com.id.ui.app.StackView;
 
 public class App {
   public static final Font FONT = loadFont();
@@ -38,18 +38,20 @@ public class App {
 
   private static void startApp() {
     final ListModel<Editor> editors = new ListModel<Editor>();
+    final ListModel<Editor> stack = new ListModel<Editor>();
     FileSystem fileSystem = new RealFileSystem();
     BashShell shell = new BashShell(null);
     Repository repository = new GitRepository(shell);
     FuzzyFinder fuzzyFinder = new FuzzyFinder(fileSystem);
     fuzzyFinder.addCurrentPathToIndex();
     HighlightState highlightState = new HighlightState();
-    final Controller controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState);
+    final Controller controller = new Controller(editors, fileSystem,
+        fuzzyFinder, repository, highlightState, stack);
 
     final EditorSwapperView spotlightView = new EditorSwapperView(editors);
     final FileListView fileListView = new FileListView(editors);
-    JLabel stack = new JLabel("TODO implement stack");
-    final AppFrame frame = new AppFrame(fileListView, spotlightView, stack, controller);
+    StackView stackView = new StackView(stack);
+    final AppFrame frame = new AppFrame(fileListView, spotlightView, stackView, controller);
     FuzzyFinderFrame fuzzyFinderFrame = new FuzzyFinderFrame(fuzzyFinder, frame);
     fuzzyFinder.addListener(fuzzyFinderFrame);
 

@@ -345,14 +345,6 @@ public class FileView implements File.Listener, ModifiedListener {
     }
   }
 
-  public List<String> getLineRange(int startY, int endY) {
-    List<String> result = new ArrayList<String>();
-    for (int i = startY; i <= endY; i++) {
-      result.add(getLine(i));
-    }
-    return result;
-  }
-
   public void setDiffMarkers(FileDelta delta) {
     file.setDiffMarkers(delta);
   }
@@ -374,7 +366,11 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public List<String> getLineList() {
-    return getLineRange(start, end);
+    return file.getLineRange(start, end);
+  }
+
+  public List<String> getLineRange(int start, int end) {
+    return file.getLineRange(this.start + start, this.start + end);
   }
 
   private void fireOnLineInserted(int y, String line) {
@@ -459,5 +455,9 @@ public class FileView implements File.Listener, ModifiedListener {
       }
     }
     return -1;
+  }
+
+  public FileView makeView(int startY, int endY) {
+    return file.makeView(start + startY, start + endY);
   }
 }

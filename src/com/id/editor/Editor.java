@@ -30,6 +30,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
 
   public interface EditorEnvironment {
     void openFile(String filename);
+    void addSnippet(FileView fileView);
   }
 
   public enum FindMode {
@@ -84,6 +85,11 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   class EmptyEditorEnvironment implements EditorEnvironment {
     @Override
     public void openFile(String filename) {
+      // Do nothing.
+    }
+
+    @Override
+    public void addSnippet(FileView fileView) {
       // Do nothing.
     }
   }
@@ -519,8 +525,8 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     file.addModifiedListener(listener);
   }
 
-  public void setContext(EditorView context) {
-    this.view = context;
+  public void setView(EditorView view) {
+    this.view = view;
   }
 
   public void downPage() {
@@ -846,5 +852,13 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     int outdentAmount = remainder == 0 ? TAB_SIZE : remainder;
     file.removeText(cursor.getY(), 0, outdentAmount);
     file.breakPatch();
+  }
+
+  public void makeSnippetFromVisual() {
+    if (!isInVisual()) {
+      throw new IllegalStateException();
+    }
+    environment.addSnippet(file.makeView(visual.getStartY(), visual.getEndY()));
+    visual.toggleMode(Visual.Mode.NONE);
   }
 }

@@ -18,6 +18,7 @@ import com.id.platform.RealFileSystem;
 
 public class EndToEndTest {
   private ListModel<Editor> editors;
+  private ListModel<Editor> stack;
   private Repository repository;
   private FuzzyFinder fuzzyFinder;
   private Controller controller;
@@ -31,11 +32,12 @@ public class EndToEndTest {
     tempDir = createTempDirectory();
     shell = new BashShell(tempDir);
     editors = new ListModel<Editor>();
+    stack = new ListModel<Editor>();
     fileSystem = new RealFileSystem(tempDir);
     repository = new GitRepository(shell);
     fuzzyFinder = new FuzzyFinder(fileSystem);
     highlightState = new HighlightState();
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState);
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState, stack);
     repository.init();
   }
 

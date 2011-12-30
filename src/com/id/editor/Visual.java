@@ -63,8 +63,16 @@ public class Visual {
     return isCursorBeforeAnchor() ? cursor.getPoint() : anchor;
   }
 
+  public int getStartY() {
+    return getStartPoint().getY();
+  }
+
   public Point getEndPoint() {
     return isCursorBeforeAnchor() ? anchor : cursor.getPoint();
+  }
+
+  public int getEndY() {
+    return getEndPoint().getY();
   }
 
   public boolean isCursorBeforeAnchor() {

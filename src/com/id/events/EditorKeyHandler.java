@@ -389,6 +389,13 @@ public class EditorKeyHandler {
         // Do nothing.
       }
     });
+    visualTree.setShortcut(KeyStroke.fromString(";"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.makeSnippetFromVisual();
+      }
+    });
   }
 
   public boolean handleKeyPress(KeyStroke event, Editor editor) {

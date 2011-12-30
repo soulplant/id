@@ -32,7 +32,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
     this.add(filenameLabel, BorderLayout.PAGE_START);
     scrollPane = new JScrollPane(panel);
     this.add(scrollPane, BorderLayout.CENTER);
-    editor.setContext(this);
+    editor.setView(this);
     editor.addFileModifiedListener(this);
   }
 

@@ -103,6 +103,16 @@ public class FileTest {
     assertEquals(0, file.getLineCount());
   }
 
+  @Test
+  public void makeView() {
+    File file = new File();
+    file.insertLine(0, "HI");
+    file.insertLine(1, "there");
+    file.insertLine(2, "yo");
+    FileView view = file.makeView(1, 2);
+    view.getLineList();
+  }
+
   private static boolean isAllStatus(Tombstone.Status status, File file) {
     for (int i = 0; i < file.getLineCount(); i++) {
       if (file.getStatus(i) != status) {

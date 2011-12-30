@@ -761,4 +761,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("\\>");
     assertFileContents("    blah");
   }
+
+  @Test
+  public void creatingSnippetExitsVisual() {
+    setFileContents("abc");
+    typeString("V;");
+    assertFalse(editor.isInVisual());
+  }
 }

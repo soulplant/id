@@ -264,4 +264,16 @@ public class File {
   public void wipe(int y) {
     graveyard.resetRange(y, y);
   }
+
+  public List<String> getLineRange(int startY, int endY) {
+    List<String> result = new ArrayList<String>();
+    for (int i = startY; i <= endY; i++) {
+      result.add(getLine(i));
+    }
+    return result;
+  }
+
+  public FileView makeView(int start, int end) {
+    return new FileView(this, start, end);
+  }
 }

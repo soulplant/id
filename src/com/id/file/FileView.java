@@ -285,11 +285,11 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   private boolean isWordCharacter(char c) {
-    return Character.isLetterOrDigit(c) || c == '_' || c == '.';
+    return Character.isLetterOrDigit(c) || c == '_';
   }
 
   private boolean isFilenameCharacter(char c) {
-    return isWordCharacter(c) || c == '/';
+    return isWordCharacter(c) || c == '/' || c == '.';
   }
 
   public void appendText(int y, String text) {

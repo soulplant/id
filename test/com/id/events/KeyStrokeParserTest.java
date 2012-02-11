@@ -24,6 +24,18 @@ public class KeyStrokeParserTest {
     assertEquals("", new KeyStrokeParser("<CR>").getRemainingInput());
   }
 
+  @Test
+  public void escapedLetter() {
+    KeyStrokeParser parser = new KeyStrokeParser("\\<");
+    assertEquals("", parser.getRemainingInput());
+    assertEquals(KeyStroke.fromChar('<'), parser.getKeyStroke());
+  }
+
+  @Test
+  public void parseKeyStrokesOnEscapedLetters() {
+    KeyStrokeParser.parseKeyStrokes("\\<");
+  }
+
   private void check(String string, KeyStroke keyStroke) {
     assertEquals(keyStroke, getFrontKeyStroke(string));
   }

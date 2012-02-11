@@ -44,6 +44,13 @@ public class KeyStrokeParser {
       String innerText = input.substring(1, i);
       setResult(parseAngledBracketsText(innerText), i + 1);
       return;
+    } else if (c == ESCAPE_CHAR) {
+      if (input.length() < 2) {
+        error();
+        return;
+      }
+      setResult(KeyStroke.fromChar(input.charAt(1)), 2);
+      return;
     }
     setResult(KeyStroke.fromChar(c), 1);
   }

@@ -165,7 +165,7 @@ public class EditorKeyHandler {
         editor.backspace();
       }
     });
-    normalTree.setShortcut(KeyStroke.fromString("\\"), new ShortcutTree.Action() {
+    normalTree.setShortcut(KeyStroke.fromString("\\\\"), new ShortcutTree.Action() {
       @Override
       public void execute() {
         editor.clearHighlight();
@@ -344,6 +344,20 @@ public class EditorKeyHandler {
       @Override
       public void execute() {
         editor.enterSearch();
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("\\>"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.indent();
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("\\<"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.outdent();
       }
     });
 

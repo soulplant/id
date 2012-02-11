@@ -19,6 +19,8 @@ import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
 
 public class Editor implements KeyStrokeHandler, HighlightState.Listener {
+  private static final int TAB_SIZE = 2;
+
   public interface EditorView {
     void moveViewportToIncludePoint(Point point);
     void recenterScreenOnPoint(Point point);
@@ -818,5 +820,31 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
 
   public void openFileUnderCursor() {
     environment.openFile(file.getFilenameUnder(cursor.getY(), cursor.getX()));
+  }
+
+  public void indent() {
+    startPatch();
+    String indent = getIndentForLine(cursor.getY());
+    int remainder = indent.length() % TAB_SIZE;
+    int indentAmount = TAB_SIZE - remainder;
+    file.changeLine(cursor.getY(), repeatChar(' ', indentAmount) + getCurrentLine());
+    file.breakPatch();
+  }
+
+  private String repeatChar(char c, int n) {
+    StringBuffer buffer = new StringBuffer();
+    for (int i = 0; i < n; i++) {
+      buffer.append(c);
+    }
+    return buffer.toString();
+  }
+
+  public void outdent() {
+    startPatch();
+    String indent = getIndentForLine(cursor.getY());
+    int remainder = indent.length() % TAB_SIZE;
+    int outdentAmount = remainder == 0 ? TAB_SIZE : remainder;
+    file.removeText(cursor.getY(), 0, outdentAmount);
+    file.breakPatch();
   }
 }

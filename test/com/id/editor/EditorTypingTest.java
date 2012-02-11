@@ -740,4 +740,25 @@ public class EditorTypingTest extends EditorTestBase {
     assertFileContents("t");
     assertFalse(editor.isInInsertMode());
   }
+
+  @Test
+  public void outdent() {
+    setFileContents("  blah");
+    typeString("\\<");
+    assertFileContents("blah");
+  }
+
+  @Test
+  public void indent() {
+    setFileContents("  blah");
+    typeString("\\>");
+    assertFileContents("    blah");
+  }
+
+  @Test
+  public void indentWithOddNumberOfLeadingSpaces() {
+    setFileContents("   blah");
+    typeString("\\>");
+    assertFileContents("    blah");
+  }
 }

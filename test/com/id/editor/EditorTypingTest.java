@@ -306,6 +306,7 @@ public class EditorTypingTest extends EditorTestBase {
     setFileContents("abc", "def");
     typeString("dd");
     assertFileContents("def");
+    assertCursorPosition(0, 0);
   }
 
   @Test

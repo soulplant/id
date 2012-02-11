@@ -414,6 +414,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     startPatch();
     file.removeLine(cursor.getY());
     file.breakPatch();
+    cursor.moveTo(cursor.getY(), 0);
     applyCursorConstraints();
   }
 

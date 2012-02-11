@@ -1,5 +1,7 @@
 package com.id.editor;
 
+import com.id.editor.Visual.Mode;
+
 public class Register {
   private TextFragment contents = null;
 
@@ -13,5 +15,9 @@ public class Register {
 
   public boolean isEmpty() {
     return contents == null;
+  }
+
+  public Mode getMode() {
+    return contents.getMode();
   }
 }

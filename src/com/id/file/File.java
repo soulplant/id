@@ -64,7 +64,13 @@ public class File {
 
   public void insertLine(int y, String line) {
     if (isEmpty()) {
-      y = 0;
+      if (y == 1) {
+        lines.add(0, "\n");
+        fireLineInserted(0, "\n");
+      }
+      else {
+        y = 0;
+      }
     }
     lines.add(y, line);
     fireLineInserted(y, line);

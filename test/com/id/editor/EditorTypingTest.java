@@ -3,7 +3,6 @@ package com.id.editor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -299,7 +298,7 @@ public class EditorTypingTest extends EditorTestBase {
   public void deleteVisualYanks() {
     setFileContents("abc");
     typeString("Vdpp");
-    setFileContents("abc", "abc");
+    setFileContents("\n", "abc", "abc");
   }
 
   @Test
@@ -310,11 +309,28 @@ public class EditorTypingTest extends EditorTestBase {
   }
 
   @Test
+  public void visualModePutReplacesCurrentLine() {
+    setFileContents("abc", "efg");
+    typeString("Vyj");
+    typeString("Vp");
+    assertFileContents("abc", "abc");
+    assertFalse(editor.isInVisual());
+  }
+
+  @Test
   public void ddYankSingleLine() {
     setFileContents("abc");
     typeString("ddp");
-    assertFileContents("abc");
-    assertCursorPosition(0, 0);
+    assertFileContents("\n", "abc");
+    assertCursorPosition(1, 0);
+  }
+
+  @Test
+  public void cursorPositionAfterPut() {
+    setFileContents("abc", "cdf", "efg");
+    typeString("jjddp");
+    assertLineContents(2, "efg");
+    assertCursorPosition(2, 0);
   }
 
   @Test

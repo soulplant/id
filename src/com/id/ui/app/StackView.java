@@ -15,7 +15,7 @@ public class StackView extends JPanel {
 
   public StackView(ListModel<Editor> editors) {
     this.editors = editors;
-    setLayout(new GridBagLayout());
+    setLayout(new StackLayout());
     updateEditors();
     editors.addListener(new ListModel.Listener<Editor>() {
       @Override

@@ -1,5 +1,6 @@
 package com.id.app;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
@@ -19,6 +20,7 @@ import com.id.git.Repository;
 import com.id.platform.FileSystem;
 import com.id.platform.RealFileSystem;
 import com.id.ui.app.AppFrame;
+import com.id.ui.app.AppPanel;
 import com.id.ui.app.EditorSwapperView;
 import com.id.ui.app.FileListView;
 import com.id.ui.app.FuzzyFinderFrame;
@@ -51,14 +53,16 @@ public class App {
     final EditorSwapperView spotlightView = new EditorSwapperView(editors);
     final FileListView fileListView = new FileListView(editors);
     StackView stackView = new StackView(stack);
-    final AppFrame frame = new AppFrame(fileListView, spotlightView, stackView, controller);
-    FuzzyFinderFrame fuzzyFinderFrame = new FuzzyFinderFrame(fuzzyFinder, frame);
-    fuzzyFinder.addListener(fuzzyFinderFrame);
+    final AppPanel panel = new AppPanel(fileListView, spotlightView, stackView, controller);
 
     editors.addListener(fileListView);
     editors.addListener(spotlightView);
 
-    frame.setVisible(true);
+    AppFrame appFrame = new AppFrame(panel, false, new Dimension(1024, 768));
+    appFrame.setVisible(true);
+
+    FuzzyFinderFrame fuzzyFinderFrame = new FuzzyFinderFrame(fuzzyFinder, appFrame);
+    fuzzyFinder.addListener(fuzzyFinderFrame);
   }
 
   public static void configureFont(Graphics g) {

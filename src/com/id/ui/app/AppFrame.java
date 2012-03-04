@@ -1,7 +1,8 @@
 package com.id.ui.app;
 
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -9,70 +10,54 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
-import com.id.events.KeyStroke;
-import com.id.events.KeyStrokeHandler;
-
 @SuppressWarnings("serial")
 public class AppFrame extends JFrame implements KeyListener {
-  private final EditorSwapperView spotlightView;
-  private final FileListView fileListView;
-  private final Component stackView;
-  private final KeyStrokeHandler handler;
+  private final AppPanel appPanel;
+  private final boolean isFullscreen;
+  private final Dimension originalSize;
 
-  public AppFrame(FileListView fileListView, EditorSwapperView spotlightView, Component stackView, KeyStrokeHandler handler) {
-    this.spotlightView = spotlightView;
-    this.fileListView = fileListView;
-    this.stackView = stackView;
-    this.handler = handler;
+  public AppFrame(AppPanel appPanel, boolean isFullscreen, Dimension originalSize) {
+    this.appPanel = appPanel;
+    this.isFullscreen = isFullscreen;
+    this.originalSize = originalSize;
+    appPanel.setSize(originalSize);
+    getContentPane().add(appPanel);
     setTitle("id");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setLayout(new AppLayout());
-    setFocusTraversalKeysEnabled(false);
-    getContentPane().add(fileListView, "filelist");
-    getContentPane().add(spotlightView, "spotlight");
-    getContentPane().add(stackView, "stack");
-    setSize(new Dimension(1024, 768));
+    if (isFullscreen) {
+      setUndecorated(true);
+      GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+      gd.setFullScreenWindow(this);
+    }
+    addKeyListener(this);
     addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
         pack();
       }
     });
-    addKeyListener(this);
+    pack();
+    setVisible(true);
   }
 
   @Override
-  public void keyTyped(KeyEvent e) {
+  public void keyPressed(KeyEvent keyEvent) {
+    Dimension size = isFullscreen ? originalSize : getSize();
+    if (keyEvent.getKeyCode() == KeyEvent.VK_F11) {
+      setVisible(false);
+      new AppFrame(appPanel, !isFullscreen, size);
+    }
+    appPanel.keyPressed(keyEvent);
+    pack();
+  }
+
+  @Override
+  public void keyReleased(KeyEvent arg0) {
     // Do nothing.
   }
 
   @Override
-  public void keyPressed(KeyEvent e) {
-    // The editor doesn't care about shift being pressed.
-    if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
-      return;
-    }
-    KeyStroke keyStroke = KeyStroke.fromKeyEvent(e);
-    logEventTranslationInfo(e, keyStroke);
-    // NOTE KeyEvent.getKeyCode() is only defined in keyPressed when control
-    // is down.
-    if (keyStroke.getKeyChar() == 'q' && keyStroke.isControlDown()) {
-      System.exit(0);
-    }
-    AppFrame.this.handler.handleKeyStroke(keyStroke);
-    AppFrame.this.spotlightView.repaint();
-    AppFrame.this.fileListView.repaint();
-    AppFrame.this.stackView.repaint();
-    pack();
-  }
-
-  private void logEventTranslationInfo(KeyEvent event, KeyStroke keyStroke) {
-//    System.out.println("event: " + event);
-//    System.out.println("keystroke: " + keyStroke);
-  }
-
-  @Override
-  public void keyReleased(KeyEvent e) {
+  public void keyTyped(KeyEvent arg0) {
     // Do nothing.
   }
 }

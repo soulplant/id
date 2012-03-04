@@ -298,7 +298,7 @@ public class EditorTypingTest extends EditorTestBase {
   public void deleteVisualYanks() {
     setFileContents("abc");
     typeString("Vdpp");
-    setFileContents("\n", "abc", "abc");
+    assertFileContents("", "abc", "abc");
   }
 
   @Test
@@ -322,7 +322,7 @@ public class EditorTypingTest extends EditorTestBase {
   public void ddYankSingleLine() {
     setFileContents("abc");
     typeString("ddp");
-    assertFileContents("\n", "abc");
+    assertFileContents("", "abc");
     assertCursorPosition(1, 0);
   }
 

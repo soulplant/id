@@ -52,8 +52,8 @@ public class EditorTestBase {
   }
 
   protected void assertCursorPosition(int y, int x) {
-    assertEquals(y, editor.getCursorPosition().getY());
-    assertEquals(x, editor.getCursorPosition().getX());
+    assertEquals("cursor.y", y, editor.getCursorPosition().getY());
+    assertEquals("cursor.x", x, editor.getCursorPosition().getX());
   }
 
   protected void type(KeyStroke keyStroke) {

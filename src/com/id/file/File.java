@@ -64,12 +64,10 @@ public class File {
 
   public void insertLine(int y, String line) {
     if (isEmpty()) {
-      if (y == 1) {
-        lines.add(0, "\n");
-        fireLineInserted(0, "\n");
-      }
-      else {
-        y = 0;
+      if (y > 1) {
+        throw new IllegalStateException();
+      } else if (y == 1) {
+        insertLine(0, "");
       }
     }
     lines.add(y, line);

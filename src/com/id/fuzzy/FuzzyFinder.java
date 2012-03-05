@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
@@ -143,6 +144,10 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
     listeners.add(listener);
   }
 
+  public void removeListener(Listener listener) {
+    listeners.remove(listener);
+  }
+
   public boolean isVisible() {
     return visible;
   }
@@ -174,5 +179,9 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   @Override
   public void onTextChanged() {
     fireQueryChanged();
+  }
+
+  public Editor getQueryEditor() {
+    return minibuffer.getEditor();
   }
 }

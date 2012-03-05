@@ -6,9 +6,11 @@ import java.awt.Dimension;
 import java.awt.LayoutManager;
 
 public class AppLayout implements LayoutManager {
-  Component filelist = null;
-  Component spotlight = null;
-  Component stack = null;
+  private Component filelist = null;
+  private Component spotlight = null;
+  private Component stack = null;
+  private Component fuzzyFinder;
+
   @Override
   public void addLayoutComponent(String name, Component component) {
     if (name.equals("filelist")) {
@@ -17,7 +19,10 @@ public class AppLayout implements LayoutManager {
       spotlight = component;
     } else if (name.equals("stack")) {
       stack = component;
+    } else if (name.equals("fuzzyfinder")) {
+      fuzzyFinder = component;
     }
+    // TODO(koz): Remove.
     component.repaint();
   }
 
@@ -30,6 +35,9 @@ public class AppLayout implements LayoutManager {
     filelist.setBounds(0, 0, fileListWidth, height);
     spotlight.setBounds(fileListWidth, 0, editorWidth, height);
     stack.setBounds(fileListWidth + editorWidth, 0, editorWidth, height);
+    if (fuzzyFinder != null) {
+      fuzzyFinder.setBounds(200, 0, 200, height);
+    }
   }
 
   @Override
@@ -50,6 +58,8 @@ public class AppLayout implements LayoutManager {
       spotlight = null;
     } else if (stack == comp) {
       stack = null;
+    } else if (fuzzyFinder == comp) {
+      fuzzyFinder = null;
     }
   }
 }

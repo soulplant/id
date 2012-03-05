@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
 
 import com.id.editor.Editor;
@@ -24,7 +25,7 @@ import com.id.ui.app.AppPanel;
 import com.id.ui.app.EditorSwapperView;
 import com.id.ui.app.FileListView;
 import com.id.ui.app.FullscreenSwapper;
-import com.id.ui.app.FuzzyFinderFrame;
+import com.id.ui.app.FuzzyFinderPanel;
 import com.id.ui.app.StackView;
 
 public class App {
@@ -54,7 +55,9 @@ public class App {
     final EditorSwapperView spotlightView = new EditorSwapperView(editors);
     final FileListView fileListView = new FileListView(editors);
     StackView stackView = new StackView(stack);
-    final AppPanel panel = new AppPanel(fileListView, spotlightView, stackView, controller);
+    FuzzyFinderPanel fuzzyFinderPanel = new FuzzyFinderPanel(fuzzyFinder);
+    final AppPanel panel = new AppPanel(fileListView, spotlightView, stackView,
+        controller, fuzzyFinderPanel);
 
     editors.addListener(fileListView);
     editors.addListener(spotlightView);
@@ -63,9 +66,6 @@ public class App {
     AppFrame normalAppFrame = new AppFrame(panel, false, new Dimension(1024, 768));
 
     FullscreenSwapper swapper = new FullscreenSwapper(normalAppFrame, fullscreenAppFrame);
-
-    FuzzyFinderFrame fuzzyFinderFrame = new FuzzyFinderFrame(fuzzyFinder, swapper);
-    fuzzyFinder.addListener(fuzzyFinderFrame);
   }
 
   public static void configureFont(Graphics g) {

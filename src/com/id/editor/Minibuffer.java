@@ -113,4 +113,8 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
   public void setText(String text) {
     file.changeLine(0, text);
   }
+
+  public Editor getEditor() {
+    return editor;
+  }
 }

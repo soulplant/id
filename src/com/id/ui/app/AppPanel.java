@@ -4,28 +4,33 @@ import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JPanel;
+import javax.swing.JLayeredPane;
 
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
+import com.id.fuzzy.FuzzyFinder;
 
 @SuppressWarnings("serial")
-public class AppPanel extends JPanel implements KeyListener {
+public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.Listener {
   private final EditorSwapperView spotlightView;
   private final FileListView fileListView;
   private final Component stackView;
   private final KeyStrokeHandler handler;
+  private final FuzzyFinderPanel fuzzyFinderPanel;
 
-  public AppPanel(FileListView fileListView, EditorSwapperView spotlightView, Component stackView, KeyStrokeHandler handler) {
+  public AppPanel(FileListView fileListView, EditorSwapperView spotlightView,
+      Component stackView, KeyStrokeHandler handler, FuzzyFinderPanel fuzzyFinderPanel) {
     this.spotlightView = spotlightView;
     this.fileListView = fileListView;
     this.stackView = stackView;
     this.handler = handler;
+    this.fuzzyFinderPanel = fuzzyFinderPanel;
     setLayout(new AppLayout());
     setFocusTraversalKeysEnabled(false);
     add(fileListView, "filelist");
     add(spotlightView, "spotlight");
     add(stackView, "stack");
+    fuzzyFinderPanel.setListener(this);
   }
 
   @Override
@@ -51,6 +56,7 @@ public class AppPanel extends JPanel implements KeyListener {
     this.spotlightView.repaint();
     this.fileListView.repaint();
     this.stackView.repaint();
+    this.fuzzyFinderPanel.repaint();
   }
 
   private void logEventTranslationInfo(KeyEvent event, KeyStroke keyStroke) {
@@ -61,5 +67,21 @@ public class AppPanel extends JPanel implements KeyListener {
   @Override
   public void keyReleased(KeyEvent e) {
     // Do nothing.
+  }
+
+  @Override
+  public void onQueryChanged() {
+    repaint();
+  }
+
+  @Override
+  public void onSetVisible(boolean visible) {
+    if (visible) {
+      add(fuzzyFinderPanel, "fuzzyfinder");
+      setLayer(fuzzyFinderPanel, 100);
+    } else {
+      remove(fuzzyFinderPanel);
+    }
+    repaint();
   }
 }

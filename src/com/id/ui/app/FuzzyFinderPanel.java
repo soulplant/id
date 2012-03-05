@@ -2,47 +2,48 @@ package com.id.ui.app;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyListener;
 import java.util.List;
 
-import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.id.fuzzy.FuzzyFinder;
+import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
-public class FuzzyFinderFrame extends JFrame implements FocusListener, FuzzyFinder.Listener {
+public class FuzzyFinderPanel extends JPanel implements FuzzyFinder.Listener {
   private final FuzzyFinder fuzzyFinder;
   private final JTextField textField = new JTextField();
+  private final TextPanel textPanel;
   private final ItemListPanel itemList = new ItemListPanel();
+  private FuzzyFinder.Listener listener;
 
-  public FuzzyFinderFrame(FuzzyFinder fuzzyFinder, KeyListener keyListener) {
+  public FuzzyFinderPanel(FuzzyFinder fuzzyFinder) {
     this.fuzzyFinder = fuzzyFinder;
-    textField.setPreferredSize(new Dimension(200, 20));
-    add(textField, BorderLayout.PAGE_START);
+    textPanel = new TextPanel(fuzzyFinder.getQueryEditor());
+    textPanel.setPreferredSize(new Dimension(200, 14));
+    add(textPanel, BorderLayout.PAGE_START);
     add(itemList, BorderLayout.CENTER);
-    pack();
-    textField.addFocusListener(this);
-    textField.addKeyListener(keyListener);
+    fuzzyFinder.addListener(this);
+  }
+
+  public void setListener(FuzzyFinder.Listener listener) {
+    this.listener = listener;
   }
 
   @Override
-  public void focusGained(FocusEvent event) {
-    // Do nothing.
-  }
-
-  @Override
-  public void focusLost(FocusEvent event) {
-    fuzzyFinder.setVisible(false);
+  public void repaint() {
+    super.repaint();
+    if (textField != null) {
+      textField.repaint();
+    }
   }
 
   @Override
   public void onQueryChanged() {
     List<String> matches = fuzzyFinder.getMatches();
     itemList.setItems(matches);
-    pack();
+    listener.onQueryChanged();
   }
 
   @Override
@@ -50,5 +51,6 @@ public class FuzzyFinderFrame extends JFrame implements FocusListener, FuzzyFind
     textField.setText(fuzzyFinder.getCurrentQuery());
     onQueryChanged();
     setVisible(visible);
+    listener.onSetVisible(visible);
   }
 }

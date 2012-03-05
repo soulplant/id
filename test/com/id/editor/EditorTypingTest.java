@@ -32,7 +32,7 @@ public class EditorTypingTest extends EditorTestBase {
   public void changeLine() {
     setFileContents("abc");
     typeString("lCabc<ESC>");
-    assertEquals("aabc", file.getLine(0));
+    assertFileContents("aabc");
     assertFalse(editor.isInInsertMode());
   }
 

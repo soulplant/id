@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
 
 import com.id.editor.Editor;
@@ -65,7 +64,7 @@ public class App {
     AppFrame fullscreenAppFrame = new AppFrame(panel, true);
     AppFrame normalAppFrame = new AppFrame(panel, false, new Dimension(1024, 768));
 
-    FullscreenSwapper swapper = new FullscreenSwapper(normalAppFrame, fullscreenAppFrame);
+    new FullscreenSwapper(normalAppFrame, fullscreenAppFrame);
   }
 
   public static void configureFont(Graphics g) {

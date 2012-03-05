@@ -1,7 +1,6 @@
 package com.id.ui.app;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 

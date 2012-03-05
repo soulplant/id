@@ -26,6 +26,7 @@ public class AppFrame extends JFrame implements KeyListener {
     this.originalSize = originalSize;
     setTitle("id");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setFocusTraversalKeysEnabled(false);
     setUndecorated(isFullscreen);
     addComponentListener(new ComponentAdapter() {
       @Override

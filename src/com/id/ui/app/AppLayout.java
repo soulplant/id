@@ -22,8 +22,6 @@ public class AppLayout implements LayoutManager {
     } else if (name.equals("fuzzyfinder")) {
       fuzzyFinder = component;
     }
-    // TODO(koz): Remove.
-    component.repaint();
   }
 
   @Override

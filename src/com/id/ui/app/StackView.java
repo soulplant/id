@@ -1,7 +1,5 @@
 package com.id.ui.app;
 
-import java.awt.GridBagConstraints;
-
 import javax.swing.JPanel;
 
 import com.id.app.ListModel;
@@ -41,13 +39,9 @@ public class StackView extends JPanel {
 
   private void updateEditors() {
     removeAll();
-    GridBagConstraints c = new GridBagConstraints();
     for (int i = 0; i < editors.size(); i++) {
-      c.gridy = i;
-      c.fill = GridBagConstraints.HORIZONTAL;
-      c.weightx = 1.0;
       EditorPanel editorPanel = new EditorPanel(editors.get(i));
-      add(editorPanel, c);
+      add(editorPanel);
     }
   }
 }

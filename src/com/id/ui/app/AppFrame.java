@@ -14,39 +14,47 @@ import javax.swing.JFrame;
 public class AppFrame extends JFrame implements KeyListener {
   private final AppPanel appPanel;
   private final boolean isFullscreen;
-  private final Dimension originalSize;
+  private Dimension originalSize;
+
+  public AppFrame(AppPanel appPanel, boolean isFullscreen) {
+    this(appPanel, isFullscreen, null);
+  }
 
   public AppFrame(AppPanel appPanel, boolean isFullscreen, Dimension originalSize) {
     this.appPanel = appPanel;
     this.isFullscreen = isFullscreen;
     this.originalSize = originalSize;
-    appPanel.setSize(originalSize);
-    getContentPane().add(appPanel);
     setTitle("id");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    if (isFullscreen) {
-      setUndecorated(true);
-      GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-      gd.setFullScreenWindow(this);
-    }
-    addKeyListener(this);
+    setUndecorated(isFullscreen);
     addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
         pack();
       }
     });
+  }
+
+  public void putOnScreen() {
+    getContentPane().add(appPanel);
+    if (originalSize != null) {
+      appPanel.setSize(originalSize);
+    }
     pack();
     setVisible(true);
+    if (isFullscreen) {
+      GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+      gd.setFullScreenWindow(this);
+    }
+  }
+
+  public void takeOffScreen() {
+    this.originalSize = appPanel.getSize();
+    setVisible(false);
   }
 
   @Override
   public void keyPressed(KeyEvent keyEvent) {
-    Dimension size = isFullscreen ? originalSize : getSize();
-    if (keyEvent.getKeyCode() == KeyEvent.VK_F11) {
-      setVisible(false);
-      new AppFrame(appPanel, !isFullscreen, size);
-    }
     appPanel.keyPressed(keyEvent);
     pack();
   }

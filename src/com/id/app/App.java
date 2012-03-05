@@ -23,6 +23,7 @@ import com.id.ui.app.AppFrame;
 import com.id.ui.app.AppPanel;
 import com.id.ui.app.EditorSwapperView;
 import com.id.ui.app.FileListView;
+import com.id.ui.app.FullscreenSwapper;
 import com.id.ui.app.FuzzyFinderFrame;
 import com.id.ui.app.StackView;
 
@@ -58,10 +59,12 @@ public class App {
     editors.addListener(fileListView);
     editors.addListener(spotlightView);
 
-    AppFrame appFrame = new AppFrame(panel, false, new Dimension(1024, 768));
-    appFrame.setVisible(true);
+    AppFrame fullscreenAppFrame = new AppFrame(panel, true);
+    AppFrame normalAppFrame = new AppFrame(panel, false, new Dimension(1024, 768));
 
-    FuzzyFinderFrame fuzzyFinderFrame = new FuzzyFinderFrame(fuzzyFinder, appFrame);
+    FullscreenSwapper swapper = new FullscreenSwapper(normalAppFrame, fullscreenAppFrame);
+
+    FuzzyFinderFrame fuzzyFinderFrame = new FuzzyFinderFrame(fuzzyFinder, swapper);
     fuzzyFinder.addListener(fuzzyFinderFrame);
   }
 

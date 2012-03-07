@@ -27,14 +27,14 @@ public class AppLayout implements LayoutManager {
   @Override
   public void layoutContainer(Container parent) {
     int height = parent.getHeight();
-    int fileListWidth = filelist.getPreferredSize().width;
+    int fileListWidth = 250;
     int remainingWidth = parent.getWidth() - fileListWidth;
     int editorWidth = remainingWidth / 2;
     filelist.setBounds(0, 0, fileListWidth, height);
     spotlight.setBounds(fileListWidth, 0, editorWidth, height);
     stack.setBounds(fileListWidth + editorWidth, 0, editorWidth, height);
     if (fuzzyFinder != null) {
-      fuzzyFinder.setBounds(200, 0, 200, height);
+      fuzzyFinder.setBounds(250, 0, 200, height);
     }
   }
 

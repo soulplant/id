@@ -74,7 +74,7 @@ public class FileListView extends JPanel implements ListModel.Listener<Editor> {
   }
 
   @Override
-  public void onFocusChanged(int i, Editor t) {
+  public void onSelectionChanged(int i, Editor t) {
     updateItems();
   }
 
@@ -84,7 +84,7 @@ public class FileListView extends JPanel implements ListModel.Listener<Editor> {
   }
 
   @Override
-  public void onFocusLost() {
+  public void onSelectionLost() {
     updateItems();
   }
 }

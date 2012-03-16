@@ -21,7 +21,7 @@ public class StackView extends JPanel {
       }
 
       @Override
-      public void onFocusChanged(int i, Editor t) {
+      public void onSelectionChanged(int i, Editor t) {
         updateEditors();
       }
 
@@ -31,7 +31,7 @@ public class StackView extends JPanel {
       }
 
       @Override
-      public void onFocusLost() {
+      public void onSelectionLost() {
         updateEditors();
       }
     });

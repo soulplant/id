@@ -8,9 +8,9 @@ import java.util.List;
 public class ListModel<T> implements Iterable<T> {
   public interface Listener<T> {
     void onAdded(int i, T t);
-    void onFocusChanged(int i, T t);
+    void onSelectionChanged(int i, T t);
     void onRemoved(int i, T t);
-    void onFocusLost();
+    void onSelectionLost();
   }
 
   private final List<Listener<T>> listeners = new ArrayList<Listener<T>>();
@@ -79,13 +79,13 @@ public class ListModel<T> implements Iterable<T> {
 
   private void fireOnFocusLost() {
     for (Listener<T> listener : listeners) {
-      listener.onFocusLost();
+      listener.onSelectionLost();
     }
   }
 
   private void fireFocusChanged() {
     for (Listener<T> listener : listeners) {
-      listener.onFocusChanged(focusedIndex, getFocusedItem());
+      listener.onSelectionChanged(focusedIndex, getFocusedItem());
     }
   }
 

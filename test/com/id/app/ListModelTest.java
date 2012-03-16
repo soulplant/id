@@ -23,10 +23,10 @@ public class ListModelTest {
     model.addListener(listener);
     model.add("hi");
     verify(listener).onAdded(0, "hi");
-    verify(listener).onFocusChanged(0, "hi");
+    verify(listener).onSelectionChanged(0, "hi");
     model.add("there");
     verify(listener).onAdded(1, "there");
-    verify(listener).onFocusChanged(1, "there");
+    verify(listener).onSelectionChanged(1, "there");
   }
 
   @Test
@@ -35,9 +35,9 @@ public class ListModelTest {
     model.add("there");
     model.addListener(listener);
     model.moveUp();
-    verify(listener).onFocusChanged(0, "hi");
+    verify(listener).onSelectionChanged(0, "hi");
     model.moveDown();
-    verify(listener).onFocusChanged(1, "there");
+    verify(listener).onSelectionChanged(1, "there");
   }
 
   @Test
@@ -46,7 +46,7 @@ public class ListModelTest {
     model.add("there");
     model.addListener(listener);
     model.removeFocused();
-    verify(listener).onFocusChanged(0, "hi");
+    verify(listener).onSelectionChanged(0, "hi");
   }
 
   @Test

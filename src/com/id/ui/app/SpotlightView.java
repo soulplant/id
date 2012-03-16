@@ -27,7 +27,7 @@ public class SpotlightView extends EditorSwapperPanel implements ListModel.Liste
   }
 
   @Override
-  public void onFocusChanged(int i, Editor t) {
+  public void onSelectionChanged(int i, Editor t) {
     setSelected(i);
   }
 
@@ -37,7 +37,7 @@ public class SpotlightView extends EditorSwapperPanel implements ListModel.Liste
   }
 
   @Override
-  public void onFocusLost() {
+  public void onSelectionLost() {
 
   }
 }

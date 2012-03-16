@@ -29,7 +29,7 @@ public class ListPanel<T> extends JPanel implements Listener<T> {
       onAdded(i, model.get(i));
     }
     if (!model.isEmpty()) {
-      onFocusChanged(model.getFocusedIndex(), model.getFocusedItem());
+      onSelectionChanged(model.getFocusedIndex(), model.getFocusedItem());
     }
   }
 
@@ -41,7 +41,7 @@ public class ListPanel<T> extends JPanel implements Listener<T> {
   }
 
   @Override
-  public void onFocusChanged(int i, T t) {
+  public void onSelectionChanged(int i, T t) {
 
   }
 
@@ -52,7 +52,7 @@ public class ListPanel<T> extends JPanel implements Listener<T> {
   }
 
   @Override
-  public void onFocusLost() {
+  public void onSelectionLost() {
 
   }
 

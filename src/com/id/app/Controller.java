@@ -150,7 +150,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     return new Editor(fileView, highlightState, register, editorEnvironment);
   }
 
-  protected void addSnippet(FileView fileView) {
+  private void addSnippet(FileView fileView) {
     stack.add(makeEditor(fileView));
   }
 

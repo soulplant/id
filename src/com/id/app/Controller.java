@@ -24,6 +24,17 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   private final HighlightState highlightState;
   private final Register register = new Register();
   private final ListModel<Editor> stack;
+  private final EditorEnvironment editorEnvironment = new EditorEnvironment() {
+    @Override
+    public void openFile(String filename) {
+      Controller.this.openFile(filename);
+    }
+
+    @Override
+    public void addSnippet(FileView fileView) {
+      Controller.this.addSnippet(fileView);
+    }
+  };
 
   public Controller(ListModel<Editor> editors, FileSystem fileSystem,
       FuzzyFinder fuzzyFinder, Repository repository,
@@ -129,24 +140,20 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     if (file == null) {
       return null;
     }
-    Editor editor = new Editor(new FileView(file), highlightState, register);
-    editor.setEnvironment(new EditorEnvironment() {
-      @Override
-      public void openFile(String filename) {
-        Controller.this.openFile(filename);
-      }
-
-      @Override
-      public void addSnippet(FileView fileView) {
-        Controller.this.addSnippet(fileView);
-      }
-    });
+    Editor editor = makeEditor(new FileView(file));
     editors.add(editor);
     return editor;
   }
 
+  private Editor makeEditor(FileView fileView) {
+    // TODO(koz): Make environment a constructor argument.
+    Editor editor = new Editor(fileView, highlightState, register);
+    editor.setEnvironment(editorEnvironment);
+    return editor;
+  }
+
   protected void addSnippet(FileView fileView) {
-    stack.add(new Editor(fileView, highlightState, register));
+    stack.add(makeEditor(fileView));
   }
 
   private Editor attemptToFocusExistingEditor(String filename) {

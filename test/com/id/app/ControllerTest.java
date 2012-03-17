@@ -250,6 +250,19 @@ public class ControllerTest {
     assertTrue(editors.isFocused());
   }
 
+  @Test
+  public void addSnippetsFromSnippet() {
+    controller.openFile("a");
+    createSnippetFromCurrentLine();
+    typeString("L");
+    createSnippetFromCurrentLine();
+    assertEquals(2, stack.size());
+  }
+
+  private void createSnippetFromCurrentLine() {
+    typeString("V;");
+  }
+
   private void assertEditorFocused() {
     assertTrue(editors.isFocused());
     assertFalse(stack.isFocused());

@@ -488,8 +488,8 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void substitute() {
-    delete(false);
     insert();
+    delete(false);
   }
 
   public boolean hasUndo() {

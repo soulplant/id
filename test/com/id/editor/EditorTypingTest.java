@@ -768,4 +768,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("V;");
     assertFalse(editor.isInVisual());
   }
+
+  @Test
+  public void sAtEndOfLineEntersInsertModeAtEndOfLine() {
+    setFileContents("abc");
+    typeString("$s;");
+    assertFileContents("ab;");
+  }
 }

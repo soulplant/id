@@ -94,11 +94,11 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public Point undo() {
-    return file.undo().offset(-start, 0);
+    return translatePoint(file.undo());
   }
 
   public Point redo() {
-    return file.redo().offset(-start, 0);
+    return translatePoint(file.redo());
   }
 
   public String removeText(int y, int x) {
@@ -459,5 +459,12 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public FileView makeView(int startY, int endY) {
     return file.makeView(start + startY, start + endY);
+  }
+
+  private Point translatePoint(Point point) {
+    if (point == null) {
+      return null;
+    }
+    return point.offset(-start, 0);
   }
 }

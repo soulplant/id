@@ -775,4 +775,10 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("$s;");
     assertFileContents("ab;");
   }
+
+  @Test
+  public void undoWithNoUndoHistoryShouldNotCrash() {
+    setFileContents("abc");
+    typeString("u");
+  }
 }

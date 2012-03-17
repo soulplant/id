@@ -228,6 +228,14 @@ public class ControllerTest {
     assertEquals(1, stack.getFocusedIndex());
   }
 
+  @Test
+  public void qClosesSnippetWhenFocused() {
+    controller.openFile("a");
+    typeString("V;Lq");
+    assertEquals(1, editors.size());
+    assertEquals(0, stack.size());
+  }
+
   private void assertEditorFocused() {
     assertTrue(editors.isFocused());
     assertFalse(stack.isFocused());

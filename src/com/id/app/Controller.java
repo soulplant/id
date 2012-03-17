@@ -160,7 +160,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   public void closeCurrentFile() {
-    editors.removeFocused();
+    getFocusedList().removeFocused();
   }
 
   @Override

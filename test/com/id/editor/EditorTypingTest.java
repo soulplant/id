@@ -781,4 +781,12 @@ public class EditorTypingTest extends EditorTestBase {
     setFileContents("abc");
     typeString("u");
   }
+
+  @Test
+  public void oShouldDoNothingInVisualMode() {
+    setFileContents("abc");
+    typeString("Vo");
+    assertFalse(editor.isInInsertMode());
+    assertFileContents("abc");
+  }
 }

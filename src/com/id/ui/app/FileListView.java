@@ -87,4 +87,9 @@ public class FileListView extends JPanel implements ListModel.Listener<Editor> {
   public void onSelectionLost() {
     updateItems();
   }
+
+  @Override
+  public void onFocusChanged(boolean isFocused) {
+    // File list can't have focus.
+  }
 }

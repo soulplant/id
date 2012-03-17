@@ -40,4 +40,9 @@ public class SpotlightView extends EditorSwapperPanel implements ListModel.Liste
   public void onSelectionLost() {
 
   }
+
+  @Override
+  public void onFocusChanged(boolean isFocused) {
+    // TODO(koz): Add focus styling.
+  }
 }

@@ -201,6 +201,30 @@ public class ControllerTest {
     assertEquals(1, stack.size());
   }
 
+  @Test
+  public void typeInSnippet() {
+    controller.openFile("a");
+    typeString("oabc<CR>abc<ESC>");
+    assertEditorFocused();
+    typeString("V;");  // Make a snippet out of the last line.
+    typeString("k");   // Move up a line in the editors.
+    typeString("L");   // Move focus to stack.
+    assertStackFocused();
+    typeString("oend");
+    assertEquals(4, editors.get(0).getLineCount());
+    assertEquals("end", editors.get(0).getLine(3));
+  }
+
+  private void assertEditorFocused() {
+    assertTrue(editors.isFocused());
+    assertFalse(stack.isFocused());
+  }
+
+  private void assertStackFocused() {
+    assertTrue(stack.isFocused());
+    assertFalse(editors.isFocused());
+  }
+
   private void type(KeyStroke keyStroke) {
     controller.handleKeyStroke(keyStroke);
   }

@@ -35,6 +35,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     this.highlightState = highlightState;
     this.stack = stack;
     fuzzyFinder.setSelectionListener(this);
+    editors.focus();
     shortcuts.setShortcut(KeyStroke.fromString("J"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -45,6 +46,18 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
       @Override
       public void execute() {
         moveFocusUp();
+      }
+    });
+    shortcuts.setShortcut(KeyStroke.fromString("H"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        focusEditors();
+      }
+    });
+    shortcuts.setShortcut(KeyStroke.fromString("L"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        focusStack();
       }
     });
     shortcuts.setShortcut(KeyStroke.fromString("t"), new ShortcutTree.Action() {
@@ -72,6 +85,22 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         saveFile();
       }
     });
+  }
+
+  protected void focusEditors() {
+    if (editors.isFocused()) {
+      return;
+    }
+    stack.blur();
+    editors.focus();
+  }
+
+  protected void focusStack() {
+    if (stack.isFocused()) {
+      return;
+    }
+    editors.blur();
+    stack.focus();
   }
 
   public void saveFile() {
@@ -139,7 +168,8 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     if (fuzzyFinder.isVisible() && fuzzyFinder.handleKeyStroke(keyStroke)) {
       return true;
     }
-    if (!editors.isEmpty() && editors.getFocusedItem().handleKeyStroke(keyStroke)) {
+    ListModel<Editor> focusedList = editors.isFocused() ? editors : stack;
+    if (!focusedList.isEmpty() && focusedList.getFocusedItem().handleKeyStroke(keyStroke)) {
       return true;
     }
     return shortcuts.stepAndExecute(keyStroke);

@@ -11,11 +11,13 @@ public class ListModel<T> implements Iterable<T> {
     void onSelectionChanged(int i, T t);
     void onRemoved(int i, T t);
     void onSelectionLost();
+    void onFocusChanged(boolean isFocused);
   }
 
   private final List<Listener<T>> listeners = new ArrayList<Listener<T>>();
   private final List<T> items = new ArrayList<T>();
   private int focusedIndex = -1;
+  private boolean isFocused = false;
 
   public void addListener(Listener<T> listener) {
     listeners.add(listener);
@@ -47,7 +49,7 @@ public class ListModel<T> implements Iterable<T> {
       return;
     }
     focusedIndex = clampedIndex;
-    fireFocusChanged();
+    fireSelectionChanged();
   }
 
   public void removeFocused() {
@@ -59,9 +61,9 @@ public class ListModel<T> implements Iterable<T> {
     focusedIndex = items.size() - 1;
     fireOnRemoved(index, removed);
     if (focusedIndex == -1) {
-      fireOnFocusLost();
+      fireOnSelectionLost();
     } else {
-      fireFocusChanged();
+      fireSelectionChanged();
     }
   }
 
@@ -77,13 +79,13 @@ public class ListModel<T> implements Iterable<T> {
     }
   }
 
-  private void fireOnFocusLost() {
+  private void fireOnSelectionLost() {
     for (Listener<T> listener : listeners) {
       listener.onSelectionLost();
     }
   }
 
-  private void fireFocusChanged() {
+  private void fireSelectionChanged() {
     for (Listener<T> listener : listeners) {
       listener.onSelectionChanged(focusedIndex, getFocusedItem());
     }
@@ -129,5 +131,28 @@ public class ListModel<T> implements Iterable<T> {
         throw new UnsupportedOperationException();
       }
     };
+  }
+
+  public boolean isFocused() {
+    return isFocused;
+  }
+
+  public void blur() {
+    setFocused(false);
+  }
+
+  public void focus() {
+    setFocused(true);
+  }
+
+  public void setFocused(boolean isFocused) {
+    this.isFocused = isFocused;
+    fireOnFocusChanged();
+  }
+
+  private void fireOnFocusChanged() {
+    for (Listener<T> listener : listeners) {
+      listener.onFocusChanged(isFocused);
+    }
   }
 }

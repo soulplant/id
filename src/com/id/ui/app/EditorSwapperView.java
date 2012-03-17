@@ -40,4 +40,9 @@ public class EditorSwapperView extends EditorSwapperPanel implements ListModel.L
   public void onSelectionLost() {
 
   }
+
+  @Override
+  public void onFocusChanged(boolean isFocused) {
+
+  }
 }

@@ -1,12 +1,8 @@
 package com.id.app;
 
 import java.awt.FlowLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.id.app.ListModel.Listener;
@@ -56,47 +52,8 @@ public class ListPanel<T> extends JPanel implements Listener<T> {
 
   }
 
-  public static void main(String[] args) {
-    final ListModel<String> model = new ListModel<String>();
-    ListPanel<String> listPanel = new ListPanel<String>(model, new Factory<String>() {
-      @Override
-      public JComponent makeComponentFor(String text) {
-        return new JLabel(text);
-      }
-    });
-    JFrame frame = new JFrame();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.add(listPanel);
-    model.add("hi");
-    model.add("there");
-    model.removeFocused();
-    frame.pack();
-    frame.setVisible(true);
-    frame.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-      }
+  @Override
+  public void onFocusChanged(boolean isFocused) {
 
-      @Override
-      public void mousePressed(MouseEvent e) {
-        model.add("woo!");
-      }
-
-      @Override
-      public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
-      }
-
-      @Override
-      public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
-      }
-
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-      }
-    });
   }
 }

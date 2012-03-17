@@ -34,6 +34,11 @@ public class StackView extends JPanel {
       public void onSelectionLost() {
         updateEditors();
       }
+
+      @Override
+      public void onFocusChanged(boolean isFocused) {
+        // TODO(koz): Make this appear focused.
+      }
     });
   }
 

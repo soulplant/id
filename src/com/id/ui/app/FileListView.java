@@ -34,7 +34,7 @@ class FileListEntryView extends JPanel {
       g.setColor(Color.BLUE);
       g.fillRect(LEFT_PADDING_PX, 0, Constants.CHAR_WIDTH_PX, Constants.CHAR_HEIGHT_PX - 1);
     }
-    if (editor.isModified()) {
+    if (!editor.isMarkersClear()) {
       g.setColor(Color.ORANGE);
       g.fillRect(LEFT_PADDING_PX + Constants.CHAR_WIDTH_PX + LEFT_PADDING_PX, 0, Constants.CHAR_WIDTH_PX, Constants.CHAR_HEIGHT_PX - 1);
     }

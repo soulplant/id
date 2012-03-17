@@ -230,11 +230,11 @@ public class EditorTest extends EditorTestBase {
   @Test
   public void insertingTextInADifferentViewCausesTheCursorToMoveDown() {
     setFileContents("abc", "def", "ghi");
-    typeString("G");
-    assertCursorPosition(2, 0);
-    FileView fileView2 = new FileView(file, 0, 0);
+    typeString("j");
+    assertCursorPosition(1, 0);
+    FileView fileView2 = new FileView(file, 1, 1);
     fileView2.insertLine(0, "hi");
-    assertCursorPosition(3, 0);
+    assertCursorPosition(2, 0);
   }
 
   @Test
@@ -242,7 +242,7 @@ public class EditorTest extends EditorTestBase {
     setFileContents("abc", "def", "ghi");
     typeString("j");
     assertCursorPosition(1, 0);
-    FileView fileView2 = new FileView(file, 0, 0);
+    FileView fileView2 = new FileView(file, 1, 1);
     fileView2.removeLine(0);
     assertCursorPosition(0, 0);
   }

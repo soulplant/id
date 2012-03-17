@@ -863,14 +863,23 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   @Override
   public void onLineInserted(int y, String line) {
-    if (y < cursor.getY()) {
+    // If the cursor is at the end of the file already, we probably just
+    // inserted the first line and so the cursor is already at the correct
+    // position.
+    if (cursor.getY() == file.getLineCount() - 1) {
+      if (file.getLineCount() > 1) {
+        throw new IllegalStateException();
+      }
+      return;
+    }
+    if (y <= cursor.getY()) {
       cursor.moveBy(1, 0);
     }
   }
 
   @Override
   public void onLineRemoved(int y, String line) {
-    if (y < cursor.getY()) {
+    if (y <= cursor.getY()) {
       cursor.moveBy(-1, 0);
     }
   }

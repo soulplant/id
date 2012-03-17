@@ -45,7 +45,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
       public void paintBorder(Component c, Graphics g, int x, int y, int width,
           int height) {
         g.setColor(isFocused() ? Color.GREEN : Color.RED);
-        g.drawRect(x, y, width - 1, height - 1);
+        g.fillRect(x, y, width - 1, height - 1);
       }
     });
     this.editor = editor;

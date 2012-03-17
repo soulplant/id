@@ -45,6 +45,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     this.repository = repository;
     this.highlightState = highlightState;
     this.stack = stack;
+    stack.setFocusLatest(false);
     fuzzyFinder.setSelectionListener(this);
     editors.focus();
     shortcuts.setShortcut(KeyStroke.fromString("J"), new ShortcutTree.Action() {

@@ -20,6 +20,7 @@ public class ListModel<T> implements Iterable<T> {
   private final List<T> items = new ArrayList<T>();
   private int focusedIndex = -1;
   private boolean isFocused = false;
+  private boolean isFocusLatestEnabled = true;
 
   public void addListener(Listener<T> listener) {
     listeners.add(listener);
@@ -28,7 +29,13 @@ public class ListModel<T> implements Iterable<T> {
   public void add(T t) {
     items.add(t);
     fireOnAdded(items.size() - 1, t);
-    setFocusedIndex(items.size() - 1);
+    if (isFocusLatestEnabled || items.size() == 1) {
+      setFocusedIndex(items.size() - 1);
+    }
+  }
+
+  public void setFocusLatest(boolean focusLatest) {
+    isFocusLatestEnabled = focusLatest;
   }
 
   public void moveUp() {

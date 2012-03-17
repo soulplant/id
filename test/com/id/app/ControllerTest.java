@@ -221,7 +221,7 @@ public class ControllerTest {
     typeString("V;V;");
     assertEquals(2, stack.size());
     typeString("L");
-    assertEquals(1, stack.getFocusedIndex());
+    assertEquals(0, stack.getFocusedIndex());
     typeString("K");
     assertEquals(0, stack.getFocusedIndex());
     typeString("J");
@@ -257,6 +257,15 @@ public class ControllerTest {
     typeString("L");
     createSnippetFromCurrentLine();
     assertEquals(2, stack.size());
+  }
+
+  @Test
+  public void addingASnippetShouldntFocusTheMostRecentlyAddedOne() {
+    controller.openFile("a");
+    createSnippetFromCurrentLine();
+    typeString("L");
+    createSnippetFromCurrentLine();
+    assertEquals(0, stack.getFocusedIndex());
   }
 
   private void createSnippetFromCurrentLine() {

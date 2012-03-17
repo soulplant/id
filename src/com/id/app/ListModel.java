@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.id.editor.Editor;
+
 
 public class ListModel<T> implements Iterable<T> {
   public interface Listener<T> {
@@ -154,5 +156,9 @@ public class ListModel<T> implements Iterable<T> {
     for (Listener<T> listener : listeners) {
       listener.onFocusChanged(isFocused);
     }
+  }
+
+  public boolean isFocused(Editor editor) {
+    return getFocusedItem() == editor;
   }
 }

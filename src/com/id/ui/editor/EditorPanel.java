@@ -14,10 +14,10 @@ import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
 import com.id.app.Constants;
+import com.id.app.ListModel;
 import com.id.editor.Editor;
 import com.id.editor.Point;
 import com.id.file.ModifiedListener;
-import com.id.ui.app.EditorContainerView;
 
 @SuppressWarnings("serial")
 public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedListener {
@@ -25,8 +25,10 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
   private final Editor editor;
   private final JScrollPane scrollPane;
   private final JLabel filenameLabel;
+  private final ListModel<Editor> containerView;
 
-  public EditorPanel(Editor editor, final EditorContainerView containerView) {
+  public EditorPanel(Editor editor, final ListModel<Editor> containerView) {
+    this.containerView = containerView;
     setLayout(new BorderLayout());
     setBorder(new Border() {
       @Override
@@ -36,13 +38,13 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
 
       @Override
       public boolean isBorderOpaque() {
-        return false;
+        return true;
       }
 
       @Override
       public void paintBorder(Component c, Graphics g, int x, int y, int width,
           int height) {
-        g.setColor(containerView.isFocused() ? Color.GREEN : Color.RED);
+        g.setColor(isFocused() ? Color.GREEN : Color.RED);
         g.fillRect(x, y, width - 1, height - 1);
       }
     });
@@ -58,6 +60,10 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
     this.add(scrollPane, BorderLayout.CENTER);
     editor.setView(this);
     editor.addFileModifiedListener(this);
+  }
+
+  private boolean isFocused() {
+    return containerView.isFocused() && containerView.isFocused(editor);
   }
 
   @Override

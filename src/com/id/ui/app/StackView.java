@@ -7,7 +7,7 @@ import com.id.editor.Editor;
 import com.id.ui.editor.EditorPanel;
 
 @SuppressWarnings("serial")
-public class StackView extends JPanel implements ListModel.Listener<Editor>,  EditorContainerView {
+public class StackView extends JPanel implements ListModel.Listener<Editor> {
   private final ListModel<Editor> editors;
 
   public StackView(ListModel<Editor> editors) {
@@ -20,7 +20,7 @@ public class StackView extends JPanel implements ListModel.Listener<Editor>,  Ed
   private void updateEditors() {
     removeAll();
     for (int i = 0; i < editors.size(); i++) {
-      EditorPanel editorPanel = new EditorPanel(editors.get(i), this);
+      EditorPanel editorPanel = new EditorPanel(editors.get(i), editors);
       add(editorPanel);
     }
   }
@@ -48,10 +48,5 @@ public class StackView extends JPanel implements ListModel.Listener<Editor>,  Ed
   @Override
   public void onFocusChanged(boolean isFocused) {
     // Do nothing.
-  }
-
-  @Override
-  public boolean isFocused() {
-    return editors.isFocused();
   }
 }

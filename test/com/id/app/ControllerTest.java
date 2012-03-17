@@ -243,6 +243,13 @@ public class ControllerTest {
     assertTrue(editors.isFocused());
   }
 
+  @Test
+  public void cantMoveFocusToEmptyStack() {
+    controller.openFile("a");
+    typeString("L");
+    assertTrue(editors.isFocused());
+  }
+
   private void assertEditorFocused() {
     assertTrue(editors.isFocused());
     assertFalse(stack.isFocused());

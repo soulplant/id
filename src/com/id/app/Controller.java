@@ -96,7 +96,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   private void focusStack() {
-    if (stack.isFocused()) {
+    if (stack.isFocused() || stack.isEmpty()) {
       return;
     }
     editors.blur();

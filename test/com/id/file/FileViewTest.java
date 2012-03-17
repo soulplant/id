@@ -11,6 +11,7 @@ import com.id.app.HighlightState;
 import com.id.editor.Editor;
 import com.id.editor.Point;
 import com.id.editor.Register;
+import com.id.events.EditorKeyHandler;
 import com.id.file.File.Listener;
 import com.id.test.EditorTestBase;
 
@@ -164,11 +165,19 @@ public class FileViewTest extends EditorTestBase {
     assertEquals("a_c", fileView.getWordUnder(0, 0));
   }
 
+  @Test
+  public void undoGoesToRightPlace() {
+    setupWith(1, 2, "a", "b", "c");
+    typeString("o<ESC>u");
+    assertCursorPosition(0, 0);
+  }
+
   private void setupWith(int start, int end, String... lines) {
     file = new File(lines);
     fileView = new FileView(file, start, end);
     editor = new Editor(fileView, new HighlightState(), new Register(),
         new Editor.EmptyEditorEnvironment());
     listener = mock(File.Listener.class);
+    handler = new EditorKeyHandler();
   }
 }

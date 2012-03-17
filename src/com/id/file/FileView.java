@@ -94,11 +94,11 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public Point undo() {
-    return file.undo();
+    return file.undo().offset(-start, 0);
   }
 
   public Point redo() {
-    return file.redo();
+    return file.redo().offset(-start, 0);
   }
 
   public String removeText(int y, int x) {

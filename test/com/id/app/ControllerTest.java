@@ -236,6 +236,13 @@ public class ControllerTest {
     assertEquals(0, stack.size());
   }
 
+  @Test
+  public void focusMovesBackToEditorWhenFinalSnippetClosed() {
+    controller.openFile("a");
+    typeString("V;Lq");
+    assertTrue(editors.isFocused());
+  }
+
   private void assertEditorFocused() {
     assertTrue(editors.isFocused());
     assertFalse(stack.isFocused());

@@ -87,7 +87,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     });
   }
 
-  protected void focusEditors() {
+  private void focusEditors() {
     if (editors.isFocused()) {
       return;
     }
@@ -95,7 +95,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     editors.focus();
   }
 
-  protected void focusStack() {
+  private void focusStack() {
     if (stack.isFocused()) {
       return;
     }
@@ -161,6 +161,9 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
 
   public void closeCurrentFile() {
     getFocusedList().removeFocused();
+    if (stack.isEmpty()) {
+      focusEditors();
+    }
   }
 
   @Override

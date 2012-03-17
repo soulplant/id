@@ -65,6 +65,7 @@ public class App {
     AppFrame normalAppFrame = new AppFrame(panel, false, new Dimension(1024, 768));
 
     new FullscreenSwapper(normalAppFrame, fullscreenAppFrame);
+    controller.openFile("src/com/id/app/App.java");
   }
 
   public static void configureFont(Graphics g) {

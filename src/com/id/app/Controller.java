@@ -146,10 +146,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   private Editor makeEditor(FileView fileView) {
-    // TODO(koz): Make environment a constructor argument.
-    Editor editor = new Editor(fileView, highlightState, register);
-    editor.setEnvironment(editorEnvironment);
-    return editor;
+    return new Editor(fileView, highlightState, register, editorEnvironment);
   }
 
   protected void addSnippet(FileView fileView) {

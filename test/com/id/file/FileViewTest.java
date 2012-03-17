@@ -167,7 +167,8 @@ public class FileViewTest extends EditorTestBase {
   private void setupWith(int start, int end, String... lines) {
     file = new File(lines);
     fileView = new FileView(file, start, end);
-    editor = new Editor(fileView, new HighlightState(), new Register());
+    editor = new Editor(fileView, new HighlightState(), new Register(),
+        new Editor.EmptyEditorEnvironment());
     listener = mock(File.Listener.class);
   }
 }

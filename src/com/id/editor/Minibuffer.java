@@ -27,7 +27,7 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
   public Minibuffer() {
     file = new File("");
     fileView = new FileView(file);
-    editor = new Editor(fileView, new HighlightState(), new Register());
+    editor = new Editor(fileView, new HighlightState(), new Register(), new Editor.EmptyEditorEnvironment());
     editor.insert();
     editor.addFileListener(this);
     shortcuts.setShortcut(Arrays.asList(KeyStroke.escape()), new ShortcutTree.Action() {

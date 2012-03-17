@@ -39,7 +39,8 @@ public class EditorTestBase {
     lastFileContents = lines;
     file = new File(lines);
     fileView = new FileView(file);
-    editor = new Editor(fileView, new HighlightState(), new Register());
+    editor = new Editor(fileView, new HighlightState(), new Register(),
+        new Editor.EmptyEditorEnvironment());
     handler = new EditorKeyHandler();
   }
 

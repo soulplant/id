@@ -137,6 +137,7 @@ public class EditorRendererTest {
   private void setFileContents(String... lines) {
     file = new File(lines);
     fileView = new FileView(file);
-    editor = new Editor(fileView, new HighlightState(), new Register());
+    editor = new Editor(fileView, new HighlightState(), new Register(),
+        new Editor.EmptyEditorEnvironment());
   }
 }

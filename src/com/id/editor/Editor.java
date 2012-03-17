@@ -82,7 +82,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     }
   }
 
-  class EmptyEditorEnvironment implements EditorEnvironment {
+  public static class EmptyEditorEnvironment implements EditorEnvironment {
     @Override
     public void openFile(String filename) {
       // Do nothing.
@@ -113,10 +113,12 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
   private boolean justInsertedAutoIndent = false;
   private final Register register;
 
-  public Editor(FileView fileView, HighlightState highlightState, Register register) {
+  public Editor(FileView fileView, HighlightState highlightState,
+      Register register, EditorEnvironment editorEnvironment) {
     this.file = fileView;
     this.highlightState = highlightState;
     this.register = register;
+    this.environment = editorEnvironment;
     this.cursor = new Cursor();
     this.visual = new Visual(this.cursor);
     this.highlightState.addListener(this);
@@ -137,10 +139,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
       }
     });
     keyHandler = new EditorKeyHandler();
-  }
-
-  public void setEnvironment(EditorEnvironment environment) {
-    this.environment = environment;
   }
 
   public String getLine(int y) {

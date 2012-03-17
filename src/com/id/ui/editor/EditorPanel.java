@@ -25,10 +25,10 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
   private final Editor editor;
   private final JScrollPane scrollPane;
   private final JLabel filenameLabel;
-  private final ListModel<Editor> containerView;
+  private final ListModel<Editor> containerModel;
 
-  public EditorPanel(Editor editor, final ListModel<Editor> containerView) {
-    this.containerView = containerView;
+  public EditorPanel(Editor editor, final ListModel<Editor> containerModel) {
+    this.containerModel = containerModel;
     setLayout(new BorderLayout());
     setBorder(new Border() {
       @Override
@@ -63,7 +63,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
   }
 
   private boolean isFocused() {
-    return containerView.isFocused() && containerView.isFocused(editor);
+    return containerModel.isFocused() && containerModel.isFocused(editor);
   }
 
   @Override

@@ -320,7 +320,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       file.insertText(cursor.getY(), targetX, line);
       cursor.moveTo(cursor.getY(), targetX);
     } else {
-      int charsToRemove = getSpacesBackIncludingSoftTabs(getCurrentLine(), cursor.getX(), 2);
+      int charsToRemove = getSpacesBackIncludingSoftTabs(getCurrentLine(), cursor.getX(), TAB_SIZE);
       file.removeText(cursor.getY(), cursor.getX() - charsToRemove, charsToRemove);
       cursor.moveBy(0, -charsToRemove);
     }
@@ -658,7 +658,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void tab() {
-    int spacesToAdd = cursor.getX() % 2 == 0 ? 2 : 1;
+    int spacesToAdd = TAB_SIZE - (cursor.getX() % TAB_SIZE);
     for (int i = 0; i < spacesToAdd; i++) {
       onLetterTyped(' ');
     }

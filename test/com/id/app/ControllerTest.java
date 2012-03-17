@@ -215,6 +215,19 @@ public class ControllerTest {
     assertEquals("end", editors.get(0).getLine(3));
   }
 
+  @Test
+  public void moveFocusBetweenSnippets() {
+    controller.openFile("a");
+    typeString("V;V;");
+    assertEquals(2, stack.size());
+    typeString("L");
+    assertEquals(1, stack.getFocusedIndex());
+    typeString("K");
+    assertEquals(0, stack.getFocusedIndex());
+    typeString("J");
+    assertEquals(1, stack.getFocusedIndex());
+  }
+
   private void assertEditorFocused() {
     assertTrue(editors.isFocused());
     assertFalse(stack.isFocused());

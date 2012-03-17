@@ -113,11 +113,11 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   private void moveFocusUp() {
-    editors.moveUp();
+    getFocusedList().moveUp();
   }
 
   private void moveFocusDown() {
-    editors.moveDown();
+    getFocusedList().moveDown();
   }
 
   public Editor openFile(String filename) {
@@ -168,11 +168,15 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     if (fuzzyFinder.isVisible() && fuzzyFinder.handleKeyStroke(keyStroke)) {
       return true;
     }
-    ListModel<Editor> focusedList = editors.isFocused() ? editors : stack;
+    ListModel<Editor> focusedList = getFocusedList();
     if (!focusedList.isEmpty() && focusedList.getFocusedItem().handleKeyStroke(keyStroke)) {
       return true;
     }
     return shortcuts.stepAndExecute(keyStroke);
+  }
+
+  private ListModel<Editor> getFocusedList() {
+    return editors.isFocused() ? editors : stack;
   }
 
   @Override

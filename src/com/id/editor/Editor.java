@@ -316,8 +316,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
         return;
       }
       String line = getCurrentLine();
-      file.removeLine(cursor.getY());
-      cursor.moveBy(-1, 0);
+      file.removeLine(cursor.getY());  // This moves the cursor up by one.
       int targetX = getCurrentLine().length();
       file.insertText(cursor.getY(), targetX, line);
       cursor.moveTo(cursor.getY(), targetX);

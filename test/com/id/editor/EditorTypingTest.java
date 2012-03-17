@@ -789,4 +789,11 @@ public class EditorTypingTest extends EditorTestBase {
     assertFalse(editor.isInInsertMode());
     assertFileContents("abc");
   }
+
+  @Test
+  public void backspaceAtLineStartShouldJoinWithPreviousLine() {
+    setFileContents("abc", "def", "ghi");
+    typeString("ji<BS>");
+    assertFileContents("abcdef", "ghi");
+  }
 }

@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.id.file.File;
+import com.id.file.FileView;
 import com.id.file.ModifiedListener;
 import com.id.test.EditorTestBase;
 
@@ -224,5 +225,25 @@ public class EditorTest extends EditorTestBase {
     editor.next();
     assertEquals(2, editor.getCursorPosition().getY());
     assertEquals(0, editor.getCursorPosition().getX());
+  }
+
+  @Test
+  public void insertingTextInADifferentViewCausesTheCursorToMoveDown() {
+    setFileContents("abc", "def", "ghi");
+    typeString("G");
+    assertCursorPosition(2, 0);
+    FileView fileView2 = new FileView(file, 0, 0);
+    fileView2.insertLine(0, "hi");
+    assertCursorPosition(3, 0);
+  }
+
+  @Test
+  public void deletingTextInADifferentViewCausesTheCursorToMoveUp() {
+    setFileContents("abc", "def", "ghi");
+    typeString("j");
+    assertCursorPosition(1, 0);
+    FileView fileView2 = new FileView(file, 0, 0);
+    fileView2.removeLine(0);
+    assertCursorPosition(0, 0);
   }
 }

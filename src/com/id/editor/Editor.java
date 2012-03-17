@@ -18,7 +18,7 @@ import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
 
-public class Editor implements KeyStrokeHandler, HighlightState.Listener {
+public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.Listener {
   private static final int TAB_SIZE = 2;
 
   public interface EditorView {
@@ -123,6 +123,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     this.visual = new Visual(this.cursor);
     this.highlightState.addListener(this);
     addFileListener(highlight);
+    addFileListener(this);
     onHighlightStateChanged();
     cursor.addListner(new Cursor.Listener() {
       @Override
@@ -858,5 +859,24 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener {
     }
     environment.addSnippet(file.makeView(visual.getStartY(), visual.getEndY()));
     visual.toggleMode(Visual.Mode.NONE);
+  }
+
+  @Override
+  public void onLineInserted(int y, String line) {
+    if (y < cursor.getY()) {
+      cursor.moveBy(1, 0);
+    }
+  }
+
+  @Override
+  public void onLineRemoved(int y, String line) {
+    if (y < cursor.getY()) {
+      cursor.moveBy(-1, 0);
+    }
+  }
+
+  @Override
+  public void onLineChanged(int y, String oldLine, String newLine) {
+    // Do nothing.
   }
 }

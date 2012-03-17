@@ -268,6 +268,16 @@ public class ControllerTest {
     assertEquals(0, stack.getFocusedIndex());
   }
 
+  @Test
+  public void closingASnippetShouldMoveFocusToTheNextOneDown() {
+    controller.openFile("a");
+    createSnippetFromCurrentLine();
+    createSnippetFromCurrentLine();
+    createSnippetFromCurrentLine();
+    typeString("Lq");
+    assertEquals(0, stack.getFocusedIndex());
+  }
+
   private void createSnippetFromCurrentLine() {
     typeString("V;");
   }

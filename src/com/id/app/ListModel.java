@@ -67,7 +67,9 @@ public class ListModel<T> implements Iterable<T> {
     }
     int index = focusedIndex;
     T removed = items.remove(focusedIndex);
-    focusedIndex = items.size() - 1;
+    if (focusedIndex >= items.size()) {
+      focusedIndex = items.size() - 1;
+    }
     fireOnRemoved(index, removed);
     if (focusedIndex == -1) {
       fireOnSelectionLost();

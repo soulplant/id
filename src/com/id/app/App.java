@@ -21,10 +21,10 @@ import com.id.platform.FileSystem;
 import com.id.platform.RealFileSystem;
 import com.id.ui.app.AppFrame;
 import com.id.ui.app.AppPanel;
-import com.id.ui.app.EditorSwapperView;
 import com.id.ui.app.FileListView;
 import com.id.ui.app.FullscreenSwapper;
 import com.id.ui.app.FuzzyFinderPanel;
+import com.id.ui.app.SpotlightView;
 import com.id.ui.app.StackView;
 
 public class App {
@@ -51,7 +51,7 @@ public class App {
     final Controller controller = new Controller(editors, fileSystem,
         fuzzyFinder, repository, highlightState, stack);
 
-    final EditorSwapperView spotlightView = new EditorSwapperView(editors);
+    final SpotlightView spotlightView = new SpotlightView(editors);
     final FileListView fileListView = new FileListView(editors);
     StackView stackView = new StackView(stack);
     FuzzyFinderPanel fuzzyFinderPanel = new FuzzyFinderPanel(fuzzyFinder);

@@ -9,14 +9,16 @@ import com.id.ui.editor.EditorPanel;
 
 // TODO Merge this into EditorSwapperPanel.
 @SuppressWarnings("serial")
-public class SpotlightView extends EditorSwapperPanel implements ListModel.Listener<Editor> {
+public class SpotlightView extends EditorSwapperPanel implements ListModel.Listener<Editor>, EditorContainerView {
   private final Map<Editor, EditorPanel> map = new HashMap<Editor, EditorPanel>();
+  private final ListModel<Editor> editors;
 
   public SpotlightView(ListModel<Editor> editors) {
+    this.editors = editors;
   }
 
   private EditorPanel wrap(Editor editor) {
-    EditorPanel panel = new EditorPanel(editor);
+    EditorPanel panel = new EditorPanel(editor, this);
     map.put(editor, panel);
     return panel;
   }
@@ -38,11 +40,16 @@ public class SpotlightView extends EditorSwapperPanel implements ListModel.Liste
 
   @Override
   public void onSelectionLost() {
-
+    // Do nothing.
   }
 
   @Override
   public void onFocusChanged(boolean isFocused) {
-    // TODO(koz): Add focus styling.
+    // Do nothing.
+  }
+
+  @Override
+  public boolean isFocused() {
+    return editors.isFocused();
   }
 }

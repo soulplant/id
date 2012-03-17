@@ -1,17 +1,23 @@
 package com.id.ui.editor;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.Border;
 
 import com.id.app.Constants;
 import com.id.editor.Editor;
 import com.id.editor.Point;
 import com.id.file.ModifiedListener;
+import com.id.ui.app.EditorContainerView;
 
 @SuppressWarnings("serial")
 public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedListener {
@@ -20,8 +26,26 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
   private final JScrollPane scrollPane;
   private final JLabel filenameLabel;
 
-  public EditorPanel(Editor editor) {
+  public EditorPanel(Editor editor, final EditorContainerView containerView) {
     setLayout(new BorderLayout());
+    setBorder(new Border() {
+      @Override
+      public Insets getBorderInsets(Component c) {
+        return new Insets(1, 1, 1, 1);
+      }
+
+      @Override
+      public boolean isBorderOpaque() {
+        return false;
+      }
+
+      @Override
+      public void paintBorder(Component c, Graphics g, int x, int y, int width,
+          int height) {
+        g.setColor(containerView.isFocused() ? Color.GREEN : Color.RED);
+        g.fillRect(x, y, width - 1, height - 1);
+      }
+    });
     this.editor = editor;
     textPanel = new TextPanel(editor);
     JPanel panel = new JPanel();

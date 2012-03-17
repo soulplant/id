@@ -12,13 +12,13 @@ import com.id.fuzzy.FuzzyFinder;
 
 @SuppressWarnings("serial")
 public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.Listener {
-  private final EditorSwapperView spotlightView;
+  private final SpotlightView spotlightView;
   private final FileListView fileListView;
   private final Component stackView;
   private final KeyStrokeHandler handler;
   private final FuzzyFinderPanel fuzzyFinderPanel;
 
-  public AppPanel(FileListView fileListView, EditorSwapperView spotlightView,
+  public AppPanel(FileListView fileListView, SpotlightView spotlightView,
       Component stackView, KeyStrokeHandler handler, FuzzyFinderPanel fuzzyFinderPanel) {
     this.spotlightView = spotlightView;
     this.fileListView = fileListView;

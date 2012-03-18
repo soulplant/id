@@ -1,0 +1,12 @@
+package com.id.data;
+
+message Editor {
+  required string filename = 1;
+  optional int32 start = 2;
+  optional int32 end = 3;
+}
+
+message Session {
+  repeated Editor editors = 1;
+  repeated Editor stack = 2;
+}

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.id.app.HighlightState;
+import com.id.data.Data;
 import com.id.editor.Visual.Mode;
 import com.id.events.EditorKeyHandler;
 import com.id.events.KeyStroke;
@@ -26,6 +27,8 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     void recenterScreenOnPoint(Point point);
     int getViewportHeight();
     boolean isVisible(Point point);
+    int getTopLineVisible();
+    void setTopLineVisible(int topLine);
   }
 
   public interface EditorEnvironment {
@@ -79,6 +82,16 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     @Override
     public boolean isVisible(Point point) {
       return true;
+    }
+
+    @Override
+    public int getTopLineVisible() {
+      return 0;
+    }
+
+    @Override
+    public void setTopLineVisible(int topLine) {
+      // Do nothing.
     }
   }
 
@@ -618,6 +631,10 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     cursor.moveTo(getLineCount() - 1, 0);
   }
 
+  public void moveCursorTo(int y, int x) {
+    cursor.moveTo(y, x);
+  }
+
   public void put() {
     if (register.isEmpty()) {
       return;
@@ -885,5 +902,19 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   @Override
   public void onLineChanged(int y, String oldLine, String newLine) {
     // Do nothing.
+  }
+
+  public Data.Editor getSerialized() {
+    Data.Editor result = file.getSerialized();
+    result = Data.Editor.newBuilder(result)
+        .setCursorY(cursor.getY())
+        .setCursorX(cursor.getX())
+        .setTop(view.getTopLineVisible())
+        .build();
+    return result;
+  }
+
+  public void setTopLineVisible(int top) {
+    view.setTopLineVisible(top);
   }
 }

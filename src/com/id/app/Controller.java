@@ -1,7 +1,15 @@
 package com.id.app;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 
+import com.id.data.Data;
+import com.id.data.Data.Session.Builder;
 import com.id.editor.Editor;
 import com.id.editor.Editor.EditorEnvironment;
 import com.id.editor.Register;
@@ -97,6 +105,70 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         saveFile();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("3"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        saveState();
+      }
+    });
+    shortcuts.setShortcut(KeyStroke.fromString("4"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        loadState();
+      }
+    });
+  }
+
+  private void saveState() {
+    OutputStream outputStream;
+    try {
+      outputStream = new FileOutputStream("state");
+      getSerialized().writeTo(outputStream);
+      System.out.println(getSerialized());
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void loadState() {
+    InputStream inputStream;
+    try {
+      inputStream = new FileInputStream("state");
+      Data.Session session = Data.Session.parseFrom(inputStream);
+      restoreState(session);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void restoreState(Data.Session session) {
+    resetState();
+    for (Data.Editor editorData : session.getEditorsList()) {
+      Editor editor = openFile(editorData.getFilename());
+      editor.moveCursorTo(editorData.getCursorY(), editorData.getCursorX());
+      editor.setTopLineVisible(editorData.getTop());
+    }
+    for (Data.Editor snippetData : session.getStackList()) {
+      Editor editor = openSnippet(snippetData.getFilename(),
+          snippetData.getStart(), snippetData.getEnd());
+      editor.moveCursorTo(snippetData.getCursorY(), snippetData.getCursorX());
+      editor.setTopLineVisible(snippetData.getTop());
+    }
+  }
+
+  private void resetState() {
+    closeEditors(stack);
+    closeEditors(editors);
+  }
+
+  private void closeEditors(ListModel<Editor> toClose) {
+    while (!toClose.isEmpty()) {
+      toClose.removeFocused();
+    }
   }
 
   private void focusEditors() {
@@ -132,17 +204,38 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     getFocusedList().moveDown();
   }
 
+  public FileView loadFileView(String filename, int start, int end) {
+    File file = fileSystem.getFile(filename);
+    if (file == null) {
+      return null;
+    }
+    if (end != -1) {
+      return new FileView(file, start, end);
+    }
+    return new FileView(file);
+  }
+
   public Editor openFile(String filename) {
     Editor existingEditor = attemptToFocusExistingEditor(filename);
     if (existingEditor != null) {
       return existingEditor;
     }
-    File file = fileSystem.getFile(filename);
-    if (file == null) {
+    FileView fileView = loadFileView(filename, 0, -1);
+    if (fileView == null) {
       return null;
     }
-    Editor editor = makeEditor(new FileView(file));
+    Editor editor = makeEditor(fileView);
     editors.add(editor);
+    return editor;
+  }
+
+  private Editor openSnippet(String filename, int start, int end) {
+    FileView fileView = loadFileView(filename, start, end);
+    if (fileView == null) {
+      return null;
+    }
+    Editor editor = makeEditor(fileView);
+    stack.add(editor);
     return editor;
   }
 
@@ -202,5 +295,16 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
       }
       editor.setDiffMarkers(diff.getDelta(filename));
     }
+  }
+
+  public Data.Session getSerialized() {
+    Builder builder = Data.Session.newBuilder();
+    for (Editor editor : editors) {
+      builder.addEditors(editor.getSerialized());
+    }
+    for (Editor editor : stack) {
+      builder.addStack(editor.getSerialized());
+    }
+    return builder.build();
   }
 }

@@ -113,4 +113,15 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
         point.getX() * Constants.CHAR_WIDTH_PX,
         point.getY() * Constants.CHAR_HEIGHT_PX);
   }
+
+  @Override
+  public int getTopLineVisible() {
+    return textPanel.getTopLineVisible();
+  }
+
+  @Override
+  public void setTopLineVisible(int topLine) {
+    // TODO(koz): Implement this properly.
+    recenterScreenOnPoint(new Point(topLine, 0));
+  }
 }

@@ -18,6 +18,10 @@ import com.id.rendering.Matrix;
 
 @SuppressWarnings("serial")
 public class TextPanel extends JPanel {
+  // TODO Make these not static.
+  private final int fontWidthPx = 8;
+  private final int fontHeightPx = 14;
+
   private final Editor editor;
   private final EditorKeyHandler handler = new EditorKeyHandler();
 
@@ -46,9 +50,6 @@ public class TextPanel extends JPanel {
   private void updateSize() {
     //  final int fontWidthPx = getFontMetrics(getFont()).getWidths()[70];
     //  final int fontHeightPx = getFontMetrics(getFont()).getHeight();
-    // TODO Make these not static.
-    final int fontWidthPx = 8;
-    final int fontHeightPx = 14;
 
     setPreferredSize(new Dimension(fontWidthPx, fontHeightPx * editor.getLineCount()));
     invalidate();
@@ -77,6 +78,10 @@ public class TextPanel extends JPanel {
       g.drawRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
     }
     drawOutlineBox(g);
+  }
+
+  public int getTopLineVisible() {
+    return getVisibleRect().y / fontHeightPx;
   }
 
   private void drawOutlineBox(Graphics g) {

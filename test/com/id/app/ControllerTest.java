@@ -147,7 +147,7 @@ public class ControllerTest {
     assertTrue(editor.isModified());
     ModifiedListener listener = mock(ModifiedListener.class);
     editor.addFileModifiedListener(listener);
-    type(KeyStroke.fromControlChar('s'));
+    type(KeyStroke.fromChar('w'));
     verify(listener).onModifiedStateChanged();
     assertFalse(editor.isModified());
     assertEquals("XXX", fileSystem.getFile("a").getLine(0));

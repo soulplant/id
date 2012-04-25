@@ -70,12 +70,6 @@ public class EditorKeyHandler {
         editor.deleteLine();
       }
     });
-    normalTree.setShortcut(KeyStroke.fromString("w"), new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        editor.moveCursorToNextWord();
-      }
-    });
     normalTree.setShortcut(KeyStroke.fromString("i"), new ShortcutTree.Action() {
       @Override
       public void execute() {

@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 import com.id.data.Data;
 import com.id.data.Data.Session.Builder;
@@ -92,17 +91,16 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         closeCurrentFile();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("w"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        saveFile();
+      }
+    });
     shortcuts.setShortcut(KeyStroke.fromString("1"), new ShortcutTree.Action() {
       @Override
       public void execute() {
         importDiffs();
-      }
-    });
-    shortcuts.setShortcut(Arrays.asList(KeyStroke.fromControlChar('s')),
-        new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        saveFile();
       }
     });
     shortcuts.setShortcut(KeyStroke.fromString("3"), new ShortcutTree.Action() {

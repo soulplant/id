@@ -25,7 +25,7 @@ public class Tombstone {
   }
 
   private String quote(String string) {
-    return string == null ? string + "" : "'" + string + "'";
+    return string == null ? "" : "'" + string + "'";
   }
 
   public Status getStatus() {

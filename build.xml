@@ -1,4 +1,4 @@
-<project name="id" default="test" basedir=".">
+<project name="id" default="package" basedir=".">
   <description>
     id
   </description>
@@ -6,27 +6,53 @@
   <property name="test" location="test"/>
   <property name="build" location="build"/>
   <property name="dist"  location="dist"/>
+  <path id="build.classpath">
+    <pathelement path="lib/protobuf-java-2.3.0.jar"/>
+  </path>
+  <path id="test.classpath">
+    <path refid="build.classpath"/>
+    <pathelement path="lib/junit-4.10.jar"/>
+    <pathelement path="lib/mockito-all-1.8.5.jar"/>
+  </path>
 
-  <target name="test">
-    <tstamp/>
+  <target name="compile">
     <mkdir dir="${build}"/>
-    <javac destdir="${build}">
+    <javac destdir="${build}" debug="on" includeAntRuntime="false">
       <src path="${src}"/>
       <src path="gen"/>
-      <classpath>
-        <pathelement path="resources" />
-        <pathelement path="lib/mockito-all-1.8.5.jar" />
-        <pathelement path="lib/protobuf-java-2.3.0.jar" />
-      </classpath>
+      <classpath refid="build.classpath"/>
     </javac>
-    <tstamp/>
-    <jar destfile="id.jar">
-      <fileset dir="${build}" />
-      <fileset dir="resources" />
+  </target>
+
+  <target name="package" depends="compile">
+    <mkdir dir="${dist}"/>
+    <jar destfile="${dist}/id.jar">
+      <fileset dir="${build}"/>
+      <fileset dir="resources"/>
       <manifest>
         <attribute name="Main-Class"
               value="com.id.app.App"/>
       </manifest>
     </jar>
+  </target>
+
+  <target name="test" depends="compile">
+    <javac destdir="${build}" debug="on" includeAntRuntime="false">
+      <src path="${test}"/>
+      <src path="gen"/>
+      <classpath refid="test.classpath"/>
+    </javac>
+    <junit printsummary="yes">
+      <classpath>
+        <path refid="test.classpath"/>
+        <pathelement path="${build}"/>
+      </classpath>
+      <formatter type="plain"/>
+      <test name="com.id.test.AllTests"/>
+    </junit>
+  </target>
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
   </target>
 </project>

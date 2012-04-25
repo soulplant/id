@@ -1,0 +1,32 @@
+<project name="id" default="test" basedir=".">
+  <description>
+    id
+  </description>
+  <property name="src" location="src"/>
+  <property name="test" location="test"/>
+  <property name="build" location="build"/>
+  <property name="dist"  location="dist"/>
+
+  <target name="test">
+    <tstamp/>
+    <mkdir dir="${build}"/>
+    <javac destdir="${build}">
+      <src path="${src}"/>
+      <src path="gen"/>
+      <classpath>
+        <pathelement path="resources" />
+        <pathelement path="lib/mockito-all-1.8.5.jar" />
+        <pathelement path="lib/protobuf-java-2.3.0.jar" />
+      </classpath>
+    </javac>
+    <tstamp/>
+    <jar destfile="id.jar">
+      <fileset dir="${build}" />
+      <fileset dir="resources" />
+      <manifest>
+        <attribute name="Main-Class"
+              value="com.id.app.App"/>
+      </manifest>
+    </jar>
+  </target>
+</project>

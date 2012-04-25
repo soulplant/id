@@ -889,6 +889,9 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   private void outdentLine(int y) {
     String indent = getIndentForLine(y);
+    if (indent.isEmpty()) {
+      return;
+    }
     int remainder = indent.length() % TAB_SIZE;
     int outdentAmount = remainder == 0 ? TAB_SIZE : remainder;
     file.removeText(y, 0, outdentAmount);

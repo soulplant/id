@@ -807,4 +807,11 @@ public class EditorTypingTest extends EditorTestBase {
     assertFalse("shouldn't be in visual mode after outdent", editor.isInVisual());
     assertFileContents("a", "b");
   }
+
+  @Test
+  public void outdentShouldntEatNonWhitespace() {
+    setFileContents("abcdef");
+    typeString("\\<");
+    assertFileContents("abcdef");
+  }
 }

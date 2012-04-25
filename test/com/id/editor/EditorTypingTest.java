@@ -784,4 +784,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("ji<BS>");
     assertFileContents("abcdef", "ghi");
   }
+
+  @Test
+  public void capUndoOnTopLineShouldBringBackDeletedLines() {
+    setFileContents("a", "b", "c", "d", "e");
+    typeString("VjdU");
+    assertFileContents("a", "b", "c", "d", "e");
+  }
 }

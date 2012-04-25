@@ -230,8 +230,13 @@ public class File {
   public void undoLine(int y) {
     Grave grave = getGrave(y);
     if (grave.isEmpty()) {
-      // Nothing to do but change the line back to what it was.
-      revertStatus(y);
+      if (y != -1) {
+        // Nothing to do but change the line back to what it was.
+        revertStatus(y);
+      }
+      if (y == 0) {
+        undoLine(-1);
+      }
       return;
     }
     Tombstone tombstone = grave.getFreshestTombstone();

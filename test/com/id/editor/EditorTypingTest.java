@@ -791,4 +791,20 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("VjdU");
     assertFileContents("a", "b", "c", "d", "e");
   }
+
+  @Test
+  public void indentRange() {
+    setFileContents("a", "b");
+    typeString("Vj\\>");
+    assertFalse("shouldn't be in visual mode after indent", editor.isInVisual());
+    assertFileContents("  a", "  b");
+  }
+
+  @Test
+  public void outdentRange() {
+    setFileContents(" a", "  b");
+    typeString("Vj\\<");
+    assertFalse("shouldn't be in visual mode after outdent", editor.isInVisual());
+    assertFileContents("a", "b");
+  }
 }

@@ -844,11 +844,24 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   public void indent() {
     startPatch();
-    String indent = getIndentForLine(cursor.getY());
+    if (isInVisual()) {
+      int startY = visual.getStartPoint().getY();
+      int endY = visual.getEndPoint().getY();
+      visual.toggleMode(Visual.Mode.NONE);
+      for (int i = startY; i <= endY; i++) {
+        indentLine(i);
+      }
+    } else {
+      indentLine(cursor.getY());
+    }
+    file.breakPatch();
+  }
+
+  private void indentLine(int y) {
+    String indent = getIndentForLine(y);
     int remainder = indent.length() % TAB_SIZE;
     int indentAmount = TAB_SIZE - remainder;
-    file.changeLine(cursor.getY(), repeatChar(' ', indentAmount) + getCurrentLine());
-    file.breakPatch();
+    file.changeLine(y, repeatChar(' ', indentAmount) + getLine(y));
   }
 
   private String repeatChar(char c, int n) {
@@ -861,11 +874,24 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   public void outdent() {
     startPatch();
-    String indent = getIndentForLine(cursor.getY());
+    if (isInVisual()) {
+      int startY = visual.getStartPoint().getY();
+      int endY = visual.getEndPoint().getY();
+      visual.toggleMode(Visual.Mode.NONE);
+      for (int i = startY; i <= endY; i++) {
+        outdentLine(i);
+      }
+    } else {
+      outdentLine(cursor.getY());
+    }
+    file.breakPatch();
+  }
+
+  private void outdentLine(int y) {
+    String indent = getIndentForLine(y);
     int remainder = indent.length() % TAB_SIZE;
     int outdentAmount = remainder == 0 ? TAB_SIZE : remainder;
-    file.removeText(cursor.getY(), 0, outdentAmount);
-    file.breakPatch();
+    file.removeText(y, 0, outdentAmount);
   }
 
   public void makeSnippetFromVisual() {

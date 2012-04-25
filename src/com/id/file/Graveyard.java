@@ -120,7 +120,7 @@ public class Graveyard implements File.Listener {
     for (Entry<Integer, List<String>> deletion : delta.getDeletions().entrySet()) {
       int y = deletion.getKey();
       for (Tombstone tombstone : Tombstone.deletionsFromLines(deletion.getValue())) {
-        graves.get(y).inherit(tombstone, new Grave());
+        getGrave(y).inherit(tombstone, new Grave());
       }
     }
   }

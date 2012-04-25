@@ -186,7 +186,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   public void saveFile() {
-    editors.getFocusedItem().save(fileSystem);
+    getFocusedList().getFocusedItem().save(fileSystem);
   }
 
   public void showFuzzyFinder() {

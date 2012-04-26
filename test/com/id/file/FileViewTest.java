@@ -1,7 +1,9 @@
 package com.id.file;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -170,6 +172,34 @@ public class FileViewTest extends EditorTestBase {
     setupWith(1, 2, "a", "b", "c");
     typeString("o<ESC>u");
     assertCursorPosition(0, 0);
+  }
+
+  @Test
+  public void percentFindsMatchingParenthesis() {
+    setFileContents("a(b)c");
+    typeString("f(%x");
+    assertFileContents("a(bc");
+  }
+
+  @Test
+  public void percentWorksInReverse() {
+    setFileContents("a(b)c");
+    typeString("f)%x");
+    assertFileContents("ab)c");
+  }
+
+  @Test
+  public void percentWorksOverLines() {
+    setFileContents("foo {", "  ...", "}");
+    typeString("$%");
+    assertCursorPosition(2, 0);
+  }
+
+  @Test
+  public void percentWorksBackwardsOverLines() {
+    setFileContents("foo {", "  ...", "}");
+    typeString("G%");
+    assertCursorPosition(0, 4);
   }
 
   private void setupWith(int start, int end, String... lines) {

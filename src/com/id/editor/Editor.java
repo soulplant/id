@@ -854,6 +854,14 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     file.breakPatch();
   }
 
+  public void findMatchingLetter() {
+    Point point = file.findMatchingLetter(cursor.getY(), cursor.getX());
+    if (point == null) {
+      return;
+    }
+    cursor.moveTo(point);
+  }
+
   public void openFileUnderCursor() {
     environment.openFile(file.getFilenameUnder(cursor.getY(), cursor.getX()));
   }

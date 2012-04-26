@@ -273,6 +273,12 @@ public class EditorKeyHandler {
         editor.moveCursorToEndOfLine();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("%"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.findMatchingLetter();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("S"), new ShortcutTree.Action() {
       @Override
       public void execute() {

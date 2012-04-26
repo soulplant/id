@@ -476,6 +476,148 @@ public class FileView implements File.Listener, ModifiedListener {
     return Character.isLetterOrDigit(c) || c == '_';
   }
 
+  public Point findMatchingLetter(int y, int x) {
+    String line = getLine(y);
+    char c = line.charAt(x);
+    switch (c) {
+    case '(': return findNext(y, x, ')');
+    case '[': return findNext(y, x, ']');
+    case '{': return findNext(y, x, '}');
+    case ')': return findPrevious(y, x, '(');
+    case ']': return findPrevious(y, x, '[');
+    case '}': return findPrevious(y, x, '{');
+    }
+    return null;
+  }
+
+  public Point findNext(int y, int x, char c) {
+    return findChar(new FileCharIterator(y, x), c);
+  }
+
+  public Point findChar(FileCharIterator it, char c) {
+    for (;;) {
+      if (it.getCurrentChar() == c) {
+        return it.getPoint();
+      }
+      if (it.hasNext()) {
+        it.next();
+      } else {
+        break;
+      }
+    }
+    return null;
+  }
+
+  public Point findPrevious(int y, int x, char c) {
+    return findChar(new ReverseFileCharIterator(y, x), c);
+  }
+
+  public class FileCharIterator {
+    public FileCharIterator(int y, int x) {
+      this.y = y;
+      this.x = x;
+    }
+
+    public boolean hasNext() {
+      if (y < getLineCount() - 1) {
+        return true;
+      }
+      return x < getLine(getLineCount() - 1).length() - 1;
+    }
+
+    public boolean hasPrevious() {
+      return y > 0 || x > 0;
+    }
+
+    private int getPreviousNonEmptyLine() {
+      for (int i = y - 1; i >= 0; i--) {
+        if (!getLine(i).isEmpty()) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    public void previous() {
+      int oldX = x;
+      x--;
+      if (x < 0) {
+        int nextY = getPreviousNonEmptyLine();
+        if (nextY == -1) {
+          x = oldX;
+          return;
+        }
+        y = nextY;
+        x = getLine(y).length() - 1;
+      }
+      if (y < 0) {
+        throw new IllegalStateException();
+      }
+    }
+
+    public void next() {
+      int oldX = x;
+      x++;
+      if (x >= getLine(y).length()) {
+        int nextY = getNextNonEmptyLine();
+        if (nextY == -1) {
+          x = oldX;
+          return;
+        }
+        x = 0;
+        y = nextY;
+      }
+      if (y >= getLineCount()) {
+        throw new IllegalStateException();
+      }
+      if (x >= getLine(y).length()) {
+        throw new IllegalStateException();
+      }
+    }
+
+    private int getNextNonEmptyLine() {
+      for (int i = y + 1; i < getLineCount(); i++) {
+        if (!getLine(i).isEmpty()) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    public char getCurrentChar() {
+      return getLine(y).charAt(x);
+    }
+
+    public Point getPoint() {
+      return new Point(y, x);
+    }
+
+    private int y;
+    private int x;
+  }
+
+  public class ReverseFileCharIterator extends FileCharIterator {
+    public ReverseFileCharIterator(int y, int x) {
+      super(y, x);
+    }
+
+    public boolean hasNext() {
+      return super.hasPrevious();
+    }
+
+    public boolean hasPrevious() {
+      return super.hasNext();
+    }
+
+    public void next() {
+      super.previous();
+    }
+
+    public void previous() {
+      super.next();
+    }
+  }
+
   public FileView makeView(int startY, int endY) {
     return file.makeView(start + startY, start + endY);
   }

@@ -28,6 +28,10 @@ public class FileView implements File.Listener, ModifiedListener {
     file.addListener(this);
   }
 
+  public int getStart() {
+    return start;
+  }
+
   public String getLine(int y) {
     return file.getLine(start + y);
   }

@@ -167,6 +167,10 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     return cursor.getPoint();
   }
 
+  public int getRealCursorY() {
+    return getCursorPosition().getY() + file.getStart();
+  }
+
   // Keyboard commands.
   public void down() {
     cursor.moveBy(1, 0);

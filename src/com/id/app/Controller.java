@@ -115,6 +115,22 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         loadState();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("<CR>"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        focusFromSnippet();
+      }
+    });
+  }
+
+  public void focusFromSnippet() {
+    if (stack.isFocused()) {
+      Editor snippet = stack.getFocusedItem();
+      String filename = snippet.getFilename();
+      Editor editor = openFile(filename);
+      editor.moveCursorTo(snippet.getRealCursorY(), snippet.getCursorPosition().getX());
+      focusEditors();
+    }
   }
 
   private void saveState() {

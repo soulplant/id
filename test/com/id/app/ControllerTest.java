@@ -278,6 +278,18 @@ public class ControllerTest {
     assertEquals(0, stack.getFocusedIndex());
   }
 
+  @Test
+  public void enterInASnippetShouldJumpToThatPointInTheRealFile() {
+    controller.openFile("a");
+    controller.openFile("b");
+    assertEquals(1, editors.getFocusedIndex());
+    createSnippetFromCurrentLine();
+    typeString("K");
+    assertEquals(0, editors.getFocusedIndex());
+    typeString("L<CR>");
+    assertEquals(1, editors.getFocusedIndex());
+  }
+
   private void createSnippetFromCurrentLine() {
     typeString("V;");
   }

@@ -691,6 +691,20 @@ public class EditorTypingTest extends EditorTestBase {
   }
 
   @Test
+  public void changeWord2() {
+    setFileContents("this());");
+    typeString("cwthat");
+    assertFileContents("that());");
+  }
+
+  @Test
+  public void changeWord3() {
+    setFileContents(" this_());");
+    typeString("lcwthat");
+    assertFileContents(" that());");
+  }
+
+  @Test
   public void changeWordAtEndOfLine() {
     setFileContents("test");
     typeString("cw");

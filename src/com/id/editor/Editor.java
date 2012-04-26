@@ -820,7 +820,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       return;
     }
     startPatch();
-    file.removeText(cursor.getY(), cursor.getX(), x);
+    file.removeText(cursor.getY(), cursor.getX(), x - cursor.getX());
     insert();
   }
 

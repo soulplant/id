@@ -24,7 +24,7 @@
     </javac>
   </target>
 
-  <target name="package" depends="compile">
+  <target name="package" depends="test">
     <mkdir dir="${dist}"/>
     <jar destfile="${dist}/id.jar">
       <fileset dir="${build}"/>

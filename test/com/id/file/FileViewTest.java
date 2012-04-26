@@ -202,6 +202,20 @@ public class FileViewTest extends EditorTestBase {
     assertCursorPosition(0, 4);
   }
 
+  @Test
+  public void percentSkipsNestedThings() {
+    setFileContents("{{}}");
+    typeString("%");
+    assertCursorPosition(0, 3);
+  }
+
+  @Test
+  public void percentDoesntMoveUnlessItFindsAMatch() {
+    setFileContents("{{}");
+    typeString("%");
+    assertCursorPosition(0, 0);
+  }
+
   private void setupWith(int start, int end, String... lines) {
     file = new File(lines);
     fileView = new FileView(file, start, end);

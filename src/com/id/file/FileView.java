@@ -480,24 +480,30 @@ public class FileView implements File.Listener, ModifiedListener {
     String line = getLine(y);
     char c = line.charAt(x);
     switch (c) {
-    case '(': return findNext(y, x, ')');
-    case '[': return findNext(y, x, ']');
-    case '{': return findNext(y, x, '}');
-    case ')': return findPrevious(y, x, '(');
-    case ']': return findPrevious(y, x, '[');
-    case '}': return findPrevious(y, x, '{');
+    case '(': return findNext(y, x, '(', ')');
+    case '[': return findNext(y, x, '[', ']');
+    case '{': return findNext(y, x, '{', '}');
+    case ')': return findPrevious(y, x, ')', '(');
+    case ']': return findPrevious(y, x, ']', '[');
+    case '}': return findPrevious(y, x, '}', '{');
     }
     return null;
   }
 
-  public Point findNext(int y, int x, char c) {
-    return findChar(new FileCharIterator(y, x), c);
+  public Point findNext(int y, int x, char push, char pop) {
+    return findChar(new FileCharIterator(y, x), push, pop);
   }
 
-  public Point findChar(FileCharIterator it, char c) {
+  public Point findChar(FileCharIterator it, char push, char pop) {
+    int depth = 0;
     for (;;) {
-      if (it.getCurrentChar() == c) {
-        return it.getPoint();
+      if (it.getCurrentChar() == push) {
+        depth++;
+      } else if (it.getCurrentChar() == pop) {
+        depth--;
+        if (depth == 0) {
+          return it.getPoint();
+        }
       }
       if (it.hasNext()) {
         it.next();
@@ -508,8 +514,8 @@ public class FileView implements File.Listener, ModifiedListener {
     return null;
   }
 
-  public Point findPrevious(int y, int x, char c) {
-    return findChar(new ReverseFileCharIterator(y, x), c);
+  public Point findPrevious(int y, int x, char push, char pop) {
+    return findChar(new ReverseFileCharIterator(y, x), push, pop);
   }
 
   public class FileCharIterator {

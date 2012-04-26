@@ -828,4 +828,18 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("\\<");
     assertFileContents("abcdef");
   }
+
+  @Test
+  public void ddDoesntMoveCursor() {
+    setFileContents("a", "b", "c", "d");
+    typeString("jdd");
+    assertCursorPosition(1, 0);
+  }
+
+  @Test
+  public void ddOnLastLineMovesCursor() {
+    setFileContents("a", "b", "c", "d");
+    typeString("Gdd");
+    assertCursorPosition(2, 0);
+  }
 }

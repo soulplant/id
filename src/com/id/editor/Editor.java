@@ -430,9 +430,10 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   public void deleteLine() {
     register.setContents(new TextFragment(Visual.Mode.LINE, false, getCurrentLine()));
     startPatch();
-    file.removeLine(cursor.getY());
+    int y = cursor.getY();
+    file.removeLine(y);
     file.breakPatch();
-    cursor.moveTo(cursor.getY(), 0);
+    cursor.moveTo(y, 0);
     applyCursorConstraints();
   }
 

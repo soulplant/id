@@ -871,4 +871,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("jVd");
     assertCursorPosition(1, 0);
   }
+
+  @Test
+  public void deleteWordNotOnStartOfLine() {
+    setFileContents("this is a test");
+    typeString("fidw");
+    assertFileContents("this a test");
+  }
 }

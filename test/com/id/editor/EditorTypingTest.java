@@ -842,4 +842,18 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("Gdd");
     assertCursorPosition(2, 0);
   }
+
+  @Test
+  public void ciw() {
+    setFileContents("blah");
+    typeString("lciwwoo");
+    assertFileContents("woo");
+  }
+
+  @Test
+  public void ciw2() {
+    setFileContents(" blah");
+    typeString("lciwwoo");
+    assertFileContents(" woo");
+  }
 }

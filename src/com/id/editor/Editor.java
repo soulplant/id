@@ -825,6 +825,21 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     insert();
   }
 
+  public void changeWordUnderCursor() {
+    int endX = file.findNextWordBreak(cursor.getY(), cursor.getX());
+    int startX = file.findPreviousWordBreak(cursor.getY(), cursor.getX());
+    if (endX == -1) {
+      endX = getCurrentLine().length();
+    }
+    if (startX == -1) {
+      startX = 0;
+    }
+    startPatch();
+    file.removeText(cursor.getY(), startX, endX - startX);
+    cursor.moveTo(cursor.getY(), startX);
+    insert();
+  }
+
   public void deleteWord() {
     int x = file.findNextWordBreak(cursor.getY(), cursor.getX());
     if (x == -1) {

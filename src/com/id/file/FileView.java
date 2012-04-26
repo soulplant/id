@@ -458,6 +458,20 @@ public class FileView implements File.Listener, ModifiedListener {
     return -1;
   }
 
+  public int findPreviousWordBreak(int y, int x) {
+    String line = getLine(y);
+    boolean foundLetter = isIdentifierLetter(line.charAt(x));
+    for (int i = x; i >= 0; i--) {
+      char c = line.charAt(i);
+      if (isIdentifierLetter(c)) {
+        foundLetter = true;
+      } else if (foundLetter) {
+        return i + 1;
+      }
+    }
+    return -1;
+  }
+
   private boolean isIdentifierLetter(char c) {
     return Character.isLetterOrDigit(c) || c == '_';
   }

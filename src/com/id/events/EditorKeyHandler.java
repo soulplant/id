@@ -231,6 +231,12 @@ public class EditorKeyHandler {
         editor.changeWord();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("ciw"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeWordUnderCursor();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("c$"), new ShortcutTree.Action() {
       @Override
       public void execute() {

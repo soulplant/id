@@ -482,8 +482,9 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     startPatch();
     if (isInVisual()) {
       register.setContents(visual.getRegister(file));
+      Point cursorPoint = visual.getStartPoint();
       visual.removeFrom(file);
-      cursor.moveTo(visual.getStartPoint().getY(), visual.getStartPoint().getX());
+      cursor.moveTo(cursorPoint.getY(), cursorPoint.getX());
       visual.toggleMode(Visual.Mode.NONE);
     } else {
       register.setContents(new TextFragment(Visual.Mode.CHAR, false, "" + getCharUnderCursor()));

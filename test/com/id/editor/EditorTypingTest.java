@@ -864,4 +864,11 @@ public class EditorTypingTest extends EditorTestBase {
     assertAllStatus(Tombstone.Status.NORMAL);
     setOkForChangeMarkersToBeInconsistentAfterUndo();
   }
+
+  @Test
+  public void deleteVisualShouldLeaveCursorOnOriginalLine() {
+    setFileContents("a", "b", "c");
+    typeString("jVd");
+    assertCursorPosition(1, 0);
+  }
 }

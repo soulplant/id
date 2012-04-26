@@ -810,7 +810,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       visual.toggleMode(Visual.Mode.NONE);
       file.wipeRange(startY, endY);
     } else {
-      file.wipe(cursor.getY());
+      file.wipeRange(0, getLineCount() - 1);
     }
   }
 

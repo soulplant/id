@@ -856,4 +856,12 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("lciwwoo");
     assertFileContents(" woo");
   }
+
+  @Test
+  public void wipeShouldWipeWholeFile() {
+    setFileContents("a", "b");
+    typeString("xjxW");
+    assertAllStatus(Tombstone.Status.NORMAL);
+    setOkForChangeMarkersToBeInconsistentAfterUndo();
+  }
 }

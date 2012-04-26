@@ -25,6 +25,7 @@ public class Graveyard implements File.Listener {
   }
 
   public void resetRange(int from, int to) {
+    System.out.println("resetRange(" + from + ", " + to + ")");
     for (int i = from; i <= to; i++) {
       tombstones.get(i).reset();
       graves.set(i, new Grave());

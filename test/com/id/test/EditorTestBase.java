@@ -73,7 +73,13 @@ public class EditorTestBase {
 
   protected void assertAllStatus(Tombstone.Status status) {
     for (int y = 0; y < editor.getLineCount(); y++) {
-      assertEquals(status, editor.getStatus(y));
+      assertEquals("index: " + y, status, editor.getStatus(y));
+    }
+  }
+
+  public void dumpStatus() {
+    for (int y = 0; y < editor.getLineCount(); y++) {
+      System.out.println("status[" + y + "] = " + editor.getStatus(y));
     }
   }
 }

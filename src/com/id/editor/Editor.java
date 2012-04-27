@@ -15,6 +15,7 @@ import com.id.file.File.Listener;
 import com.id.file.FileView;
 import com.id.file.Grave;
 import com.id.file.ModifiedListener;
+import com.id.file.Range;
 import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
@@ -934,6 +935,10 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     visual.toggleMode(Visual.Mode.NONE);
   }
 
+  public void makeSnippetFromRange(Range range) {
+    environment.addSnippet(file.makeView(range.getStart(), range.getEnd()));
+  }
+
   @Override
   public void onLineInserted(int y, String line) {
     // If the cursor is at the end of the file already, we probably just
@@ -970,6 +975,18 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
         .setTop(view.getTopLineVisible())
         .build();
     return result;
+  }
+
+  public List<Range> getDeltas() {
+    return file.getDeltas();
+  }
+
+  public Range getRange() {
+    return file.getRange();
+  }
+
+  public void growToCover(Range range) {
+    file.growToCover(range);
   }
 
   public void setTopLineVisible(int top) {

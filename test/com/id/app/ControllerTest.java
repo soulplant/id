@@ -290,6 +290,20 @@ public class ControllerTest {
     assertEquals(1, editors.getFocusedIndex());
   }
 
+  @Test
+  public void openDeltasAsSnippets() {
+    controller.openFile("a");
+    typeString("o<ESC>@");
+    assertEquals(1, stack.size());
+  }
+
+  @Test
+  public void openDeltasAsSnippetsDoesntCreateDupes() {
+    controller.openFile("a");
+    typeString("o<ESC>@@");
+    assertEquals(1, stack.size());
+  }
+
   private void createSnippetFromCurrentLine() {
     typeString("V;");
   }

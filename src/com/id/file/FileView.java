@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.id.data.Data;
 import com.id.editor.Point;
+import com.id.file.Range;
 import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
@@ -30,6 +31,10 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public int getStart() {
     return start;
+  }
+
+  public Range getRange() {
+    return new Range(start, end);
   }
 
   public String getLine(int y) {
@@ -84,6 +89,15 @@ public class FileView implements File.Listener, ModifiedListener {
   @Override
   public void onModifiedStateChanged() {
     // Do nothing.
+  }
+
+  public void growToCover(Range range) {
+    if (range.getStart() < start) {
+      start = range.getStart();
+    }
+    if (range.getEnd() > end) {
+      end = range.getEnd();
+    }
   }
 
   public boolean isInPatch() {
@@ -630,6 +644,42 @@ public class FileView implements File.Listener, ModifiedListener {
 
   public FileView makeView(int startY, int endY) {
     return file.makeView(start + startY, start + endY);
+  }
+
+  public int getModifiedLinesCount() {
+    int result = 0;
+    for (int y = 0; y < getLineCount(); y++) {
+      if (hasModifiedMarkers(y)) {
+        result++;
+      }
+    }
+    return result;
+  }
+
+  public List<Range> getDeltas() {
+    List<Range> result = new ArrayList<Range>();
+    int deltaStart = -1;
+    int deltaEnd = -1;
+
+    for (int y = 0; y < getLineCount(); y++) {
+      if (hasModifiedMarkers(y)) {
+        if (deltaStart == -1) {
+          deltaStart = deltaEnd = y;
+          continue;
+        } else {
+          deltaEnd = y;
+        }
+      } else {
+        if (deltaStart != -1) {
+          result.add(new Range(deltaStart, deltaEnd));
+        }
+        deltaStart = deltaEnd = -1;
+      }
+    }
+    if (deltaStart != -1) {
+      result.add(new Range(deltaStart, deltaEnd));
+    }
+    return result;
   }
 
   private Point translatePoint(Point point) {

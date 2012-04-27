@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import com.id.app.HighlightState;
@@ -15,6 +17,7 @@ import com.id.editor.Point;
 import com.id.editor.Register;
 import com.id.events.EditorKeyHandler;
 import com.id.file.File.Listener;
+import com.id.file.Range;
 import com.id.test.EditorTestBase;
 
 public class FileViewTest extends EditorTestBase {
@@ -214,6 +217,24 @@ public class FileViewTest extends EditorTestBase {
     setFileContents("{{}");
     typeString("%");
     assertCursorPosition(0, 0);
+  }
+
+  @Test
+  public void getDeltaRanges() {
+    setFileContents("a", "b", "c", "d");
+    typeString("jxjjx");
+    List<Range> deltas = fileView.getDeltas();
+    assertEquals("lines modified", 2, fileView.getModifiedLinesCount());
+    assertEquals("deltas", 2, deltas.size());
+    assertEquals(new Range(1, 1), deltas.get(0));
+    assertEquals(new Range(3, 3), deltas.get(1));
+  }
+
+  @Test
+  public void grow() {
+    setupWith(1, 2, "a", "b", "c", "d");
+    fileView.growToCover(new Range(0, 2));
+    assertEquals(0, fileView.getStart());
   }
 
   private void setupWith(int start, int end, String... lines) {

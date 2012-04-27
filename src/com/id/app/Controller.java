@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.id.data.Data;
 import com.id.data.Data.Session.Builder;
@@ -17,6 +19,7 @@ import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
 import com.id.file.File;
 import com.id.file.FileView;
+import com.id.file.Range;
 import com.id.fuzzy.FuzzyFinder;
 import com.id.git.Diff;
 import com.id.git.Repository;
@@ -115,6 +118,12 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         loadState();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("@"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        openDeltasAsSnippets();
+      }
+    });
     shortcuts.setShortcut(KeyStroke.fromString("<CR>"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -123,7 +132,40 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     });
   }
 
-  public void focusFromSnippet() {
+  private void openDeltasAsSnippets() {
+    for (Editor editor : editors) {
+      openDeltasAsSnippetsFromEditor(editor);
+    }
+  }
+
+  private void openDeltasAsSnippetsFromEditor(Editor editor) {
+    List<Range> deltas = editor.getDeltas();
+    List<Range> unusedDeltas = new ArrayList<Range>(deltas);
+    for (Editor snippet : getSnippetsWithFilename(editor.getFilename())) {
+      for (Range delta : deltas) {
+        if (snippet.getRange().isOverlapping(delta)) {
+          snippet.growToCover(delta);
+          unusedDeltas.remove(delta);
+        }
+      }
+    }
+
+    for (Range delta : unusedDeltas) {
+      editor.makeSnippetFromRange(delta);
+    }
+  }
+
+  private List<Editor> getSnippetsWithFilename(String filename) {
+    List<Editor> result = new ArrayList<Editor>();
+    for (Editor snippet : stack) {
+      if (filename.equals(snippet.getFilename())) {
+        result.add(snippet);
+      }
+    }
+    return result;
+  }
+
+  private void focusFromSnippet() {
     if (stack.isFocused()) {
       Editor snippet = stack.getFocusedItem();
       String filename = snippet.getFilename();

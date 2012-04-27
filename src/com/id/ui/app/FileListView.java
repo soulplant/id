@@ -30,17 +30,24 @@ class FileListEntryView extends JPanel {
   public void paint(Graphics g) {
     super.paint(g);
     App.configureFont(g);
+    int leftDraw = LEFT_PADDING_PX;
+    if (editor.isModified()) {
+      g.drawString("*", leftDraw, Constants.CHAR_HEIGHT_PX - BOTTOM_PADDING_PX);
+    }
+    leftDraw += Constants.CHAR_WIDTH_PX + LEFT_PADDING_PX;
     if (editor.getHighlightMatchCount() > 0) {
       g.setColor(Color.BLUE);
-      g.fillRect(LEFT_PADDING_PX, 0, Constants.CHAR_WIDTH_PX, Constants.CHAR_HEIGHT_PX - 1);
+      g.fillRect(leftDraw, 0, Constants.CHAR_WIDTH_PX, Constants.CHAR_HEIGHT_PX - 1);
     }
+    leftDraw += Constants.CHAR_WIDTH_PX + LEFT_PADDING_PX;
     if (!editor.isMarkersClear()) {
       g.setColor(Color.ORANGE);
-      g.fillRect(LEFT_PADDING_PX + Constants.CHAR_WIDTH_PX + LEFT_PADDING_PX, 0, Constants.CHAR_WIDTH_PX, Constants.CHAR_HEIGHT_PX - 1);
+      g.fillRect(leftDraw, 0, Constants.CHAR_WIDTH_PX, Constants.CHAR_HEIGHT_PX - 1);
     }
+    leftDraw += Constants.CHAR_WIDTH_PX + LEFT_PADDING_PX;
     g.setColor(Color.BLACK);
     g.drawString(editor.getFilename(),
-        (LEFT_PADDING_PX + Constants.CHAR_WIDTH_PX) * 2 + LEFT_PADDING_PX,
+        leftDraw,
         Constants.CHAR_HEIGHT_PX - BOTTOM_PADDING_PX);
     if (focused) {
       g.drawRect(0, 0, g.getClipBounds().width - 1, Constants.CHAR_HEIGHT_PX - 1);

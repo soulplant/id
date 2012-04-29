@@ -36,7 +36,7 @@ class FileListEntryView extends JPanel {
     }
     leftDraw += Constants.CHAR_WIDTH_PX + LEFT_PADDING_PX;
     if (editor.getHighlightMatchCount() > 0) {
-      g.setColor(Color.BLUE);
+      g.setColor(Color.CYAN);
       g.fillRect(leftDraw, 0, Constants.CHAR_WIDTH_PX, Constants.CHAR_HEIGHT_PX - 1);
     }
     leftDraw += Constants.CHAR_WIDTH_PX + LEFT_PADDING_PX;

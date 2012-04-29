@@ -48,6 +48,10 @@ public class MarkerPanel extends JPanel {
         g.setColor(Color.RED);
         g.fillRect(0, (i + 1) * fontHeightPx - 5, widthPx, 5);
       }
+      if (i == 0 && !editor.getGrave(-1).isEmpty()) {
+        g.setColor(Color.RED);
+        g.fillRect(0, i * fontHeightPx, widthPx, 5);
+      }
       g.setColor(color);
     }
   }

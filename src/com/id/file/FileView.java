@@ -525,24 +525,20 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public Point findNext(int y, int x, char push, char pop) {
-    return findChar(new FileCharIterator(y, x), push, pop);
+    return findChar(new ForwardFileCharIterator(y, x), push, pop);
   }
 
   public Point findChar(FileCharIterator it, char push, char pop) {
     int depth = 0;
-    for (;;) {
-      if (it.getCurrentChar() == push) {
+    while (it.hasNext()) {
+      char c = it.next();
+      if (c == push) {
         depth++;
-      } else if (it.getCurrentChar() == pop) {
+      } else if (c == pop) {
         depth--;
         if (depth == 0) {
           return it.getPoint();
         }
-      }
-      if (it.hasNext()) {
-        it.next();
-      } else {
-        break;
       }
     }
     return null;
@@ -552,67 +548,48 @@ public class FileView implements File.Listener, ModifiedListener {
     return findChar(new ReverseFileCharIterator(y, x), push, pop);
   }
 
-  public class FileCharIterator {
-    public FileCharIterator(int y, int x) {
+  public interface FileCharIterator {
+    char next();
+    boolean hasNext();
+    Point getPoint();
+  }
+
+  public class ForwardFileCharIterator implements FileCharIterator {
+    protected int y;
+    protected int x;
+    protected boolean isValid;
+    protected Point lastPoint = null;
+
+    public ForwardFileCharIterator(int y, int x) {
       this.y = y;
       this.x = x;
+      this.isValid = true;
     }
 
-    public boolean hasNext() {
-      if (y < getLineCount() - 1) {
-        return true;
+    @Override
+    public char next() {
+      char result = getLine(y).charAt(x);
+      lastPoint = new Point(y, x);
+      advance();
+      return result;
+    }
+
+    protected void advance() {
+      if (!isValid) {
+        throw new IllegalStateException();
       }
-      return x < getLine(getLineCount() - 1).length() - 1;
-    }
-
-    public boolean hasPrevious() {
-      return y > 0 || x > 0;
-    }
-
-    private int getPreviousNonEmptyLine() {
-      for (int i = y - 1; i >= 0; i--) {
-        if (!getLine(i).isEmpty()) {
-          return i;
-        }
-      }
-      return -1;
-    }
-
-    public void previous() {
-      int oldX = x;
-      x--;
-      if (x < 0) {
-        int nextY = getPreviousNonEmptyLine();
+      int nextX = x + 1;
+      int nextY = y;
+      if (nextX >= getLine(y).length()) {
+        nextY = getNextNonEmptyLine();
         if (nextY == -1) {
-          x = oldX;
+          isValid = false;
           return;
         }
-        y = nextY;
-        x = getLine(y).length() - 1;
+        nextX = 0;
       }
-      if (y < 0) {
-        throw new IllegalStateException();
-      }
-    }
-
-    public void next() {
-      int oldX = x;
-      x++;
-      if (x >= getLine(y).length()) {
-        int nextY = getNextNonEmptyLine();
-        if (nextY == -1) {
-          x = oldX;
-          return;
-        }
-        x = 0;
-        y = nextY;
-      }
-      if (y >= getLineCount()) {
-        throw new IllegalStateException();
-      }
-      if (x >= getLine(y).length()) {
-        throw new IllegalStateException();
-      }
+      x = nextX;
+      y = nextY;
     }
 
     private int getNextNonEmptyLine() {
@@ -624,39 +601,53 @@ public class FileView implements File.Listener, ModifiedListener {
       return -1;
     }
 
-    public char getCurrentChar() {
-      return getLine(y).charAt(x);
+    @Override
+    public boolean hasNext() {
+      return isValid;
     }
 
     public Point getPoint() {
-      return new Point(y, x);
+      return lastPoint;
     }
-
-    private int y;
-    private int x;
   }
 
-  public class ReverseFileCharIterator extends FileCharIterator {
+  public class ReverseFileCharIterator extends ForwardFileCharIterator {
     public ReverseFileCharIterator(int y, int x) {
       super(y, x);
     }
 
-    public boolean hasNext() {
-      return super.hasPrevious();
+    @Override
+    protected void advance() {
+      if (!isValid) {
+        throw new IllegalStateException();
+      }
+      int nextX = x - 1;
+      int nextY = y;
+      if (nextX < 0) {
+        nextY = getPreviousNonEmptyLine();
+        if (nextY == -1) {
+          isValid = false;
+          return;
+        }
+        nextX = getLine(nextY).length() - 1;
+      }
+      if (nextY < 0) {
+        throw new IllegalStateException();
+      }
+      y = nextY;
+      x = nextX;
     }
 
-    public boolean hasPrevious() {
-      return super.hasNext();
-    }
-
-    public void next() {
-      super.previous();
-    }
-
-    public void previous() {
-      super.next();
+    private int getPreviousNonEmptyLine() {
+      for (int i = y - 1; i >= 0; i--) {
+        if (!getLine(i).isEmpty()) {
+          return i;
+        }
+      }
+      return -1;
     }
   }
+
 
   public FileView makeView(int startY, int endY) {
     return file.makeView(start + startY, start + endY);

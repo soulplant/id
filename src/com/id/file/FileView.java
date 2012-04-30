@@ -140,6 +140,22 @@ public class FileView implements File.Listener, ModifiedListener {
     insertLine(y + 1, paddingText + removedText);
   }
 
+  public void removeText(Point start, Point end) {
+    int startLine = start.getY();
+    int endLine = end.getY();
+    int startX = start.getX();
+    int endX = end.getX();
+    if (startLine == endLine) {
+      removeText(startLine, startX, endX - startX + 1);
+      return;
+    }
+    removeText(startLine, startX);
+    removeText(endLine, 0, endX + 1);
+    String tail = getLine(endLine);
+    removeLineRange(startLine + 1, endLine);
+    appendToLine(startLine, tail);
+  }
+
   public boolean isEmpty() {
     return getLineCount() == 0;
   }

@@ -130,19 +130,7 @@ public class Visual {
       }
       break;
     case CHAR:
-      int startLine = getStartPoint().getY();
-      int endLine = getEndPoint().getY();
-      int startX = getStartPoint().getX();
-      int endX = getEndPoint().getX();
-      if (startLine == endLine) {
-        file.removeText(startLine, startX, endX - startX + 1);
-        return;
-      }
-      file.removeText(startLine, startX);
-      file.removeText(endLine, 0, endX + 1);
-      String tail = file.getLine(endLine);
-      file.removeLineRange(startLine + 1, endLine);
-      file.appendToLine(startLine, tail);
+      file.removeText(getStartPoint(), getEndPoint());
       break;
     case LINE:
       file.removeLineRange(getStartPoint().getY(), getEndPoint().getY());

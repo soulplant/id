@@ -68,7 +68,12 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
 
   @Override
   public void onModifiedStateChanged() {
-    String prefix = editor.isModified() ? "*" : "";
+    String prefix = "";
+    if (editor.isDogEared()) {
+      prefix = editor.isModified() ? "o" : ".";
+    } else {
+      prefix = editor.isModified() ? "*" : "";
+    }
     filenameLabel.setText(prefix + " " + editor.getFilename());
   }
 

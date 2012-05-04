@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -192,7 +193,7 @@ public class EditorTest extends EditorTestBase {
     editor.addFileModifiedListener(modifiedListener);
     editor.insert();
     editor.onLetterTyped('a');
-    verify(modifiedListener).onModifiedStateChanged();
+    verify(modifiedListener, atLeastOnce()).onModifiedStateChanged();
   }
 
   @Test

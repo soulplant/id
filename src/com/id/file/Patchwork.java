@@ -1,25 +1,24 @@
 package com.id.file;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 import com.id.editor.Point;
 
 public class Patchwork implements File.Listener {
-  final Stack<Patch> pastPatches = new Stack<Patch>();
-  final Stack<Patch> futurePatches = new Stack<Patch>();
-  Patch currentPatch = null;
-  int unmodifiedAtDepth = 0;
-  private boolean wasModified = false;
+  private final Stack<Patch> pastPatches = new Stack<Patch>();
+  private final Stack<Patch> futurePatches = new Stack<Patch>();
+  private Patch currentPatch = null;
+  private int savedAtDepth = 0;
   private ModifiedListener listener;
+  private final Set<Integer> dogEars = new HashSet<Integer>();
 
   public Patchwork() {}
 
-  private void notifyListenersOfModification() {
-    if (isModified() != wasModified) {
-      wasModified = isModified();
-      if (listener != null) {
-        listener.onModifiedStateChanged();
-      }
+  private void stateChanged() {
+    if (listener != null) {
+      listener.onModifiedStateChanged();
     }
   }
 
@@ -28,7 +27,7 @@ public class Patchwork implements File.Listener {
       throw new IllegalStateException("Attempt to overwrite partial patch.");
     }
     currentPatch = new Patch(point);
-    notifyListenersOfModification();
+    stateChanged();
   }
 
   public void breakPatch() {
@@ -39,31 +38,73 @@ public class Patchwork implements File.Listener {
       currentPatch = null;
       return;
     }
+    if (futurePatches.size() > 0) {
+      clearFuturePatches();
+    }
     pastPatches.add(currentPatch);
-    if (futurePatches.size() > 0 && pastPatches.size() < unmodifiedAtDepth) {
-      // We've lost the point we came from (modified the file from an earlier
-      // point in history).
-      unmodifiedAtDepth = -1;
+    currentPatch = null;
+    stateChanged();
+  }
+
+  private void clearFuturePatches() {
+    removeDogEarsBeyondCurrent();
+    if (pastPatches.size() < savedAtDepth) {
+      // We've lost the point we came from (modified the file from a point
+      // earlier than when it was last saved at).
+      savedAtDepth = -1;
     }
     futurePatches.clear();
-    currentPatch = null;
-    notifyListenersOfModification();
+  }
+
+  private void removeDogEarsBeyondCurrent() {
+    int currentPatchDepth = pastPatches.size();
+    Set<Integer> toRemove = new HashSet<Integer>();
+    for (int i : dogEars) {
+      if (i > currentPatchDepth) {
+        toRemove.add(i);
+      }
+    }
+    for (int i : toRemove) {
+      dogEars.remove(i);
+    }
   }
 
   public boolean inPatch() {
     return currentPatch != null;
   }
 
-  public boolean isModified() {
-    if (currentPatch != null) {
-      return !currentPatch.isEmpty();
-    }
-    return pastPatches.size() != unmodifiedAtDepth;
+  public void onSaved() {
+    savedAtDepth = pastPatches.size();
+    stateChanged();
   }
 
-  public void onSaved() {
-    unmodifiedAtDepth = pastPatches.size();
-    notifyListenersOfModification();
+  public void dogEar() {
+    dogEars.add(pastPatches.size());
+    stateChanged();
+  }
+
+  public boolean isDogEared() {
+    return !isInMiddleOfPatch() && dogEars.contains(pastPatches.size());
+  }
+
+  public boolean isModified() {
+    return isInMiddleOfPatch() || !isAtSavedDepth();
+  }
+
+  private boolean isInMiddleOfPatch() {
+    return currentPatch != null && !currentPatch.isEmpty();
+  }
+
+  private boolean isAtSavedDepth() {
+    return pastPatches.size() == savedAtDepth;
+  }
+
+  public boolean isSaved() {
+    return !isModified();
+  }
+
+  public boolean hasUndo() {
+    return !pastPatches.isEmpty();
   }
 
   public Point undo(File file) {
@@ -76,7 +117,7 @@ public class Patchwork implements File.Listener {
     Patch patch = pastPatches.pop();
     futurePatches.push(patch);
     patch.applyInverse(file);
-    notifyListenersOfModification();
+    stateChanged();
     return patch.getPosition();
   }
 
@@ -90,7 +131,7 @@ public class Patchwork implements File.Listener {
     Patch patch = futurePatches.pop();
     pastPatches.push(patch);
     patch.apply(file);
-    notifyListenersOfModification();
+    stateChanged();
     return patch.getPosition();
   }
 
@@ -98,7 +139,7 @@ public class Patchwork implements File.Listener {
   public void onLineInserted(int y, String line) {
     if (currentPatch != null) {
       currentPatch.onLineInserted(y, line);
-      notifyListenersOfModification();
+      stateChanged();
     }
   }
 
@@ -106,7 +147,7 @@ public class Patchwork implements File.Listener {
   public void onLineRemoved(int y, String line) {
     if (currentPatch != null) {
       currentPatch.onLineRemoved(y, line);
-      notifyListenersOfModification();
+      stateChanged();
     }
   }
 
@@ -114,7 +155,7 @@ public class Patchwork implements File.Listener {
   public void onLineChanged(int y, String oldLine, String newLine) {
     if (currentPatch != null) {
       currentPatch.onLineChanged(y, oldLine, newLine);
-      notifyListenersOfModification();
+      stateChanged();
     }
   }
 
@@ -122,7 +163,7 @@ public class Patchwork implements File.Listener {
     futurePatches.clear();
     pastPatches.clear();
     currentPatch = null;
-    unmodifiedAtDepth = 0;
+    savedAtDepth = 0;
   }
 
   public void setListener(ModifiedListener listener) {

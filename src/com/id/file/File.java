@@ -126,6 +126,10 @@ public class File {
     return patchwork.isModified();
   }
 
+  public boolean isDogEared() {
+    return patchwork.isDogEared();
+  }
+
   public Point undo() {
     return patchwork.undo(this);
   }
@@ -203,7 +207,7 @@ public class File {
   }
 
   public boolean hasUndo() {
-    return !patchwork.pastPatches.isEmpty();
+    return patchwork.hasUndo();
   }
 
   public void removeListener(Listener listener) {
@@ -220,7 +224,11 @@ public class File {
 
   public void save(FileSystem fileSystem) {
     fileSystem.save(this);
-    patchwork.onSaved();
+    if (patchwork.isModified()) {
+      patchwork.onSaved();
+    } else {
+      patchwork.dogEar();
+    }
   }
 
   public boolean isMarkersClear() {

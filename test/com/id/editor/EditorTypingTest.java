@@ -3,6 +3,7 @@ package com.id.editor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -428,7 +429,7 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("i");
     assertFalse(editor.isModified());
     typeString("a");
-    verify(modifiedListener).onModifiedStateChanged();
+    verify(modifiedListener, atLeastOnce()).onModifiedStateChanged();
     assertTrue(editor.isModified());
   }
 

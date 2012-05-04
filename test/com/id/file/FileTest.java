@@ -3,6 +3,7 @@ package com.id.file;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -55,7 +56,7 @@ public class FileTest {
     file.addModifiedListener(listener);
     file.startPatchAt(0, 0);
     file.insertLine(0, "hi");
-    verify(listener).onModifiedStateChanged();
+    verify(listener, atLeastOnce()).onModifiedStateChanged();
     assertTrue(file.isModified());
   }
 

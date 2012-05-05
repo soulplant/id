@@ -88,7 +88,6 @@ public class App {
     try {
       ClassLoader classLoader = App.class.getClassLoader();
       URL fontUrl = classLoader.getResource("Inconsolata.ttf");
-      System.out.println("fontUrl: " + fontUrl);
       InputStream fontInputStream = fontUrl.openStream();
       font = Font.createFont(Font.TRUETYPE_FONT, fontInputStream);
     } catch (FontFormatException e) {

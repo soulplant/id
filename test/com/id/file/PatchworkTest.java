@@ -131,4 +131,13 @@ public class PatchworkTest {
     patch();
     assertFalse(patchwork.isDogEared());
   }
+
+  @Test
+  public void clearDogEar() {
+    patch();
+    patchwork.dogEar();
+    assertTrue(patchwork.isDogEared());
+    patchwork.clearDogEar();
+    assertFalse(patchwork.isDogEared());
+  }
 }

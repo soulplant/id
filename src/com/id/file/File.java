@@ -227,7 +227,11 @@ public class File {
     if (patchwork.isModified()) {
       patchwork.onSaved();
     } else {
-      patchwork.dogEar();
+      if (patchwork.isDogEared()) {
+        patchwork.clearDogEar();
+      } else {
+        patchwork.dogEar();
+      }
     }
   }
 

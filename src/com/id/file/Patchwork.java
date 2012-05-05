@@ -83,6 +83,11 @@ public class Patchwork implements File.Listener {
     stateChanged();
   }
 
+  public void clearDogEar() {
+    dogEars.remove(pastPatches.size());
+    stateChanged();
+  }
+
   public boolean isDogEared() {
     return !isInMiddleOfPatch() && dogEars.contains(pastPatches.size());
   }

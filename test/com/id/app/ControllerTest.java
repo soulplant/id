@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.id.editor.Editor;
+import com.id.editor.Minibuffer;
 import com.id.events.KeyStroke;
 import com.id.file.ModifiedListener;
 import com.id.file.Tombstone;
@@ -34,6 +35,7 @@ public class ControllerTest {
   private InMemoryRepository repo;
   private HighlightState highlightState;
   private ListModel<Editor> stack;
+  private Minibuffer minibuffer;
 
   @Before
   public void setup() {
@@ -44,7 +46,8 @@ public class ControllerTest {
     fuzzyListener = mock(FuzzyFinder.Listener.class);
     repo = new InMemoryRepository();
     highlightState = new HighlightState();
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repo, highlightState, stack);
+    minibuffer = new Minibuffer();
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repo, highlightState, stack, minibuffer);
 
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");

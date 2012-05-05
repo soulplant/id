@@ -44,6 +44,7 @@ public class App {
   private static void startApp() {
     final ListModel<Editor> editors = new ListModel<Editor>();
     final ListModel<Editor> stack = new ListModel<Editor>();
+    Minibuffer minibuffer = new Minibuffer();
     FileSystem fileSystem = new RealFileSystem();
     BashShell shell = new BashShell(null);
     Repository repository = new GitRepository(shell);
@@ -51,12 +52,11 @@ public class App {
     fuzzyFinder.addCurrentPathToIndex();
     HighlightState highlightState = new HighlightState();
     final Controller controller = new Controller(editors, fileSystem,
-        fuzzyFinder, repository, highlightState, stack);
+        fuzzyFinder, repository, highlightState, stack, minibuffer);
 
     final SpotlightView spotlightView = new SpotlightView(editors);
     final FileListView fileListView = new FileListView(editors);
     StackView stackView = new StackView(stack);
-    Minibuffer minibuffer = new Minibuffer();
     TextPanel minibufferView = new TextPanel(minibuffer.getEditor());
     FuzzyFinderPanel fuzzyFinderPanel = new FuzzyFinderPanel(fuzzyFinder);
     final AppPanel panel = new AppPanel(fileListView, spotlightView, stackView,

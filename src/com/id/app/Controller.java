@@ -13,6 +13,7 @@ import com.id.data.Data;
 import com.id.data.Data.Session.Builder;
 import com.id.editor.Editor;
 import com.id.editor.Editor.EditorEnvironment;
+import com.id.editor.Minibuffer;
 import com.id.editor.Register;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
@@ -34,6 +35,8 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   private final HighlightState highlightState;
   private final Register register = new Register();
   private final ListModel<Editor> stack;
+  private final Minibuffer minibuffer;
+  private boolean isInMinibuffer = false;
   private final EditorEnvironment editorEnvironment = new EditorEnvironment() {
     @Override
     public void openFile(String filename) {
@@ -48,14 +51,29 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
 
   public Controller(ListModel<Editor> editors, FileSystem fileSystem,
       FuzzyFinder fuzzyFinder, Repository repository,
-      HighlightState highlightState, ListModel<Editor> stack) {
+      HighlightState highlightState, ListModel<Editor> stack, Minibuffer minibuffer) {
     this.editors = editors;
     this.fileSystem = fileSystem;
     this.fuzzyFinder = fuzzyFinder;
     this.repository = repository;
     this.highlightState = highlightState;
     this.stack = stack;
+    this.minibuffer = minibuffer;
     stack.setFocusLatest(false);
+    minibuffer.addListener(new Minibuffer.Listener() {
+      @Override
+      public void onDone() {
+        executeMinibufferCommand();
+      }
+
+      public void onTextChanged() {
+        // Do nothing.
+      }
+
+      public void onQuit() {
+        exitMinibuffer();
+      }
+    });
     fuzzyFinder.setSelectionListener(this);
     editors.focus();
     shortcuts.setShortcut(KeyStroke.fromString("J"), new ShortcutTree.Action() {
@@ -130,6 +148,26 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         focusFromSnippet();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString(":"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        enterMinibuffer();
+      }
+    });
+  }
+
+  private void enterMinibuffer() {
+    isInMinibuffer = true;
+  }
+
+  private void exitMinibuffer() {
+    isInMinibuffer = false;
+    minibuffer.clear();
+  }
+
+  private void executeMinibufferCommand() {
+    System.out.println("execute: " + minibuffer.getText());
+    exitMinibuffer();
   }
 
   private void openDeltasAsSnippets() {
@@ -324,6 +362,9 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   public boolean handleKeyStroke(KeyStroke keyStroke) {
     if (fuzzyFinder.isVisible() && fuzzyFinder.handleKeyStroke(keyStroke)) {
       return true;
+    }
+    if (isInMinibuffer) {
+      return minibuffer.handleKeyStroke(keyStroke);
     }
     ListModel<Editor> focusedList = getFocusedList();
     if (!focusedList.isEmpty() && focusedList.getFocusedItem().handleKeyStroke(keyStroke)) {

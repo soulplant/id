@@ -41,7 +41,7 @@ public class TextPanel extends JPanel {
 
       @Override
       public void onLineChanged(int y, String oldLine, String newLine) {
-        // Do nothing.
+        repaint();
       }
     });
     updateSize();

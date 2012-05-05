@@ -9,6 +9,7 @@ import javax.swing.JLayeredPane;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.fuzzy.FuzzyFinder;
+import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
 public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.Listener {
@@ -17,19 +18,23 @@ public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.L
   private final Component stackView;
   private final KeyStrokeHandler handler;
   private final FuzzyFinderPanel fuzzyFinderPanel;
+  private final TextPanel minibufferView;
 
   public AppPanel(FileListView fileListView, SpotlightView spotlightView,
-      Component stackView, KeyStrokeHandler handler, FuzzyFinderPanel fuzzyFinderPanel) {
+      Component stackView, KeyStrokeHandler handler, FuzzyFinderPanel fuzzyFinderPanel,
+      TextPanel minibufferView) {
     this.spotlightView = spotlightView;
     this.fileListView = fileListView;
     this.stackView = stackView;
     this.handler = handler;
     this.fuzzyFinderPanel = fuzzyFinderPanel;
+    this.minibufferView = minibufferView;
     setLayout(new AppLayout());
     setFocusTraversalKeysEnabled(false);
     add(fileListView, "filelist");
     add(spotlightView, "spotlight");
     add(stackView, "stack");
+    add(minibufferView, "minibuffer");
     fuzzyFinderPanel.setListener(this);
   }
 

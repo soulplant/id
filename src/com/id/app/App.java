@@ -14,6 +14,7 @@ import java.net.URL;
 import javax.swing.SwingUtilities;
 
 import com.id.editor.Editor;
+import com.id.editor.Minibuffer;
 import com.id.fuzzy.FuzzyFinder;
 import com.id.git.GitRepository;
 import com.id.git.Repository;
@@ -26,6 +27,7 @@ import com.id.ui.app.FullscreenSwapper;
 import com.id.ui.app.FuzzyFinderPanel;
 import com.id.ui.app.SpotlightView;
 import com.id.ui.app.StackView;
+import com.id.ui.editor.TextPanel;
 
 public class App {
   public static final Font FONT = loadFont();
@@ -54,9 +56,11 @@ public class App {
     final SpotlightView spotlightView = new SpotlightView(editors);
     final FileListView fileListView = new FileListView(editors);
     StackView stackView = new StackView(stack);
+    Minibuffer minibuffer = new Minibuffer();
+    TextPanel minibufferView = new TextPanel(minibuffer.getEditor());
     FuzzyFinderPanel fuzzyFinderPanel = new FuzzyFinderPanel(fuzzyFinder);
     final AppPanel panel = new AppPanel(fileListView, spotlightView, stackView,
-        controller, fuzzyFinderPanel);
+        controller, fuzzyFinderPanel, minibufferView);
 
     editors.addListener(fileListView);
     editors.addListener(spotlightView);

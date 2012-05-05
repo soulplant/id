@@ -1,5 +1,7 @@
 package com.id.ui.app;
 
+import com.id.app.Constants;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -9,7 +11,8 @@ public class AppLayout implements LayoutManager {
   private Component filelist = null;
   private Component spotlight = null;
   private Component stack = null;
-  private Component fuzzyFinder;
+  private Component fuzzyFinder = null;
+  private Component minibuffer = null;
 
   @Override
   public void addLayoutComponent(String name, Component component) {
@@ -21,18 +24,27 @@ public class AppLayout implements LayoutManager {
       stack = component;
     } else if (name.equals("fuzzyfinder")) {
       fuzzyFinder = component;
+    } else if (name.equals("minibuffer")) {
+      minibuffer = component;
     }
   }
 
   @Override
   public void layoutContainer(Container parent) {
+    int minibufferHeight = Constants.CHAR_HEIGHT_PX;
     int height = parent.getHeight();
+    if (minibuffer != null) {
+      height -= minibufferHeight;
+    }
     int fileListWidth = 250;
     int remainingWidth = parent.getWidth() - fileListWidth;
     int editorWidth = remainingWidth / 2;
     filelist.setBounds(0, 0, fileListWidth, height);
     spotlight.setBounds(fileListWidth, 0, editorWidth, height);
     stack.setBounds(fileListWidth + editorWidth, 0, editorWidth, height);
+    if (minibuffer != null) {
+      minibuffer.setBounds(0, height, parent.getWidth(), minibufferHeight);
+    }
     if (fuzzyFinder != null) {
       fuzzyFinder.setBounds(250, 0, 200, height);
     }

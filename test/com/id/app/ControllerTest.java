@@ -3,6 +3,8 @@ package com.id.app;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -36,6 +38,7 @@ public class ControllerTest {
   private HighlightState highlightState;
   private ListModel<Editor> stack;
   private Minibuffer minibuffer;
+  private CommandExecutor commandExecutor;
 
   @Before
   public void setup() {
@@ -47,7 +50,8 @@ public class ControllerTest {
     repo = new InMemoryRepository();
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repo, highlightState, stack, minibuffer);
+    commandExecutor = mock(CommandExecutor.class);
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repo, highlightState, stack, minibuffer, commandExecutor);
 
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");
@@ -305,6 +309,13 @@ public class ControllerTest {
     controller.openFile("a");
     typeString("o<ESC>@@");
     assertEquals(1, stack.size());
+  }
+
+  @Test
+  public void commandsGetExecutedWhenTyped() {
+    controller.openFile("a");
+    typeString(":test command<CR>");
+    verify(commandExecutor).execute(eq("test command"), any(Editor.class));
   }
 
   private void createSnippetFromCurrentLine() {

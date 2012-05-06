@@ -36,7 +36,10 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   private final Register register = new Register();
   private final ListModel<Editor> stack;
   private final Minibuffer minibuffer;
+  private final CommandExecutor commandExecutor;
+
   private boolean isInMinibuffer = false;
+
   private final EditorEnvironment editorEnvironment = new EditorEnvironment() {
     @Override
     public void openFile(String filename) {
@@ -51,7 +54,8 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
 
   public Controller(ListModel<Editor> editors, FileSystem fileSystem,
       FuzzyFinder fuzzyFinder, Repository repository,
-      HighlightState highlightState, ListModel<Editor> stack, Minibuffer minibuffer) {
+      HighlightState highlightState, ListModel<Editor> stack, Minibuffer minibuffer,
+      CommandExecutor commandExecutor) {
     this.editors = editors;
     this.fileSystem = fileSystem;
     this.fuzzyFinder = fuzzyFinder;
@@ -59,6 +63,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     this.highlightState = highlightState;
     this.stack = stack;
     this.minibuffer = minibuffer;
+    this.commandExecutor = commandExecutor;
     stack.setFocusLatest(false);
     minibuffer.addListener(new Minibuffer.Listener() {
       @Override
@@ -166,8 +171,16 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   private void executeMinibufferCommand() {
-    System.out.println("execute: " + minibuffer.getText());
+    commandExecutor.execute(minibuffer.getText(), getCurrentEditor());
     exitMinibuffer();
+  }
+
+  private Editor getCurrentEditor() {
+    if (editors.isFocused()) {
+      return editors.getFocusedItem();
+    } else {
+      return stack.getFocusedItem();
+    }
   }
 
   private void openDeltasAsSnippets() {

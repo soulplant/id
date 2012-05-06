@@ -879,4 +879,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("fidw");
     assertFileContents("this a test");
   }
+
+  @Test
+  public void escapeOnAutoIndentedLineWithTrailingChars() {
+    setFileContents("  this {}");
+    typeString("f{a<CR><ESC>");
+    assertFileContents("  this {", "  }");
+  }
 }

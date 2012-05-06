@@ -231,7 +231,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     }
     if (isInInsertMode()) {
       inInsertMode = false;
-      if (justInsertedAutoIndent) {
+      if (justInsertedAutoIndent && isAllWhitespace(getCurrentLine())) {
         file.changeLine(cursor.getY(), "");
       }
       justInsertedAutoIndent = false;
@@ -321,6 +321,15 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       indent.append(line.charAt(i));
     }
     return indent.toString();
+  }
+
+  private static boolean isAllWhitespace(String str) {
+    for (int i = 0; i < str.length(); i++) {
+      if (!isWhitespace(str.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static boolean isWhitespace(char c) {

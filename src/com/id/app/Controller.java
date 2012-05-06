@@ -64,6 +64,13 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     this.stack = stack;
     this.minibuffer = minibuffer;
     this.commandExecutor = commandExecutor;
+    commandExecutor.setEnvironment(new CommandExecutor.Environment() {
+      @Override
+      public void openFile(String filename) {
+        // TODO(koz): Make this open non-existent files, too.
+        Controller.this.openFile(filename);
+      }
+    });
     stack.setFocusLatest(false);
     minibuffer.addListener(new Minibuffer.Listener() {
       @Override

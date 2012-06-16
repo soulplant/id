@@ -693,6 +693,10 @@ public class FileView implements File.Listener, ModifiedListener {
     return result;
   }
 
+  public String getBaseFilename() {
+    return file.getBaseFilename();
+  }
+
   private Point translatePoint(Point point) {
     if (point == null) {
       return null;

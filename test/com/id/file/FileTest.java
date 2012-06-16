@@ -114,6 +114,18 @@ public class FileTest {
     view.getLineList();
   }
 
+  @Test
+  public void getBaseFilename() {
+    File file = new File();
+    file.setFilename("a/b/c");
+    assertEquals("c", file.getBaseFilename());
+    file.insertLine(0, "HI");
+    file.insertLine(1, "there");
+    file.insertLine(2, "yo");
+    FileView view = file.makeView(1, 2);
+    view.getLineList();
+  }
+
   private static boolean isAllStatus(Tombstone.Status status, File file) {
     for (int i = 0; i < file.getLineCount(); i++) {
       if (file.getStatus(i) != status) {

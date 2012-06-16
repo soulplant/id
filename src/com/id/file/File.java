@@ -179,6 +179,11 @@ public class File {
     return filename;
   }
 
+  public String getBaseFilename() {
+    String[] parts = filename.split("/");
+    return parts[parts.length - 1];
+  }
+
   public String[] getLines() {
     String[] result = new String[getLineCount()];
     return lines.toArray(result);

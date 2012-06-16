@@ -46,7 +46,7 @@ class FileListEntryView extends JPanel {
     }
     leftDraw += Constants.CHAR_WIDTH_PX + LEFT_PADDING_PX;
     g.setColor(Color.BLACK);
-    g.drawString(editor.getFilename(),
+    g.drawString(editor.getBaseFilename(),
         leftDraw,
         Constants.CHAR_HEIGHT_PX - BOTTOM_PADDING_PX);
     if (focused) {

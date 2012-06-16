@@ -420,6 +420,10 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     return file.getFilename();
   }
 
+  public String getBaseFilename() {
+    return file.getBaseFilename();
+  }
+
   public void toggleVisual(Mode mode) {
     visual.toggleMode(mode);
   }

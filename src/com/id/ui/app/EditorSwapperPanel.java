@@ -2,67 +2,76 @@ package com.id.ui.app;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.id.app.ListModel;
+import com.id.editor.Editor;
 import com.id.ui.editor.EditorPanel;
 
-@SuppressWarnings("serial")
-public class EditorSwapperPanel extends JPanel {
-  private final List<EditorPanel> editorPanels = new ArrayList<EditorPanel>();
+public class EditorSwapperPanel extends JPanel implements ListModel.Listener<Editor> {
+  private final Map<Editor, EditorPanel> map = new HashMap<Editor, EditorPanel>();
+  private final ListModel<Editor> editors;
   private final JLabel placeholderLabel = new JLabel("No more things to edit");
   private int selected;
 
-  public EditorSwapperPanel() {
+  public EditorSwapperPanel(ListModel<Editor> editors) {
+    this.editors = editors;
     setLayout(new BorderLayout());
-    super.add(placeholderLabel);
-  }
-
-  public void addEditor(EditorPanel editorPanel) {
-    editorPanels.add(editorPanel);
-    if (editorPanels.size() == 1) {
-      setSelected(0);
+    for (int i = 0; i < editors.size(); i++) {
+      Editor editor = editors.get(i);
+      EditorPanel editorPanel = new EditorPanel(editor, editors);
+      map.put(editor, editorPanel);
     }
+    refresh();
   }
 
-  public void removeEditor(EditorPanel editorPanel) {
-    int i = editorPanels.indexOf(editorPanel);
-    if (i == selected) {
-      previous();
-    }
-    editorPanels.remove(editorPanel);
-    if (editorPanels.isEmpty()) {
-      super.removeAll();
-      super.add(placeholderLabel);
-    }
-  }
-
-  public void next() {
-    setSelected(selected + 1);
-  }
-
-  public void previous() {
-    setSelected(selected - 1);
-  }
-
-  protected void setSelected(int selected) {
-    this.selected = Math.max(0, Math.min(editorPanels.size() - 1, selected));
+  private void refresh() {
     super.removeAll();
-    add(editorPanels.get(this.selected), BorderLayout.CENTER);
+    if (editors.isEmpty()) {
+      super.add(placeholderLabel);
+      return;
+    }
+    super.add(map.get(editors.getFocusedItem()));
   }
 
-  public boolean focusByFilename(String filename) {
-    if (filename == null) {
-      throw new IllegalArgumentException();
+  @Override
+  public void onAdded(int i, Editor editor) {
+    // TODO(koz): This is some hax here. We don't remove old editors, in case they are
+    // being added and removed straight away. This currently happens when ctrl-j/k is
+    // typed. We don't want to throw away the EditorPanel because it holds state such
+    // as the scroll (which is also a design flaw). What should happen is we should
+    // send move events as well as add/remove, so that we don't leak EditorPanels.
+    EditorPanel editorPanel = map.get(editor);
+    if (editorPanel == null) {
+      editorPanel = new EditorPanel(editor, editors);
+      map.put(editor, editorPanel);
     }
-    for (int i = 0; i < editorPanels.size(); i++) {
-      if (filename.equals(editorPanels.get(i).getFilename())) {
-        setSelected(i);
-        return true;
-      }
-    }
-    return false;
+    refresh();
+  }
+
+  @Override
+  public void onSelectionChanged(int i, Editor editor) {
+    refresh();
+  }
+
+  @Override
+  public void onRemoved(int i, Editor editor) {
+    // EditorPanel editorPanel = map.remove(editor);
+    refresh();
+  }
+
+  @Override
+  public void onSelectionLost() {
+    // Do nothing.
+  }
+
+  @Override
+  public void onFocusChanged(boolean isFocused) {
+    // Do nothing.
   }
 }

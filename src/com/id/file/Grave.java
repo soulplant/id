@@ -57,7 +57,7 @@ public class Grave {
     if (history.isEmpty()) {
       return null;
     }
-    return tombstones.get(history.get(history.size() - 1));
+    return tombstones.get(getFreshestTombstoneIndex());
   }
 
   public boolean isEmpty() {

@@ -11,6 +11,33 @@ public class ListModelTest {
   private ListModel<String> model;
   private ListModel.Listener<String> listener;
 
+  private class NoisyListener implements ListModel.Listener<String> {
+    @Override
+    public void onAdded(int i, String t) {
+      System.out.println("onAdded(" + i + ", " + t + ")");
+    }
+
+    @Override
+    public void onSelectionChanged(int i, String t) {
+      System.out.println("onSelectionChanged(" + i + ", " + t + ")");
+    }
+
+    @Override
+    public void onRemoved(int i, String t) {
+      System.out.println("onRemoved(" + i + ", " + t + ")");
+    }
+
+    @Override
+    public void onSelectionLost() {
+      System.out.println("onSelectionLost()");
+    }
+
+    @Override
+    public void onFocusChanged(boolean isFocused) {
+      System.out.println("onFocusChanged(" + isFocused + ")");
+    }
+  }
+
   @SuppressWarnings("unchecked")
   @Before
   public void setup() {
@@ -70,5 +97,15 @@ public class ListModelTest {
   public void itDoesntFailWhenFocusIsMovedOnEmptyList() {
     model.moveUp();
     model.moveDown();
+  }
+
+  @Test
+  public void moveFocusUp() {
+    model.add("hi");
+    model.add("there");
+    model.add("mate");
+    assertEquals(2, model.getFocusedIndex());
+    model.moveFocusedItemUp();
+    assertEquals(1, model.getFocusedIndex());
   }
 }

@@ -2,7 +2,7 @@ package com.id.app;
 
 import com.id.editor.Editor;
 
-class CommandExecutor {
+public class CommandExecutor {
   public interface Environment {
     void openFile(String filename);
   }

@@ -50,7 +50,7 @@ public class ControllerTest {
     repo = new InMemoryRepository();
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
-    commandExecutor = mock(CommandExecutor.class);
+    commandExecutor = new CommandExecutor();
     controller = new Controller(editors, fileSystem, fuzzyFinder, repo, highlightState, stack, minibuffer, commandExecutor);
 
     fileSystem.insertFile("a", "aaa");
@@ -313,9 +313,31 @@ public class ControllerTest {
 
   @Test
   public void commandsGetExecutedWhenTyped() {
-    controller.openFile("a");
-    typeString(":test command<CR>");
-    verify(commandExecutor).execute(eq("test command"), any(Editor.class));
+    typeString(":e b<CR>");
+    assertEquals(1, editors.size());
+  }
+
+  @Test
+  public void eOpensNewFiles() {
+    typeString(":e doesnt-exist<CR>");
+    assertEquals(1, editors.size());
+    assertEquals("doesnt-exist", editors.getFocusedItem().getFilename());
+  }
+
+  @Test
+  public void ctrlKMovesFileUpInFilelist() {
+    typeString(":e a<CR>:e b<CR><C-k>");
+    assertEquals(2, editors.size());
+    assertEquals("b", editors.getFocusedItem().getFilename());
+    assertEquals(0, editors.getFocusedIndex());
+  }
+
+  @Test
+  public void ctrlJMovesFileDownInFilelist() {
+    typeString(":e a<CR>:e b<CR>K<C-j>");
+    assertEquals(2, editors.size());
+    assertEquals("a", editors.getFocusedItem().getFilename());
+    assertEquals(1, editors.getFocusedIndex());
   }
 
   private void createSnippetFromCurrentLine() {

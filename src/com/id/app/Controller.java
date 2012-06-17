@@ -67,8 +67,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     commandExecutor.setEnvironment(new CommandExecutor.Environment() {
       @Override
       public void openFile(String filename) {
-        // TODO(koz): Make this open non-existent files, too.
-        Controller.this.openFile(filename);
+        Controller.this.openFile(filename, true);
       }
     });
     stack.setFocusLatest(false);
@@ -94,10 +93,22 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         moveFocusDown();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("<C-j>"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        moveFocusedItemDown();
+      }
+    });
     shortcuts.setShortcut(KeyStroke.fromString("K"), new ShortcutTree.Action() {
       @Override
       public void execute() {
         moveFocusUp();
+      }
+    });
+    shortcuts.setShortcut(KeyStroke.fromString("<C-k>"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        moveFocusedItemUp();
       }
     });
     shortcuts.setShortcut(KeyStroke.fromString("H"), new ShortcutTree.Action() {
@@ -184,9 +195,9 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
 
   private Editor getCurrentEditor() {
     if (editors.isFocused()) {
-      return editors.getFocusedItem();
+      return editors.getFocusedItemOrNull();
     } else {
-      return stack.getFocusedItem();
+      return stack.getFocusedItemOrNull();
     }
   }
 
@@ -318,6 +329,14 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     getFocusedList().moveDown();
   }
 
+  private void moveFocusedItemUp() {
+    getFocusedList().moveFocusedItemUp();
+  }
+
+  private void moveFocusedItemDown() {
+    getFocusedList().moveFocusedItemDown();
+  }
+
   public FileView loadFileView(String filename, int start, int end) {
     File file = fileSystem.getFile(filename);
     if (file == null) {
@@ -330,11 +349,21 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   public Editor openFile(String filename) {
+    return openFile(filename, false);
+  }
+
+  // TODO(koz): Make this take an enum, rather than a boolean.
+  public Editor openFile(String filename, boolean createNewFile) {
     Editor existingEditor = attemptToFocusExistingEditor(filename);
     if (existingEditor != null) {
       return existingEditor;
     }
     FileView fileView = loadFileView(filename, 0, -1);
+    if (fileView == null && createNewFile) {
+      File file = new File();
+      file.setFilename(filename);
+      fileView = new FileView(file);
+    }
     if (fileView == null) {
       return null;
     }

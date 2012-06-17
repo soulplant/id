@@ -7,6 +7,9 @@ import java.util.List;
 import com.id.editor.Editor;
 
 
+// TODO(koz): This class confuses 'focus' and 'selection'. Focus should refer
+// to the whether or not the entire list has focus, and the selection should
+// refer to which item in the list is selected.
 public class ListModel<T> implements Iterable<T> {
   public interface Listener<T> {
     void onAdded(int i, T t);
@@ -27,10 +30,17 @@ public class ListModel<T> implements Iterable<T> {
   }
 
   public void add(T t) {
-    items.add(t);
-    fireOnAdded(items.size() - 1, t);
+    insert(items.size(), t);
+  }
+
+  public void insert(int i, T t) {
+    items.add(i, t);
     if (isFocusLatestEnabled || items.size() == 1) {
-      setFocusedIndex(items.size() - 1);
+      setFocusedIndexImpl(i, false);
+      fireOnAdded(i, t);
+      setFocusedIndex(i);
+    } else {
+      fireOnAdded(i, t);
     }
   }
 
@@ -52,25 +62,65 @@ public class ListModel<T> implements Iterable<T> {
     setFocusedIndex(focusedIndex + 1);
   }
 
-  public void setFocusedIndex(int index) {
-    int clampedIndex = Math.min(items.size() - 1, Math.max(index, 0));
-    if (focusedIndex == clampedIndex) {
+  public void moveFocusedItemUp() {
+    if (items.size() <= 1) {
       return;
     }
+    if (isFocusAtStart()) {
+      return;
+    }
+    T focusedItem = getFocusedItem();
+    int i = getFocusedIndex();
+    remove(i);
+    insert(i - 1, focusedItem);
+  }
+
+  private boolean isFocusAtStart() {
+    return getFocusedIndex() == 0;
+  }
+
+  public void moveFocusedItemDown() {
+    if (items.size() <= 1) {
+      return;
+    }
+    if (isFocusAtEnd()) {
+      return;
+    }
+    T focusedItem = getFocusedItem();
+    int i = getFocusedIndex();
+    remove(i);
+    insert(i + 1, focusedItem);
+  }
+
+  private boolean isFocusAtEnd() {
+    return getFocusedIndex() == items.size() - 1;
+  }
+
+  public void setFocusedIndex(int index) {
+    setFocusedIndexImpl(index, true);
+  }
+
+  private void setFocusedIndexImpl(int index, boolean notify) {
+    int clampedIndex = Math.min(items.size() - 1, Math.max(index, 0));
     focusedIndex = clampedIndex;
-    fireSelectionChanged();
+    if (notify) {
+      fireSelectionChanged();
+    }
   }
 
   public void removeFocused() {
     if (items.isEmpty()) {
       return;
     }
-    int index = focusedIndex;
-    T removed = items.remove(focusedIndex);
+    remove(focusedIndex);
+  }
+
+  public void remove(int i) {
+    T removed = items.remove(i);
     if (focusedIndex >= items.size()) {
       focusedIndex = items.size() - 1;
     }
-    fireOnRemoved(index, removed);
+    fireOnRemoved(i, removed);
     if (focusedIndex == -1) {
       fireOnSelectionLost();
     } else {
@@ -100,6 +150,13 @@ public class ListModel<T> implements Iterable<T> {
     for (Listener<T> listener : listeners) {
       listener.onSelectionChanged(focusedIndex, getFocusedItem());
     }
+  }
+
+  public T getFocusedItemOrNull() {
+    if (items.isEmpty()) {
+      return null;
+    }
+    return getFocusedItem();
   }
 
   public T getFocusedItem() {

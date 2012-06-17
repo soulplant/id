@@ -40,11 +40,18 @@ public class FullscreenSwapper implements KeyListener {
 
   @Override
   public void keyPressed(KeyEvent keyEvent) {
-    if (keyEvent.getKeyCode() == KeyEvent.VK_F11) {
+    if (isFullscreenKeyEvent(keyEvent)) {
       toggleFullscreen();
       return;
     }
     currentFrame.keyPressed(keyEvent);
+  }
+
+  private boolean isFullscreenKeyEvent(KeyEvent keyEvent) {
+    if (keyEvent.isMetaDown() && keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
+      return true;
+    }
+    return keyEvent.getKeyCode() == KeyEvent.VK_F11;
   }
 
   @Override

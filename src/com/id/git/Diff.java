@@ -25,8 +25,9 @@ public class Diff {
         }
         fileDeltaLines.clear();
         currentFile = parseFilenameFromDiffHeader(line);
+      } else if (!line.startsWith("\\")) {  // Skip comments.
+        fileDeltaLines.add(line);
       }
-      fileDeltaLines.add(line);
     }
     if (!fileDeltaLines.isEmpty()) {
       fileDeltas.put(currentFile, FileDelta.fromLines(fileDeltaLines));

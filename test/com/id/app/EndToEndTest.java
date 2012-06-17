@@ -9,7 +9,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.id.app.CommandExecutor;
 import com.id.editor.Editor;
+import com.id.editor.Minibuffer;
 import com.id.file.Tombstone;
 import com.id.fuzzy.FuzzyFinder;
 import com.id.git.GitRepository;
@@ -26,6 +28,8 @@ public class EndToEndTest {
   private RealFileSystem fileSystem;
   private BashShell shell;
   private HighlightState highlightState;
+  private Minibuffer minibuffer;
+  private CommandExecutor commandExecutor;
 
   @Before
   public void setup() throws IOException {
@@ -37,7 +41,10 @@ public class EndToEndTest {
     repository = new GitRepository(shell);
     fuzzyFinder = new FuzzyFinder(fileSystem);
     highlightState = new HighlightState();
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState, stack);
+    minibuffer = new Minibuffer();
+    commandExecutor = new CommandExecutor();
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState, stack,
+        minibuffer, commandExecutor);
     repository.init();
   }
 

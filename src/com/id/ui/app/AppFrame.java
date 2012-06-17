@@ -42,16 +42,21 @@ public class AppFrame extends JFrame implements KeyListener {
       appPanel.setSize(originalSize);
     }
     pack();
-    setVisible(true);
     if (isFullscreen) {
       GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
       gd.setFullScreenWindow(this);
     }
+    setVisible(true);
   }
 
   public void takeOffScreen() {
+    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+    if (isFullscreen) {
+      gd.setFullScreenWindow(null);
+    }
     this.originalSize = appPanel.getSize();
     setVisible(false);
+    getContentPane().removeAll();
   }
 
   @Override

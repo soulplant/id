@@ -69,6 +69,11 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
       public void openFile(String filename) {
         Controller.this.openFile(filename, true);
       }
+
+      @Override
+      public void jumpToLine(int lineNumber) {
+        Controller.this.jumpToLine(lineNumber);
+      }
     });
     stack.setFocusLatest(false);
     minibuffer.addListener(new Minibuffer.Listener() {
@@ -449,10 +454,22 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     return editors.isFocused() ? editors : stack;
   }
 
+  private Editor getFocusedEditor() {
+    ListModel<Editor> focusedList = getFocusedList();
+    if (focusedList.isEmpty()) {
+      return null;
+    }
+    return focusedList.getFocusedItem();
+  }
+
   @Override
   public void onItemSelected(String fuzzyFinderFile) {
     openFile(fuzzyFinderFile);
     fuzzyFinder.setVisible(false);
+  }
+
+  private void jumpToLine(int lineNumber) {
+    getFocusedEditor().jumpToLine(lineNumber);
   }
 
   public void importDiffs() {

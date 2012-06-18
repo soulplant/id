@@ -1026,4 +1026,9 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   public void setTopLineVisible(int top) {
     view.setTopLineVisible(top);
   }
+
+  public void jumpToLine(int lineNumber) {
+    cursor.jumpTo(lineNumber, 0);
+    applyCursorConstraints();
+  }
 }

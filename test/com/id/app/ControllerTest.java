@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
+import com.id.editor.Point;
 import com.id.events.KeyStroke;
 import com.id.file.ModifiedListener;
 import com.id.file.Tombstone;
@@ -355,6 +356,14 @@ public class ControllerTest {
     assertEquals(2, stack.size());
     typeString("Q");
     assertEquals(0, stack.size());
+  }
+
+  @Test
+  public void outdentDoesntLeaveCursorPastEndOfLine() {
+    typeString(":e a<CR>ia<CR>b<CR>c<CR>d<CR><ESC>");
+    typeString(":3<CR>");
+    Point cursor = editors.get(0).getCursorPosition();
+    assertEquals(2, cursor.getY());
   }
 
   private void createSnippetFromCurrentLine() {

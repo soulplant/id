@@ -340,6 +340,14 @@ public class ControllerTest {
     assertEquals(1, editors.getFocusedIndex());
   }
 
+  @Test
+  public void BGoesToTopFileInFileList() {
+    typeString(":e a<CR>:e b<CR>");
+    assertEquals(1, editors.getFocusedIndex());
+    typeString("B");
+    assertEquals(0, editors.getFocusedIndex());
+  }
+
   private void createSnippetFromCurrentLine() {
     typeString("V;");
   }

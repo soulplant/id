@@ -123,6 +123,12 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         focusStack();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("B"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        goToTopFileInFileList();
+      }
+    });
     shortcuts.setShortcut(KeyStroke.fromString("t"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -199,6 +205,13 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     } else {
       return stack.getFocusedItemOrNull();
     }
+  }
+
+  private void goToTopFileInFileList() {
+    if (editors.isEmpty()) {
+      return;
+    }
+    editors.setFocusedIndex(0);
   }
 
   private void openDeltasAsSnippets() {

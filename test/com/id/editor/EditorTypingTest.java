@@ -886,4 +886,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("f{a<CR><ESC>");
     assertFileContents("  this {", "  }");
   }
+
+  @Test
+  public void outdentDoesntLeaveCursorPastEndOfLine() {
+    setFileContents(" a");
+    typeString("$\\<");
+    assertCursorPosition(0, 0);
+  }
 }

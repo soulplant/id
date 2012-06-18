@@ -931,6 +931,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     } else {
       outdentLine(cursor.getY());
     }
+    applyCursorConstraints();
     file.breakPatch();
   }
 

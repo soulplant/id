@@ -10,11 +10,13 @@ import com.id.editor.Editor.FindMode;
 public class EditorKeyHandler {
   private final ShortcutTree normalTree;
   private final ShortcutTree visualTree;
+  private final ShortcutTree insertTree;
   private Editor editor;
 
   public EditorKeyHandler() {
     normalTree = new ShortcutTree();
     visualTree = new ShortcutTree();
+    insertTree = new ShortcutTree();
 
     normalTree.setShortcut(KeyStroke.fromString("j"), new ShortcutTree.Action() {
       @Override
@@ -409,10 +411,21 @@ public class EditorKeyHandler {
         // Do nothing.
       }
     });
+
+    insertTree.setShortcut(KeyStroke.fromString("<C-j>"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.highlightWordBeforeCursor();
+      }
+    });
   }
 
   public boolean handleKeyPress(KeyStroke event, Editor editor) {
     if (editor.isInInsertMode()) {
+      if (insertTree.stepAndExecute(event)) {
+        return true;
+      }
       boolean handled = true;
       if (event.isLetter()) {
         editor.onLetterTyped(event.getKeyChar());

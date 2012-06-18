@@ -348,6 +348,15 @@ public class ControllerTest {
     assertEquals(0, editors.getFocusedIndex());
   }
 
+  @Test
+  public void qClosesAllSnippets() {
+    typeString(":e a<CR>ihello<CR>world<ESC>");
+    typeString("V;kV;");
+    assertEquals(2, stack.size());
+    typeString("Q");
+    assertEquals(0, stack.size());
+  }
+
   private void createSnippetFromCurrentLine() {
     typeString("V;");
   }

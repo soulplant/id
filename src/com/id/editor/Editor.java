@@ -598,6 +598,13 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     setHighlightPattern(Patterns.wholeWord(file.getWordUnder(cursor.getY(), cursor.getX())));
   }
 
+  public void highlightWordBeforeCursor() {
+    if (cursor.getX() == 0) {
+      return;
+    }
+    setHighlightPattern(Patterns.wholeWord(file.getWordUnder(cursor.getY(), cursor.getX() - 1)));
+  }
+
   public void clearHighlight() {
     setHighlightPattern(null);
   }

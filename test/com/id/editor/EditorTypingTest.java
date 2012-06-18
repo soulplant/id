@@ -547,6 +547,12 @@ public class EditorTypingTest extends EditorTestBase {
   }
 
   @Test
+  public void ctrljPutsAHighlightOnPreviousWordInInsertMode() {
+    typeString("iab ab<C-j>");
+    assertTrue(editor.isHighlight(0, 0));
+  }
+
+  @Test
   public void escapeFromSearchReturnsCursorToOriginalPosition() {
     setFileContents("abc");
     typeString("/bc<ESC>");

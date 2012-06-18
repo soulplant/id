@@ -129,6 +129,12 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         goToTopFileInFileList();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("Q"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        closeAllSnippets();
+      }
+    });
     shortcuts.setShortcut(KeyStroke.fromString("t"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -218,6 +224,10 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     for (Editor editor : editors) {
       openDeltasAsSnippetsFromEditor(editor);
     }
+  }
+
+  private void closeAllSnippets() {
+    closeEditors(stack);
   }
 
   private void openDeltasAsSnippetsFromEditor(Editor editor) {

@@ -19,6 +19,11 @@ public class KeyStrokeParserTest {
   }
 
   @Test
+  public void shiftKey() {
+    check("<S-TAB>", KeyStroke.tab().withShift());
+  }
+
+  @Test
   public void remaining() {
     assertEquals("", new KeyStrokeParser("<C-x>").getRemainingInput());
     assertEquals("", new KeyStrokeParser("<CR>").getRemainingInput());

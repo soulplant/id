@@ -936,7 +936,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void outdent() {
-    startPatch();
+    startPatchIfNecessary();
     if (isInVisual()) {
       int startY = visual.getStartPoint().getY();
       int endY = visual.getEndPoint().getY();

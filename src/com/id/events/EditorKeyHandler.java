@@ -426,6 +426,13 @@ public class EditorKeyHandler {
         editor.insertLastHighlightedWord();
       }
     });
+    insertTree.setShortcut(KeyStroke.fromString("<S-TAB>"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.outdent();
+      }
+    });
   }
 
   public boolean handleKeyPress(KeyStroke event, Editor editor) {

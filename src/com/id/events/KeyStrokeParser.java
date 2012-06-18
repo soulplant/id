@@ -67,6 +67,8 @@ public class KeyStrokeParser {
   private KeyStroke parseAngledBracketsText(String innerText) {
     if (innerText.startsWith("C-")) {
       return KeyStroke.fromControlChar(innerText.charAt(2));
+    } else if (innerText.startsWith("S-")) {
+      return parseAngledBracketsText(innerText.substring(2)).withShift();
     } else if (innerText.equals("ESC")) {
       return KeyStroke.escape();
     } else if (innerText.equals("CR")) {

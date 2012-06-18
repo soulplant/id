@@ -911,4 +911,12 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("$\\<");
     assertCursorPosition(0, 0);
   }
+
+  @Test
+  public void shiftTabInInsertModeCausesOutdent() {
+    typeString("i a<S-TAB>");
+    assertFileContents("a");
+    assertCursorPosition(0, 1);
+    assertTrue(editor.isInInsertMode());
+  }
 }

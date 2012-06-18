@@ -2,7 +2,8 @@ package com.id.app;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
+
+import com.id.app.HighlightPattern;
 
 // Contains a highlight pattern and exposes a listener interface. The main use
 // case for this is as the singleton highlight state for the app.
@@ -11,13 +12,13 @@ public class HighlightState {
     void onHighlightStateChanged();
   }
 
-  private Pattern highlightPattern = null;
+  private HighlightPattern highlightPattern = null;
   private final List<Listener> listeners = new ArrayList<Listener>();
 
   public HighlightState() {
   }
 
-  public void setHighlightPattern(Pattern pattern) {
+  public void setHighlightPattern(HighlightPattern pattern) {
     if (pattern == null && this.highlightPattern == null) {
       return;
     }
@@ -30,8 +31,12 @@ public class HighlightState {
     }
   }
 
-  public Pattern getHighlightPattern() {
+  public HighlightPattern getHighlightPattern() {
     return highlightPattern;
+  }
+
+  public String getHighlightText() {
+    return highlightPattern.getText();
   }
 
   public void addListener(Listener listener) {
@@ -40,5 +45,9 @@ public class HighlightState {
 
   public void removeListener(Listener listener) {
     listeners.remove(listener);
+  }
+
+  public boolean isEmpty() {
+    return highlightPattern == null;
   }
 }

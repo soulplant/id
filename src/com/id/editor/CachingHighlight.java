@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.id.app.HighlightPattern;
 import com.id.file.File;
 
 public class CachingHighlight implements Highlight, File.Listener {
@@ -96,14 +97,14 @@ public class CachingHighlight implements Highlight, File.Listener {
     }
   }
 
-  private final Pattern pattern;
+  private final HighlightPattern pattern;
   private final List<LineMatches> lineMatches = new ArrayList<LineMatches>();
 
   public static CachingHighlight forLiteralWord(String word, List<String> lines) {
-    return new CachingHighlight(Pattern.compile("\\b" + Pattern.quote(word) + "\\b"), lines);
+    return new CachingHighlight(Patterns.wholeWord(word), lines);
   }
 
-  public CachingHighlight(Pattern pattern, List<String> lines) {
+  public CachingHighlight(HighlightPattern pattern, List<String> lines) {
     this.pattern = pattern;
 
     for (String line : lines) {

@@ -553,6 +553,18 @@ public class EditorTypingTest extends EditorTestBase {
   }
 
   @Test
+  public void ctrlkInsertsThePreviouslyHighlightedWord() {
+    typeString("iab ab<C-j> <C-k>");
+    assertFileContents("ab ab ab");
+  }
+
+  @Test
+  public void ctrlkPutsCursorInTheRightPlace() {
+    typeString("iab ab<C-j><ESC>I<C-k> woo ");
+    assertFileContents("ab woo ab ab");
+  }
+
+  @Test
   public void escapeFromSearchReturnsCursorToOriginalPosition() {
     setFileContents("abc");
     typeString("/bc<ESC>");

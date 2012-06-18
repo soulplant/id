@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.id.app.HighlightPattern;
 import com.id.app.HighlightState;
 import com.id.data.Data;
 import com.id.editor.Visual.Mode;
@@ -580,7 +581,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     applyCursorConstraints();
   }
 
-  public void setHighlightPattern(Pattern pattern) {
+  public void setHighlightPattern(HighlightPattern pattern) {
     highlightState.setHighlightPattern(pattern);
   }
 
@@ -603,6 +604,14 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       return;
     }
     setHighlightPattern(Patterns.wholeWord(file.getWordUnder(cursor.getY(), cursor.getX() - 1)));
+  }
+
+  public void insertLastHighlightedWord() {
+    if (highlightState.isEmpty()) {
+      return;
+    }
+    file.insertText(cursor.getY(), cursor.getX(), highlightState.getHighlightText());
+    cursor.moveBy(0, highlightState.getHighlightText().length());
   }
 
   public void clearHighlight() {

@@ -419,6 +419,13 @@ public class EditorKeyHandler {
         editor.highlightWordBeforeCursor();
       }
     });
+    insertTree.setShortcut(KeyStroke.fromString("<C-k>"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.insertLastHighlightedWord();
+      }
+    });
   }
 
   public boolean handleKeyPress(KeyStroke event, Editor editor) {

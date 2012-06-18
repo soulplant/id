@@ -2,15 +2,19 @@ package com.id.editor;
 
 import java.util.regex.Pattern;
 
+import com.id.app.HighlightPattern;
+
 /**
  * Static methods for creating {@link Pattern}s.
  */
 public class Patterns {
-  public static Pattern wholeWord(String word) {
-    return Pattern.compile("\\b" + Pattern.quote(word) + "\\b");
+  public static HighlightPattern wholeWord(String word) {
+    Pattern pattern = Pattern.compile("\\b" + Pattern.quote(word) + "\\b");
+    return new HighlightPattern(word, pattern);
   }
 
-  public static Pattern partWord(String word) {
-    return Pattern.compile(Pattern.quote(word));
+  public static HighlightPattern partWord(String word) {
+    Pattern pattern = Pattern.compile(Pattern.quote(word));
+    return new HighlightPattern(word, pattern);
   }
 }

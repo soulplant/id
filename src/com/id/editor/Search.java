@@ -84,7 +84,7 @@ public class Search implements KeyStrokeHandler, Minibuffer.Listener {
   @Override
   public void onTextChanged() {
     file.removeListener(highlight);
-    highlight = new CachingHighlight(Pattern.compile(minibuffer.getText()), file.getLineList());
+    highlight = new CachingHighlight(Patterns.partWord(minibuffer.getText()), file.getLineList());
     moveTo(highlight.getNextMatch(startPoint.getY(), startPoint.getX()));
     file.addListener(highlight);
   }

@@ -213,7 +213,7 @@ public class ControllerTest {
   public void typeInSnippet() {
     controller.openFile("a");
     typeString("oabc<CR>abc<ESC>");
-    assertEditorFocused();
+    assertSpotlightFocused();
     typeString("V;");  // Make a snippet out of the last line.
     typeString("k");   // Move up a line in the editors.
     typeString("L");   // Move focus to stack.
@@ -350,12 +350,19 @@ public class ControllerTest {
   }
 
   @Test
-  public void qClosesAllSnippets() {
+  public void QClosesAllSnippets() {
     typeString(":e a<CR>ihello<CR>world<ESC>");
     typeString("V;kV;");
     assertEquals(2, stack.size());
     typeString("Q");
     assertEquals(0, stack.size());
+  }
+
+  @Test
+  public void QPutsFocusBackOnSpotlight() {
+    typeString(":e a<CR>ihello<CR>world<ESC>");
+    typeString("V;LQ");
+    assertSpotlightFocused();
   }
 
   @Test
@@ -370,7 +377,7 @@ public class ControllerTest {
     typeString("V;");
   }
 
-  private void assertEditorFocused() {
+  private void assertSpotlightFocused() {
     assertTrue(editors.isFocused());
     assertFalse(stack.isFocused());
   }

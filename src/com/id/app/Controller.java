@@ -233,6 +233,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
 
   private void closeAllSnippets() {
     closeEditors(stack);
+    focusEditors();
   }
 
   private void openDeltasAsSnippetsFromEditor(Editor editor) {

@@ -109,6 +109,17 @@ public class EditorRendererTest {
     assertTrue(matrix.isWhitespaceIndicator(0, 4));
   }
 
+  @Test
+  public void test80CharsIndicator() {
+    String text = "a";
+    for (int i = 0; i < 7; i++) {
+      text += text;
+    }
+    setFileContents(text);
+    renderMatrix(new Rectangle(0, 0, 810, 810), 10, 10);
+    assertTrue(matrix.is80CharIndicator(0, EditorRenderer.MAX_LINE_LENGTH - 1));
+  }
+
   private void renderMatrix(Rectangle screen, int fontWidthPx, int fontHeightPx) {
     renderer = new EditorRenderer(editor, screen, fontWidthPx, fontHeightPx, 0);
     matrix = renderer.render();

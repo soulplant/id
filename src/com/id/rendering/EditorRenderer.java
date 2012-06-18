@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import com.id.editor.Editor;
 
 public class EditorRenderer {
+  public static final int MAX_LINE_LENGTH = 80;
   private final int fontWidthPx;
   private final int fontHeightPx;
   private final Rectangle screen;
@@ -52,6 +53,9 @@ public class EditorRenderer {
     line = safeSubstring(line, startX, length);
     if (hasTrailingWhitespace(line)) {
       matrix.setWhitespaceIndicator(matrixY, line.length() - 1, true);
+    }
+    if (line.length() > MAX_LINE_LENGTH) {
+      matrix.set80CharIndicator(matrixY, MAX_LINE_LENGTH - 1, true);
     }
     for (int i = 0; i < Math.min(matrix.getWidth(), line.length()); i++) {
       matrix.setLetter(matrixY, i, line.charAt(i));

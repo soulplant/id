@@ -10,6 +10,7 @@ public class Slug {
     public boolean isHighlight = false;
     public boolean isSearchHighlight = false;
     public boolean isWhitespaceIndicator = false;
+    public boolean is80CharIndicator = false;
 //    public boolean isCursor = false;
 //    public boolean isWideCursor = false;
 
@@ -81,5 +82,13 @@ public class Slug {
 
   public boolean isWhitespaceIndicator(int i) {
     return entries.get(i).isWhitespaceIndicator;
+  }
+
+  public void set80CharIndicator(int i, boolean b) {
+    entries.get(i).is80CharIndicator = b;
+  }
+
+  public boolean is80CharIndicator(int i) {
+    return entries.get(i).is80CharIndicator;
   }
 }

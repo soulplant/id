@@ -68,6 +68,10 @@ public class Matrix {
           g.setColor(Color.GRAY);
           g.fillRect(boxX + charWidthPx, boxY, 2, charHeightPx);
         }
+        if (slug.is80CharIndicator(x)) {
+          g.setColor(Color.GRAY);
+          g.fillRect(boxX + charWidthPx, boxY, 2, charHeightPx);
+        }
       }
       // NOTE drawString() takes the bottom y coordinate of the rect to draw the text in.
       int textY = (lineOffset + y + 1) * charHeightPx - fontDescentPx;
@@ -123,5 +127,13 @@ public class Matrix {
 
   public boolean isWhitespaceIndicator(int y, int x) {
     return slugs.get(y).isWhitespaceIndicator(x);
+  }
+
+  public void set80CharIndicator(int y, int x, boolean b) {
+    slugs.get(y).set80CharIndicator(x, b);
+  }
+
+  public boolean is80CharIndicator(int y, int x) {
+    return slugs.get(y).is80CharIndicator(x);
   }
 }

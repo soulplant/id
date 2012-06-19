@@ -140,4 +140,11 @@ public class PatchworkTest {
     patchwork.clearDogEar();
     assertFalse(patchwork.isDogEared());
   }
+
+  @Test
+  public void setModified() {
+    assertFalse(patchwork.isModified());
+    patchwork.setModified();
+    assertTrue(patchwork.isModified());
+  }
 }

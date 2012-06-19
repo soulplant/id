@@ -391,6 +391,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     if (fileView == null && createNewFile) {
       File file = new File();
       file.setFilename(filename);
+      file.setModified();
       fileView = new FileView(file);
     }
     if (fileView == null) {

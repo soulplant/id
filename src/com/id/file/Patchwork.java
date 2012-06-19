@@ -171,6 +171,11 @@ public class Patchwork implements File.Listener {
     savedAtDepth = 0;
   }
 
+  public void setModified() {
+    savedAtDepth = -1;
+    stateChanged();
+  }
+
   public void setListener(ModifiedListener listener) {
     this.listener = listener;
   }

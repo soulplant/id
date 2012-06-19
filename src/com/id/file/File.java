@@ -296,4 +296,8 @@ public class File {
   public FileView makeView(int start, int end) {
     return new FileView(this, start, end);
   }
+
+  public void setModified() {
+    patchwork.setModified();
+  }
 }

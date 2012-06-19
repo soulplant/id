@@ -381,6 +381,15 @@ public class ControllerTest {
     assertEquals("abc", editors.getFocusedItem().getFilename());
   }
 
+  @Test
+  public void newFilesStartModified() {
+    typeString(":e doesnt-exist<CR>");
+    assertEquals(1, editors.size());
+    assertTrue(editors.getFocusedItem().isModified());
+    typeString("w");
+    assertFalse(editors.getFocusedItem().isModified());
+  }
+
   private void createSnippetFromCurrentLine() {
     typeString("V;");
   }

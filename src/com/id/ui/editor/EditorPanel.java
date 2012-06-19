@@ -54,7 +54,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
     panel.setLayout(new BorderLayout());
     panel.add(new MarkerPanel(editor), BorderLayout.LINE_START);
     panel.add(textPanel, BorderLayout.CENTER);
-    filenameLabel = new JLabel(editor.getFilename());
+    filenameLabel = new JLabel(getTitle());
     this.add(filenameLabel, BorderLayout.PAGE_START);
     scrollPane = new JScrollPane(panel);
     this.add(scrollPane, BorderLayout.CENTER);
@@ -66,15 +66,19 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
     return containerModel.isFocused() && containerModel.isFocused(editor);
   }
 
-  @Override
-  public void onModifiedStateChanged() {
+  private String getTitle() {
     String prefix = "";
     if (editor.isDogEared()) {
       prefix = editor.isModified() ? "o" : ".";
     } else {
       prefix = editor.isModified() ? "*" : "";
     }
-    filenameLabel.setText(prefix + " " + editor.getFilename());
+    return prefix + " " + editor.getFilename();
+  }
+
+  @Override
+  public void onModifiedStateChanged() {
+    filenameLabel.setText(getTitle());
   }
 
   public boolean handleKeyPress(KeyEvent e) {

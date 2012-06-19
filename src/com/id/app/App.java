@@ -64,6 +64,8 @@ public class App {
     final AppPanel panel = new AppPanel(fileListView, spotlightView, stackView,
         controller, fuzzyFinderPanel, minibufferView);
 
+    controller.addListener(panel);
+
     editors.addListener(fileListView);
     editors.addListener(spotlightView);
 

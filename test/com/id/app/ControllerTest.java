@@ -399,6 +399,26 @@ public class ControllerTest {
     assertEquals(1, editors.getFocusedIndex());
   }
 
+  @Test
+  public void controllerStartsWithStackInvisible() {
+    assertFalse(controller.isStackVisible());
+  }
+
+  @Test
+  public void creatingASnippetMakesTheStackVisible() {
+    Controller.Listener listener = mock(Controller.Listener.class);
+    controller.addListener(listener);
+    typeString(":e a<CR>V;");
+    assertTrue(controller.isStackVisible());
+    verify(listener).onStackVisibilityChanged(true);
+  }
+
+  @Test
+  public void closingTheFinalSnippetMakesTheStackInvisible() {
+    typeString(":e a<CR>V;Lq");
+    assertFalse(controller.isStackVisible());
+  }
+
   private void createSnippetFromCurrentLine() {
     typeString("V;");
   }

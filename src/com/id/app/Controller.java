@@ -39,6 +39,12 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   private final CommandExecutor commandExecutor;
 
   private boolean isInMinibuffer = false;
+  private boolean isStackVisible = false;
+  private List<Listener> listeners = new ArrayList<Listener>();
+
+  public interface Listener {
+    void onStackVisibilityChanged(boolean isStackVisible);
+  }
 
   private final EditorEnvironment editorEnvironment = new EditorEnvironment() {
     @Override
@@ -234,6 +240,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   private void closeAllSnippets() {
     closeEditors(stack);
     focusEditors();
+    updateStackVisibility();
   }
 
   private void openDeltasAsSnippetsFromEditor(Editor editor) {
@@ -407,17 +414,18 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     if (fileView == null) {
       return null;
     }
-    Editor editor = makeEditor(fileView);
-    stack.add(editor);
-    return editor;
+    return addSnippet(fileView);
   }
 
   private Editor makeEditor(FileView fileView) {
     return new Editor(fileView, highlightState, register, editorEnvironment);
   }
 
-  private void addSnippet(FileView fileView) {
-    stack.add(makeEditor(fileView));
+  private Editor addSnippet(FileView fileView) {
+    Editor editor = makeEditor(fileView);
+    stack.add(editor);
+    updateStackVisibility();
+    return editor;
   }
 
   private Editor attemptToFocusExistingEditor(String filename) {
@@ -434,6 +442,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     getFocusedList().removeFocused();
     if (stack.isEmpty()) {
       focusEditors();
+      updateStackVisibility();
     }
   }
 
@@ -494,5 +503,20 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
       builder.addStack(editor.getSerialized());
     }
     return builder.build();
+  }
+
+  private void updateStackVisibility() {
+    isStackVisible = !stack.isEmpty();
+    for (Listener listener : listeners) {
+      listener.onStackVisibilityChanged(isStackVisible);
+    }
+  }
+
+  public boolean isStackVisible() {
+    return isStackVisible;
+  }
+
+  public void addListener(Listener listener) {
+    listeners.add(listener);
   }
 }

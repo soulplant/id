@@ -7,12 +7,16 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AppLayout implements LayoutManager {
   private Component filelist = null;
   private Component spotlight = null;
   private Component stack = null;
   private Component fuzzyFinder = null;
   private Component minibuffer = null;
+  private boolean isStackVisible = false;
 
   @Override
   public void addLayoutComponent(String name, Component component) {
@@ -38,16 +42,36 @@ public class AppLayout implements LayoutManager {
     }
     int fileListWidth = 250;
     int remainingWidth = parent.getWidth() - fileListWidth;
-    int editorWidth = remainingWidth / 2;
     filelist.setBounds(0, 0, fileListWidth, height);
-    spotlight.setBounds(fileListWidth, 0, editorWidth, height);
-    stack.setBounds(fileListWidth + editorWidth, 0, editorWidth, height);
+    divideHorizontalSpace(remainingWidth, fileListWidth, height, getVisibleEditorComponents());
+    stack.setVisible(isStackVisible);
     if (minibuffer != null) {
       minibuffer.setBounds(0, height, parent.getWidth(), minibufferHeight);
     }
     if (fuzzyFinder != null) {
       fuzzyFinder.setBounds(250, 0, 200, height);
     }
+  }
+
+  private List<Component> getVisibleEditorComponents() {
+    List<Component> result = new ArrayList<Component>();
+    result.add(spotlight);
+    if (isStackVisible) {
+      result.add(stack);
+    }
+    return result;
+  }
+
+  private void divideHorizontalSpace(int remainingWidth, int left, int height, List<Component> components) {
+    int componentWidth = remainingWidth / components.size();
+    for (Component component : components) {
+      component.setBounds(left, 0, componentWidth, height);
+      left += componentWidth;
+    }
+  }
+
+  public void setStackVisible(boolean isStackVisible) {
+    this.isStackVisible = isStackVisible;
   }
 
   @Override

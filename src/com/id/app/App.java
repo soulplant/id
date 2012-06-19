@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
 import com.id.fuzzy.FuzzyFinder;
+import com.id.file.File;
 import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
@@ -49,8 +50,7 @@ public class App {
     FileSystem fileSystem = new RealFileSystem();
     BashShell shell = new BashShell(null);
     Repository repository = new GitRepository(shell);
-    FuzzyFinder fuzzyFinder = new FuzzyFinder(fileSystem);
-    fuzzyFinder.addCurrentPathToIndex();
+    FuzzyFinder fuzzyFinder = createFuzzyFinder(fileSystem);
     HighlightState highlightState = new HighlightState();
     final Controller controller = new Controller(editors, fileSystem,
         fuzzyFinder, repository, highlightState, stack, minibuffer,
@@ -72,6 +72,17 @@ public class App {
 
     new FullscreenSwapper(normalAppFrame, fullscreenAppFrame);
     controller.openFile("src/com/id/app/App.java");
+  }
+
+  private static FuzzyFinder createFuzzyFinder(FileSystem fileSystem) {
+    FuzzyFinder fuzzyFinder = new FuzzyFinder();
+    File file = fileSystem.getFile(".files");
+    if (file != null) {
+      for (int i = 0; i < file.getLineCount(); i++) {
+        fuzzyFinder.addFilenameToIndex(file.getLine(i));
+      }
+    }
+    return fuzzyFinder;
   }
 
   public static void configureFont(Graphics g) {

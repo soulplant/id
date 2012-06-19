@@ -46,7 +46,7 @@ public class ControllerTest {
     editors = new ListModel<Editor>();
     stack = new ListModel<Editor>();
     fileSystem = new InMemoryFileSystem();
-    fuzzyFinder = new FuzzyFinder(fileSystem);
+    fuzzyFinder = new FuzzyFinder();
     fuzzyListener = mock(FuzzyFinder.Listener.class);
     repo = new InMemoryRepository();
     highlightState = new HighlightState();
@@ -58,7 +58,10 @@ public class ControllerTest {
     fileSystem.insertFile("b", "bbb");
     fileSystem.insertFile("src/c.cc", "ccc");
     fileSystem.insertFile("src/d.cc", "ddd");
-    fuzzyFinder.addCurrentPathToIndex();
+    fuzzyFinder.addFilenameToIndex("a");
+    fuzzyFinder.addFilenameToIndex("b");
+    fuzzyFinder.addFilenameToIndex("src/c.cc");
+    fuzzyFinder.addFilenameToIndex("src/d.cc");
   }
 
   @Test

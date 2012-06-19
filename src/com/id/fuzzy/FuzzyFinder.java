@@ -11,7 +11,6 @@ import com.id.editor.Minibuffer;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
-import com.id.platform.FileSystem;
 
 public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   public interface Listener {
@@ -23,17 +22,14 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
     void onItemSelected(String item);
   }
 
-  private final List<String> paths = new ArrayList<String>();
   private final List<String> filenames = new ArrayList<String>();
-  private final FileSystem fileSystem;
   private boolean visible = false;
   private final Minibuffer minibuffer = new Minibuffer();
   private final List<Listener> listeners = new ArrayList<Listener>();
   private final ShortcutTree shortcuts = new ShortcutTree();
   private SelectionListener selectionListener;
 
-  public FuzzyFinder(FileSystem fileSystem) {
-    this.fileSystem = fileSystem;
+  public FuzzyFinder() {
     minibuffer.addListener(this);
     shortcuts.setShortcut(Arrays.asList(KeyStroke.escape()), new ShortcutTree.Action() {
       @Override
@@ -69,17 +65,8 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
     fireSetVisible();
   }
 
-  public void addPathToIndex(String path) {
-    paths.add(path);
-    addAllFilesUnder(path);
-  }
-
-  public void addCurrentPathToIndex() {
-    paths.add("");
-    for (String filename : fileSystem.getSubdirectories("")) {
-      addAllFilesUnder(filename);
-    }
-    return;
+  public void addFilenameToIndex(String filename) {
+    filenames.add(filename);
   }
 
   public List<String> getMatches() {
@@ -92,20 +79,6 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
       }
     }
     return result;
-  }
-
-  private void addAllFilesUnder(String path) {
-    if (!fileSystem.isExistent(path)) {
-      return;
-    }
-    if (fileSystem.isDirectory(path)) {
-      for (String filename : fileSystem.getSubdirectories(path)) {
-        String subdirectory = path + "/" + filename;
-        addAllFilesUnder(subdirectory);
-      }
-    } else if (fileSystem.isFile(path)) {
-      filenames.add(path);
-    }
   }
 
   public boolean contains(String filename) {

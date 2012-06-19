@@ -13,10 +13,8 @@ import org.junit.Test;
 import com.id.events.KeyStroke;
 import com.id.fuzzy.FuzzyFinder.Listener;
 import com.id.fuzzy.FuzzyFinder.SelectionListener;
-import com.id.platform.InMemoryFileSystem;
 
 public class FuzzyFinderTest {
-  private InMemoryFileSystem fileSystem;
   private FuzzyFinder fuzzyFinder;
   private Listener listener;
   private SelectionListener selectionListener;
@@ -31,18 +29,16 @@ public class FuzzyFinderTest {
   }
 
   private void setupWithFiles(String... filenames) {
-    fileSystem = new InMemoryFileSystem();
-    fuzzyFinder = new FuzzyFinder(fileSystem);
+    fuzzyFinder = new FuzzyFinder();
     listener = mock(FuzzyFinder.Listener.class);
     selectionListener = mock(FuzzyFinder.SelectionListener.class);
     for (String filename : filenames) {
-      fileSystem.insertFile(filename);
+      fuzzyFinder.addFilenameToIndex(filename);
     }
   }
 
   @Test
   public void simpleMatchTest() {
-    fuzzyFinder.addPathToIndex("src");
     fuzzyFinder.setQuery("chrome");
     assertTrue(fuzzyFinder.contains("src/browser/ui/chrome.h"));
     assertEquals(2, fuzzyFinder.getMatches().size());
@@ -52,7 +48,6 @@ public class FuzzyFinderTest {
 
   @Test
   public void sendsQueryChanged() {
-    fuzzyFinder.addPathToIndex("src");
     fuzzyFinder.addListener(listener);
     fuzzyFinder.handleKeyStroke(KeyStroke.fromChar('c'));
     verify(listener).onQueryChanged();
@@ -60,7 +55,6 @@ public class FuzzyFinderTest {
 
   @Test
   public void enterMakesSelection() {
-    fuzzyFinder.addPathToIndex("src");
     fuzzyFinder.setVisible(true);
     typeString("chrome");
     fuzzyFinder.setSelectionListener(selectionListener);
@@ -70,6 +64,7 @@ public class FuzzyFinderTest {
 
   @Test
   public void enterOnEmptyDismissesIt() {
+    setupWithFiles();
     fuzzyFinder.setVisible(true);
     type(KeyStroke.enter());
     assertFalse(fuzzyFinder.isVisible());
@@ -78,7 +73,6 @@ public class FuzzyFinderTest {
   @Test
   public void bareWords() {
     setupWithFiles("a", "b");
-    fuzzyFinder.addCurrentPathToIndex();
     typeString("a");
     assertEquals(1, fuzzyFinder.getMatches().size());
   }

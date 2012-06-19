@@ -39,7 +39,7 @@ public class EndToEndTest {
     stack = new ListModel<Editor>();
     fileSystem = new RealFileSystem(tempDir);
     repository = new GitRepository(shell);
-    fuzzyFinder = new FuzzyFinder();
+    fuzzyFinder = new FuzzyFinder(new com.id.file.File());
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();

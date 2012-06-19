@@ -11,6 +11,7 @@ import com.id.editor.Minibuffer;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
+import com.id.file.File;
 
 public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   public interface Listener {
@@ -22,14 +23,15 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
     void onItemSelected(String item);
   }
 
-  private final List<String> filenames = new ArrayList<String>();
+  private final File file;
   private boolean visible = false;
   private final Minibuffer minibuffer = new Minibuffer();
   private final List<Listener> listeners = new ArrayList<Listener>();
   private final ShortcutTree shortcuts = new ShortcutTree();
   private SelectionListener selectionListener;
 
-  public FuzzyFinder() {
+  public FuzzyFinder(File file) {
+    this.file = file;
     minibuffer.addListener(this);
     shortcuts.setShortcut(Arrays.asList(KeyStroke.escape()), new ShortcutTree.Action() {
       @Override
@@ -65,14 +67,11 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
     fireSetVisible();
   }
 
-  public void addFilenameToIndex(String filename) {
-    filenames.add(filename);
-  }
-
   public List<String> getMatches() {
     List<String> result = new ArrayList<String>();
     Pattern pattern = Pattern.compile(".*" + minibuffer.getText() + ".*");
-    for (String candidate : filenames) {
+    for (int i = 0; i < file.getLineCount(); i++) {
+      String candidate = file.getLine(i);
       Matcher matcher = pattern.matcher(candidate);
       if (matcher.matches()) {
         result.add(candidate);
@@ -82,7 +81,12 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   }
 
   public boolean contains(String filename) {
-    return filenames.contains(filename);
+    for (int i = 0; i < file.getLineCount(); i++) {
+      if (file.getLine(i).equals(filename)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override

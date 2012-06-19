@@ -404,6 +404,10 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     if (fileView == null) {
       return null;
     }
+    return openFileView(fileView);
+  }
+
+  public Editor openFileView(FileView fileView) {
     Editor editor = makeEditor(fileView);
     editors.insertAfterFocused(editor);
     return editor;

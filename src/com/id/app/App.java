@@ -17,6 +17,7 @@ import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
 import com.id.fuzzy.FuzzyFinder;
 import com.id.file.File;
+import com.id.file.FileView;
 import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
@@ -50,7 +51,8 @@ public class App {
     FileSystem fileSystem = new RealFileSystem();
     BashShell shell = new BashShell(null);
     Repository repository = new GitRepository(shell);
-    FuzzyFinder fuzzyFinder = createFuzzyFinder(fileSystem);
+    File files = getFilesFile(fileSystem);
+    FuzzyFinder fuzzyFinder = new FuzzyFinder(files);
     HighlightState highlightState = new HighlightState();
     final Controller controller = new Controller(editors, fileSystem,
         fuzzyFinder, repository, highlightState, stack, minibuffer,
@@ -73,18 +75,19 @@ public class App {
     AppFrame normalAppFrame = new AppFrame(panel, false, new Dimension(1024, 768));
 
     new FullscreenSwapper(normalAppFrame, fullscreenAppFrame);
-    controller.openFile(".files");
+    controller.openFileView(new FileView(files));
   }
 
-  private static FuzzyFinder createFuzzyFinder(FileSystem fileSystem) {
-    FuzzyFinder fuzzyFinder = new FuzzyFinder();
+  private static File getFilesFile(FileSystem fileSystem) {
+    // TODO(koz): Add a method to fileSystem that gets an existing file, or one
+    // that can be saved to create a new file, rather than just returning null.
+    // In other words, inline this function.
     File file = fileSystem.getFile(".files");
-    if (file != null) {
-      for (int i = 0; i < file.getLineCount(); i++) {
-        fuzzyFinder.addFilenameToIndex(file.getLine(i));
-      }
+    if (file == null) {
+      file = new File();
+      file.setFilename(".files");
     }
-    return fuzzyFinder;
+    return file;
   }
 
   public static void configureFont(Graphics g) {

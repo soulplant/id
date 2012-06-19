@@ -17,6 +17,7 @@ import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
 import com.id.editor.Point;
 import com.id.events.KeyStroke;
+import com.id.file.File;
 import com.id.file.ModifiedListener;
 import com.id.file.Tombstone;
 import com.id.fuzzy.FuzzyFinder;
@@ -41,10 +42,11 @@ public class ControllerTest {
 
   @Before
   public void setup() {
+    File files = new File("a", "b", "src/c.cc", "src/d.cc");
     editors = new ListModel<Editor>();
     stack = new ListModel<Editor>();
     fileSystem = new InMemoryFileSystem();
-    fuzzyFinder = new FuzzyFinder();
+    fuzzyFinder = new FuzzyFinder(files);
     fuzzyListener = mock(FuzzyFinder.Listener.class);
     repo = new InMemoryRepository();
     highlightState = new HighlightState();
@@ -56,10 +58,6 @@ public class ControllerTest {
     fileSystem.insertFile("b", "bbb");
     fileSystem.insertFile("src/c.cc", "ccc");
     fileSystem.insertFile("src/d.cc", "ddd");
-    fuzzyFinder.addFilenameToIndex("a");
-    fuzzyFinder.addFilenameToIndex("b");
-    fuzzyFinder.addFilenameToIndex("src/c.cc");
-    fuzzyFinder.addFilenameToIndex("src/d.cc");
   }
 
   @Test

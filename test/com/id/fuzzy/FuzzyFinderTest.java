@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.id.events.KeyStroke;
+import com.id.file.File;
 import com.id.fuzzy.FuzzyFinder.Listener;
 import com.id.fuzzy.FuzzyFinder.SelectionListener;
 
@@ -29,12 +30,10 @@ public class FuzzyFinderTest {
   }
 
   private void setupWithFiles(String... filenames) {
-    fuzzyFinder = new FuzzyFinder();
+    File file = new File(filenames);
+    fuzzyFinder = new FuzzyFinder(file);
     listener = mock(FuzzyFinder.Listener.class);
     selectionListener = mock(FuzzyFinder.SelectionListener.class);
-    for (String filename : filenames) {
-      fuzzyFinder.addFilenameToIndex(filename);
-    }
   }
 
   @Test

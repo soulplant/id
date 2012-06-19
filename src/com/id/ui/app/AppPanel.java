@@ -18,7 +18,6 @@ public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.L
   private final Component stackView;
   private final KeyStrokeHandler handler;
   private final FuzzyFinderPanel fuzzyFinderPanel;
-  private final TextPanel minibufferView;
 
   public AppPanel(FileListView fileListView, SpotlightView spotlightView,
       Component stackView, KeyStrokeHandler handler, FuzzyFinderPanel fuzzyFinderPanel,
@@ -28,7 +27,6 @@ public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.L
     this.stackView = stackView;
     this.handler = handler;
     this.fuzzyFinderPanel = fuzzyFinderPanel;
-    this.minibufferView = minibufferView;
     setLayout(new AppLayout());
     setFocusTraversalKeysEnabled(false);
     add(fileListView, "filelist");

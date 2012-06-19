@@ -11,6 +11,7 @@ public class ListModelTest {
   private ListModel<String> model;
   private ListModel.Listener<String> listener;
 
+  @SuppressWarnings("unused")
   private class NoisyListener implements ListModel.Listener<String> {
     @Override
     public void onAdded(int i, String t) {

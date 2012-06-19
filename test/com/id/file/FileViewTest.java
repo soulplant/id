@@ -1,9 +1,7 @@
 package com.id.file;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -17,7 +15,6 @@ import com.id.editor.Point;
 import com.id.editor.Register;
 import com.id.events.EditorKeyHandler;
 import com.id.file.File.Listener;
-import com.id.file.Range;
 import com.id.test.EditorTestBase;
 
 public class FileViewTest extends EditorTestBase {

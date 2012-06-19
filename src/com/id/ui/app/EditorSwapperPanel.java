@@ -1,10 +1,8 @@
 package com.id.ui.app;
 
 import java.awt.BorderLayout;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,11 +11,11 @@ import com.id.app.ListModel;
 import com.id.editor.Editor;
 import com.id.ui.editor.EditorPanel;
 
+@SuppressWarnings("serial")
 public class EditorSwapperPanel extends JPanel implements ListModel.Listener<Editor> {
   private final Map<Editor, EditorPanel> map = new HashMap<Editor, EditorPanel>();
   private final ListModel<Editor> editors;
   private final JLabel placeholderLabel = new JLabel("No more things to edit");
-  private int selected;
 
   public EditorSwapperPanel(ListModel<Editor> editors) {
     this.editors = editors;

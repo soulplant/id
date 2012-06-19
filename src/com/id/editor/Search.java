@@ -1,7 +1,6 @@
 package com.id.editor;
 
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;

@@ -2,7 +2,6 @@ package com.id.editor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import com.id.app.HighlightPattern;
 import com.id.app.HighlightState;

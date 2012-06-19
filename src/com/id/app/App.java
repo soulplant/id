@@ -51,7 +51,7 @@ public class App {
     FileSystem fileSystem = new RealFileSystem();
     BashShell shell = new BashShell(null);
     Repository repository = new GitRepository(shell);
-    File files = getFilesFile(fileSystem);
+    File files = fileSystem.getFileOrNewFile(".files");
     FuzzyFinder fuzzyFinder = new FuzzyFinder(files);
     HighlightState highlightState = new HighlightState();
     final Controller controller = new Controller(editors, fileSystem,
@@ -76,18 +76,6 @@ public class App {
 
     new FullscreenSwapper(normalAppFrame, fullscreenAppFrame);
     controller.openFileView(new FileView(files));
-  }
-
-  private static File getFilesFile(FileSystem fileSystem) {
-    // TODO(koz): Add a method to fileSystem that gets an existing file, or one
-    // that can be saved to create a new file, rather than just returning null.
-    // In other words, inline this function.
-    File file = fileSystem.getFile(".files");
-    if (file == null) {
-      file = new File();
-      file.setFilename(".files");
-    }
-    return file;
   }
 
   public static void configureFont(Graphics g) {

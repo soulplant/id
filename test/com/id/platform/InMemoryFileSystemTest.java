@@ -44,4 +44,13 @@ public class InMemoryFileSystemTest {
     fileSystem.save(file);
     assertEquals("changed", fileSystem.getFile("./a").getLine(0));
   }
+
+  @Test
+  public void getFileOrNewFile() {
+    File file = fileSystem.getFileOrNewFile("asdf");
+    assertTrue(file.isEmpty());
+    assertTrue(file.isModified());
+    fileSystem.save(file);
+    assertTrue(fileSystem.getFile("asdf").isEmpty());
+  }
 }

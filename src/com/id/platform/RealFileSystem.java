@@ -47,6 +47,15 @@ public class RealFileSystem implements FileSystem {
   }
 
   @Override
+  public File getFileOrNewFile(String path) {
+    File file = getFile(path);
+    if (file != null) {
+      return file;
+    }
+    return File.createNewFile(path);
+  }
+
+  @Override
   public String[] getSubdirectories(String path) {
     if (path.isEmpty()) {
       path = ".";

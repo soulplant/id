@@ -24,6 +24,16 @@ public class File {
   private final Graveyard graveyard;
   private String filename;
 
+  public static File createNewFile(String filename) {
+    if (filename == null) {
+      throw new IllegalStateException("Can't create files with empty filenames");
+    }
+    File file = new File();
+    file.setFilename(filename);
+    file.setModified();
+    return file;
+  }
+
   public File() {
     this.patchwork = new Patchwork();
     this.graveyard = new Graveyard(Arrays.<String>asList());

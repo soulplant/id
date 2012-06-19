@@ -7,6 +7,7 @@ public interface FileSystem {
   boolean isDirectory(String path);
   boolean isExistent(String path);
   File getFile(String path);
+  File getFileOrNewFile(String path);
   String[] getSubdirectories(String path);
   void save(File file);
   void save(String filename, String... contents);

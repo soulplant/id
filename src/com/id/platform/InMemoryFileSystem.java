@@ -100,6 +100,15 @@ public class InMemoryFileSystem implements FileSystem {
   }
 
   @Override
+  public File getFileOrNewFile(String path) {
+    File file = getFile(path);
+    if (file != null) {
+      return file;
+    }
+    return File.createNewFile(path);
+  }
+
+  @Override
   public String[] getSubdirectories(String path) {
     Node node = getNode(path);
     if (node == null) {

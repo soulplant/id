@@ -373,6 +373,14 @@ public class ControllerTest {
     assertEquals(2, cursor.getY());
   }
 
+  @Test
+  public void gfOpensFilesThatDontExist() {
+    typeString(":e a<CR>");
+    typeString("A abc<ESC>gf");
+    assertEquals(2, editors.size());
+    assertEquals("abc", editors.getFocusedItem().getFilename());
+  }
+
   private void createSnippetFromCurrentLine() {
     typeString("V;");
   }

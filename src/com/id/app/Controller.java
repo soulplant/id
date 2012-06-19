@@ -378,7 +378,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   public Editor openFile(String filename) {
-    return openFile(filename, false);
+    return openFile(filename, true);
   }
 
   // TODO(koz): Make this take an enum, rather than a boolean.

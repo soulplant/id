@@ -390,6 +390,14 @@ public class ControllerTest {
     assertFalse(editors.getFocusedItem().isModified());
   }
 
+  @Test
+  public void openingAFilePutsItUnderneathTheCurrentOne() {
+    typeString(":e a<CR>:e b<CR>K");
+    assertEquals(0, editors.getFocusedIndex());
+    typeString(":e c<CR>");
+    assertEquals(1, editors.getFocusedIndex());
+  }
+
   private void createSnippetFromCurrentLine() {
     typeString("V;");
   }

@@ -108,4 +108,25 @@ public class ListModelTest {
     model.moveFocusedItemUp();
     assertEquals(1, model.getFocusedIndex());
   }
+
+  @Test
+  public void insertAfterFocused() {
+    model.add("hi");
+    model.add("there");
+    model.add("mate");
+    model.moveUp();
+    model.insertAfterFocused("test");
+    assertEquals(2, model.getFocusedIndex());
+    assertEquals("test", model.getFocusedItem());
+  }
+
+  @Test
+  public void removeFocusedMovesFocusUpwards() {
+    model.add("hi");
+    model.add("there");
+    model.add("mate");
+    model.moveUp();
+    model.removeFocused();
+    assertEquals(0, model.getFocusedIndex());
+  }
 }

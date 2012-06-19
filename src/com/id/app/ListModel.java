@@ -33,6 +33,14 @@ public class ListModel<T> implements Iterable<T> {
     insert(items.size(), t);
   }
 
+  public void insertAfterFocused(T t) {
+    if (isEmpty()) {
+      add(t);
+      return;
+    }
+    insert(focusedIndex + 1, t);
+  }
+
   public void insert(int i, T t) {
     items.add(i, t);
     if (isFocusLatestEnabled || items.size() == 1) {
@@ -117,8 +125,9 @@ public class ListModel<T> implements Iterable<T> {
 
   public void remove(int i) {
     T removed = items.remove(i);
-    if (focusedIndex >= items.size()) {
-      focusedIndex = items.size() - 1;
+    focusedIndex--;
+    if (focusedIndex < 0 && !items.isEmpty()) {
+      focusedIndex = 0;
     }
     fireOnRemoved(i, removed);
     if (focusedIndex == -1) {

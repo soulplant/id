@@ -237,8 +237,14 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public void joinRange(int start, int end) {
-    int length = Math.min(getLineCount() - 1 - start, end - start + 1);
-    for (int i = 0; i < length; i++) {
+    // Do nothing when at the end of the file.
+    if (start >= getLineCount() - 1) {
+      return;
+    }
+    int rangeSize = end - start + 1;
+    // When joining ranges bigger than one, we want n - 1 joins.
+    int timesToJoin = rangeSize == 1 ? 1 : rangeSize - 1;
+    for (int i = 0; i < timesToJoin; i++) {
       join(start);
     }
   }

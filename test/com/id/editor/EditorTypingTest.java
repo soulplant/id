@@ -919,4 +919,11 @@ public class EditorTypingTest extends EditorTestBase {
     assertCursorPosition(0, 1);
     assertTrue(editor.isInInsertMode());
   }
+
+  @Test
+  public void testVJDoesntJoinMoreLinesThanSelected() {
+    setFileContents("abc", "def", "ghi");
+    typeString("VjJ");
+    assertFileContents("abc def", "ghi");
+  }
 }

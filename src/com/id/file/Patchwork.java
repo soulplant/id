@@ -38,7 +38,7 @@ public class Patchwork implements File.Listener {
       currentPatch = null;
       return;
     }
-    if (futurePatches.size() > 0) {
+    if (!futurePatches.isEmpty()) {
       clearFuturePatches();
     }
     pastPatches.add(currentPatch);

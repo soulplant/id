@@ -42,7 +42,8 @@ public class ItemListPanel extends JPanel {
   public void setSelection(int selection) {
     selectedIndex = selection;
     selectedIndex = Math.max(0, Math.min(items.size() - 1, selectedIndex));
-    repaint();
+    setPreferredSize(new Dimension(200, ITEM_HEIGHT_PX * this.items.size()));
+    invalidate();
   }
 
   @Override

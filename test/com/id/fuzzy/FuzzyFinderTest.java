@@ -76,13 +76,48 @@ public class FuzzyFinderTest {
     assertEquals(1, fuzzyFinder.getMatches().size());
   }
 
+  @Test
+  public void startsWithAllAsResults() {
+    setupWithFiles("aaa", "aa", "a");
+    assertEquals(3, fuzzyFinder.getMatches().size());
+  }
+
+  @Test
+  public void down() {
+    setupWithFiles("aaa", "aa", "a");
+    fuzzyFinder.setVisible(true);
+    assertEquals(3, fuzzyFinder.getMatches().size());
+    fuzzyFinder.setSelectionListener(selectionListener);
+    typeString("<DOWN><CR>");
+    verify(selectionListener).onItemSelected("aa");
+  }
+
+  @Test
+  public void downDownUp() {
+    setupWithFiles("aaa", "aa", "a");
+    fuzzyFinder.setVisible(true);
+    fuzzyFinder.setSelectionListener(selectionListener);
+    typeString("<DOWN><DOWN><UP><CR>");
+    verify(selectionListener).onItemSelected("aa");
+  }
+
+  @Test
+  public void resetCursorToStartWhenQueryChanges() {
+    setupWithFiles("aaa", "aa", "a");
+    fuzzyFinder.setVisible(true);
+    typeString("<DOWN>");
+    assertEquals(1, fuzzyFinder.getCursorIndex());
+    typeString("a");
+    assertEquals(0, fuzzyFinder.getCursorIndex());
+  }
+
   private void type(KeyStroke keyStroke) {
     fuzzyFinder.handleKeyStroke(keyStroke);
   }
 
   private void typeString(String string) {
-    for (int i = 0; i < string.length(); i++) {
-      fuzzyFinder.handleKeyStroke(KeyStroke.fromChar(string.charAt(i)));
+    for (KeyStroke keyStroke : KeyStroke.fromString(string)) {
+      fuzzyFinder.handleKeyStroke(keyStroke);
     }
   }
 }

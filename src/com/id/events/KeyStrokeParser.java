@@ -25,6 +25,10 @@ public class KeyStrokeParser {
     return result;
   }
 
+  public static KeyStroke parseKeyStroke(String input) {
+    return parseKeyStrokes(input).get(0);
+  }
+
   public KeyStroke getKeyStroke() {
     return keyStroke;
   }

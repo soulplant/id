@@ -10,6 +10,7 @@ import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
+import com.id.events.KeyStrokeParser;
 import com.id.events.ShortcutTree;
 import com.id.file.File;
 
@@ -17,6 +18,7 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   public interface Listener {
     void onQueryChanged();
     void onSetVisible(boolean visible);
+    void onSelectionChanged(int selectedIndex);
   }
 
   public interface SelectionListener {
@@ -29,6 +31,7 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   private final List<Listener> listeners = new ArrayList<Listener>();
   private final ShortcutTree shortcuts = new ShortcutTree();
   private SelectionListener selectionListener;
+  private int cursor = 0;
 
   public FuzzyFinder(File file) {
     this.file = file;
@@ -45,6 +48,35 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
         selectCurrentItem();
       }
     });
+    shortcuts.setShortcut(KeyStrokeParser.parseKeyStrokes("<UP>"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        moveSelectionUp();
+      }
+    });
+    shortcuts.setShortcut(KeyStrokeParser.parseKeyStrokes("<DOWN>"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        moveSelectionDown();
+      }
+    });
+  }
+
+  public void moveSelectionUp() {
+    cursor--;
+    int matches = getMatches().size();
+    if (cursor >= matches) {
+      cursor = matches - 1;
+    }
+    fireSelectionChanged();
+  }
+
+  public void moveSelectionDown() {
+    cursor++;
+    if (cursor < 0) {
+      cursor = 0;
+    }
+    fireSelectionChanged();
   }
 
   public void setSelectionListener(SelectionListener selectionListener) {
@@ -52,11 +84,12 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   }
 
   public void selectCurrentItem() {
-    if (getMatches().isEmpty()) {
+    List<String> matches = getMatches();
+    if (matches.isEmpty() || cursor >= matches.size()) {
       setVisible(false);
       return;
     }
-    fireItemSelected();
+    fireItemSelected(matches.get(cursor));
   }
 
   public void setVisible(boolean visible) {
@@ -109,12 +142,18 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
     }
   }
 
-  private void fireItemSelected() {
-    selectionListener.onItemSelected(getSelectedItem());
+  private void fireItemSelected(String item) {
+    selectionListener.onItemSelected(item);
+  }
+
+  private void fireSelectionChanged() {
+    for (Listener listener : listeners) {
+      listener.onSelectionChanged(cursor);
+    }
   }
 
   private String getSelectedItem() {
-    return getMatches().get(0);
+    return getMatches().get(cursor);
   }
 
   public void addListener(Listener listener) {
@@ -155,10 +194,16 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
 
   @Override
   public void onTextChanged() {
+    cursor = 0;
     fireQueryChanged();
+    fireSelectionChanged();
   }
 
   public Editor getQueryEditor() {
     return minibuffer.getEditor();
+  }
+
+  public int getCursorIndex() {
+    return cursor;
   }
 }

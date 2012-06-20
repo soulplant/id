@@ -47,6 +47,11 @@ public class FuzzyFinderPanel extends JPanel implements FuzzyFinder.Listener {
   }
 
   @Override
+  public void onSelectionChanged(int index) {
+    itemList.setSelection(index);
+  }
+
+  @Override
   public void onSetVisible(boolean visible) {
     textField.setText(fuzzyFinder.getCurrentQuery());
     onQueryChanged();

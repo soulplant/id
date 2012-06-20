@@ -41,6 +41,11 @@ public class KeyStrokeParserTest {
     KeyStrokeParser.parseKeyStrokes("\\<");
   }
 
+  @Test
+  public void enterEqualsCR() {
+    assertTrue(KeyStrokeParser.parseKeyStroke("<CR>").equals(KeyStroke.enter()));
+  }
+
   private void check(String string, KeyStroke keyStroke) {
     assertEquals(keyStroke, getFrontKeyStroke(string));
   }

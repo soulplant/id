@@ -80,6 +80,11 @@ public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.L
   }
 
   @Override
+  public void onSelectionChanged(int index) {
+    repaint();
+  }
+
+  @Override
   public void onSetVisible(boolean visible) {
     if (visible) {
       add(fuzzyFinderPanel, "fuzzyfinder");

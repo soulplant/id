@@ -1,21 +1,20 @@
 package com.id.ui.app;
 
-import com.id.app.Constants;
-
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.id.ui.editor.TextPanel;
 
 public class AppLayout implements LayoutManager {
   private Component filelist = null;
   private Component spotlight = null;
   private Component stack = null;
   private Component fuzzyFinder = null;
-  private Component minibuffer = null;
+  private TextPanel minibuffer = null;
   private boolean isStackVisible = false;
 
   @Override
@@ -29,16 +28,15 @@ public class AppLayout implements LayoutManager {
     } else if (name.equals("fuzzyfinder")) {
       fuzzyFinder = component;
     } else if (name.equals("minibuffer")) {
-      minibuffer = component;
+      minibuffer = (TextPanel) component;
     }
   }
 
   @Override
   public void layoutContainer(Container parent) {
-    int minibufferHeight = Constants.CHAR_HEIGHT_PX;
     int height = parent.getHeight();
     if (minibuffer != null) {
-      height -= minibufferHeight;
+      height -= getMinibufferHeight();
     }
     int fileListWidth = 250;
     int remainingWidth = parent.getWidth() - fileListWidth;
@@ -46,7 +44,7 @@ public class AppLayout implements LayoutManager {
     divideHorizontalSpace(remainingWidth, fileListWidth, height, getVisibleEditorComponents());
     stack.setVisible(isStackVisible);
     if (minibuffer != null) {
-      minibuffer.setBounds(0, height, parent.getWidth(), minibufferHeight);
+      minibuffer.setBounds(0, height, parent.getWidth(), getMinibufferHeight());
     }
     if (fuzzyFinder != null) {
       fuzzyFinder.setBounds(250, 0, 200, height);
@@ -95,5 +93,9 @@ public class AppLayout implements LayoutManager {
     } else if (fuzzyFinder == comp) {
       fuzzyFinder = null;
     }
+  }
+
+  private int getMinibufferHeight() {
+    return minibuffer.getFontWidthPx();
   }
 }

@@ -1,7 +1,6 @@
 package com.id.ui.editor;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
@@ -18,16 +17,16 @@ import com.id.rendering.Matrix;
 
 @SuppressWarnings("serial")
 public class TextPanel extends JPanel {
-  // TODO Make these not static.
-  private final int fontWidthPx = 8;
-  private final int fontHeightPx = 14;
+  private final int fontWidthPx;
+  private final int fontHeightPx;
 
   private final Editor editor;
   private final EditorKeyHandler handler = new EditorKeyHandler();
 
   public TextPanel(Editor editor) {
     this.editor = editor;
-    setFont(new Font("system", Font.PLAIN, 14));
+    fontHeightPx = getFontMetrics(App.FONT).getHeight();
+    fontWidthPx = getFontMetrics(App.FONT).getWidths()[70];
     editor.addFileListener(new File.Listener() {
       @Override
       public void onLineInserted(int y, String line) {
@@ -48,9 +47,6 @@ public class TextPanel extends JPanel {
   }
 
   private void updateSize() {
-    //  final int fontWidthPx = getFontMetrics(getFont()).getWidths()[70];
-    //  final int fontHeightPx = getFontMetrics(getFont()).getHeight();
-
     setPreferredSize(new Dimension(fontWidthPx, fontHeightPx * editor.getLineCount()));
     invalidate();
   }
@@ -61,8 +57,6 @@ public class TextPanel extends JPanel {
     App.configureFont(g);
 
     final int fontDescentPx = g.getFontMetrics().getDescent();
-    final int fontWidthPx = g.getFontMetrics().getWidths()[70];
-    final int fontHeightPx = g.getFontMetrics().getHeight();
 
     EditorRenderer renderer = new EditorRenderer(editor, g.getClipBounds(), fontWidthPx, fontHeightPx, fontDescentPx);
     Matrix matrix = renderer.render();
@@ -107,5 +101,13 @@ public class TextPanel extends JPanel {
 
   public boolean handleKeyPress(KeyEvent e) {
     return handler.handleKeyPress(KeyStroke.fromKeyEvent(e), editor);
+  }
+
+  public int getFontHeightPx() {
+    return fontHeightPx;
+  }
+
+  public int getFontWidthPx() {
+    return fontWidthPx;
   }
 }

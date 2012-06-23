@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
-import com.id.app.Constants;
 import com.id.app.ListModel;
 import com.id.editor.Editor;
 import com.id.editor.Point;
@@ -99,15 +98,21 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
   }
 
   private Rectangle cursorPointToRect(Point point) {
-    return new Rectangle(point.getX() * 8, point.getY() * 14, 8, 14);
+    int fontWidthPx = textPanel.getFontWidthPx();
+    int fontHeightPx = textPanel.getFontHeightPx();
+    return new Rectangle(point.getX() * fontWidthPx, point.getY() * fontHeightPx, fontWidthPx,
+        fontHeightPx);
   }
 
   @Override
   public void recenterScreenOnPoint(Point point) {
+    int fontWidthPx = textPanel.getFontWidthPx();
+    int fontHeightPx = textPanel.getFontHeightPx();
     int viewportHeight = textPanel.getVisibleRect().height;
-    int padding = (viewportHeight - 14) / 2;
+    int padding = (viewportHeight - fontHeightPx) / 2;
 
-    Rectangle rect = new Rectangle(point.getX() * 8, point.getY() * 14 - padding, 8, viewportHeight);
+    Rectangle rect = new Rectangle(point.getX() * fontWidthPx,
+        point.getY() * fontHeightPx - padding, fontWidthPx, viewportHeight);
     textPanel.scrollRectToVisible(rect);
   }
 
@@ -119,8 +124,8 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
   @Override
   public boolean isVisible(Point point) {
     return textPanel.getVisibleRect().contains(
-        point.getX() * Constants.CHAR_WIDTH_PX,
-        point.getY() * Constants.CHAR_HEIGHT_PX);
+        point.getX() * textPanel.getFontWidthPx(),
+        point.getY() * textPanel.getFontHeightPx());
   }
 
   @Override

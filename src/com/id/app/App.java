@@ -4,7 +4,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.RenderingHints;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -78,6 +80,8 @@ public class App {
 
   public static void configureFont(Graphics g) {
     g.setFont(App.FONT);
+    Graphics2D g2 = (Graphics2D) g;
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
   }
 
   public static void dumpFonts() {
@@ -101,6 +105,6 @@ public class App {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return font.deriveFont(12f);
+    return font.deriveFont(13f);
   }
 }

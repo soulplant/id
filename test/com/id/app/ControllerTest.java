@@ -193,6 +193,13 @@ public class ControllerTest {
   }
 
   @Test
+  public void gF() {
+    controller.openFile("a");
+    typeString("Sd<ESC>gF");
+    assertEquals("src/d.cc", editors.getFocusedItem().getFilename());
+  }
+
+  @Test
   public void yankRegisterIsGlobal() {
     controller.openFile("a");
     typeString("Vy");

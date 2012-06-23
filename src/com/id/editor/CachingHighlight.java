@@ -42,6 +42,7 @@ public class CachingHighlight implements Highlight, File.Listener {
 
   private static class LineMatches {
     private final List<Match> matches = new ArrayList<Match>();
+
     public void addMatch(Match match) {
       matches.add(match);
     }

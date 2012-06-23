@@ -34,6 +34,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   public interface EditorEnvironment {
     void openFile(String filename);
+    void openFileMatchingPattern(String pattern);
     void addSnippet(FileView fileView);
   }
 
@@ -104,6 +105,11 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
     @Override
     public void addSnippet(FileView fileView) {
+      // Do nothing.
+    }
+
+    @Override
+    public void openFileMatchingPattern(String pattern) {
       // Do nothing.
     }
   }
@@ -902,6 +908,11 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   public void openFileUnderCursor() {
     environment.openFile(file.getFilenameUnder(cursor.getY(), cursor.getX()));
+  }
+
+  public void openFileMatchingWordUnderCursor() {
+    String pattern = file.getFilenameUnder(cursor.getY(), cursor.getX());
+    environment.openFileMatchingPattern(pattern);
   }
 
   public void indent() {

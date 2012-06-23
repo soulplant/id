@@ -4,9 +4,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
-import java.awt.RenderingHints;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -15,9 +13,9 @@ import javax.swing.SwingUtilities;
 
 import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
-import com.id.fuzzy.FuzzyFinder;
 import com.id.file.File;
 import com.id.file.FileView;
+import com.id.fuzzy.FuzzyFinder;
 import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
@@ -80,7 +78,6 @@ public class App {
 
   public static void configureFont(Graphics g) {
     g.setFont(App.FONT);
-    Graphics2D g2 = (Graphics2D) g;
   }
 
   public static void dumpFonts() {

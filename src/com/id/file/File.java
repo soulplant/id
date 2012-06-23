@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.id.editor.Patterns;
 import com.id.editor.Point;
 import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
@@ -309,5 +312,16 @@ public class File {
 
   public void setModified() {
     patchwork.setModified();
+  }
+
+  public int getFirstLineMatchingPattern(String patternText) {
+    Pattern pattern = Patterns.wholeWord(patternText).getPattern();
+    for (int i = 0; i < getLineCount(); i++) {
+      Matcher matcher = pattern.matcher(getLine(i));
+      if (matcher.find()) {
+        return i;
+      }
+    }
+    return -1;
   }
 }

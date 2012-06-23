@@ -152,10 +152,6 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
     }
   }
 
-  private String getSelectedItem() {
-    return getMatches().get(cursor);
-  }
-
   public void addListener(Listener listener) {
     listeners.add(listener);
   }
@@ -205,5 +201,13 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
 
   public int getCursorIndex() {
     return cursor;
+  }
+
+  public String findFirstFileMatching(String pattern) {
+    int i = file.getFirstLineMatchingPattern(pattern);
+    if (i < 0) {
+      return null;
+    }
+    return file.getLine(i);
   }
 }

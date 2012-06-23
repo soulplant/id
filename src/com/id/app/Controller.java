@@ -40,7 +40,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
 
   private boolean isInMinibuffer = false;
   private boolean isStackVisible = false;
-  private List<Listener> listeners = new ArrayList<Listener>();
+  private final List<Listener> listeners = new ArrayList<Listener>();
 
   public interface Listener {
     void onStackVisibilityChanged(boolean isStackVisible);
@@ -55,6 +55,11 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
     @Override
     public void addSnippet(FileView fileView) {
       Controller.this.addSnippet(fileView);
+    }
+
+    @Override
+    public void openFileMatchingPattern(String pattern) {
+      Controller.this.openFileMatchingPattern(pattern);
     }
   };
 
@@ -88,10 +93,12 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
         executeMinibufferCommand();
       }
 
+      @Override
       public void onTextChanged() {
         // Do nothing.
       }
 
+      @Override
       public void onQuit() {
         exitMinibuffer();
       }
@@ -385,6 +392,11 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   public Editor openFile(String filename) {
+    return openFile(filename, true);
+  }
+
+  public Editor openFileMatchingPattern(String pattern) {
+    String filename = fuzzyFinder.findFirstFileMatching(pattern);
     return openFile(filename, true);
   }
 

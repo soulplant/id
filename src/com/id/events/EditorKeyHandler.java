@@ -197,6 +197,12 @@ public class EditorKeyHandler {
         editor.openFileUnderCursor();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("gF"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.openFileMatchingWordUnderCursor();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("cc"), new ShortcutTree.Action() {
       @Override
       public void execute() {

@@ -78,10 +78,18 @@ public class App {
     controller.openFileView(new FileView(files));
   }
 
+  private static boolean isMacOS() {
+    return "Mac OS X".equals(System.getProperty("os.name"));
+  }
+
   public static void configureFont(Graphics g) {
     g.setFont(App.FONT);
-    Graphics2D g2 = (Graphics2D) g;
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    // For some reason antialiasing is really slow on Mac, and it antialiases
+    // the text even when it's off anyway.
+    if (!isMacOS()) {
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    }
   }
 
   public static void dumpFonts() {

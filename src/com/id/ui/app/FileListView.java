@@ -2,33 +2,24 @@ package com.id.ui.app;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
-
-import javax.swing.Box;
-import javax.swing.JPanel;
 
 import com.id.app.App;
 import com.id.app.ListModel;
 import com.id.editor.Editor;
 
 @SuppressWarnings("serial")
-class FileListEntryView extends JPanel {
+class FileListEntryView extends LinewisePanel {
   private static final int BOTTOM_PADDING_PX = 3;
   private static final int LEFT_PADDING_PX = 3;
 
   private final Editor editor;
   private final boolean focused;
-  private final int fontHeightPx;
-  private final int fontWidthPx;
 
   public FileListEntryView(Editor editor, boolean focused) {
     this.editor = editor;
     this.focused = focused;
-    FontMetrics fontMetrics = getFontMetrics(App.FONT);
-    fontHeightPx = fontMetrics.getHeight();
-    fontWidthPx = fontMetrics.getWidths()[70];
-    setPreferredSize(new Dimension(200, fontHeightPx));
+    setPreferredSize(new Dimension(editor.getFilename().length() * getFontWidthPx(), getFontHeightPx()));
   }
 
   @Override
@@ -37,47 +28,56 @@ class FileListEntryView extends JPanel {
     App.configureFont(g);
     int leftDraw = LEFT_PADDING_PX;
     if (editor.isModified()) {
-      g.drawString("*", leftDraw, fontHeightPx - BOTTOM_PADDING_PX);
+      g.drawString("*", leftDraw, getFontHeightPx() - BOTTOM_PADDING_PX);
     }
-    leftDraw += fontWidthPx + LEFT_PADDING_PX;
+    leftDraw += getFontWidthPx() + LEFT_PADDING_PX;
     if (editor.getHighlightMatchCount() > 0) {
       g.setColor(Color.CYAN);
-      g.fillRect(leftDraw, 0, fontWidthPx, fontHeightPx - 1);
+      g.fillRect(leftDraw, 0, getFontWidthPx(), getFontHeightPx() - 1);
     }
-    leftDraw += fontWidthPx + LEFT_PADDING_PX;
+    leftDraw += getFontWidthPx() + LEFT_PADDING_PX;
     if (!editor.isMarkersClear()) {
       g.setColor(Color.ORANGE);
-      g.fillRect(leftDraw, 0, fontWidthPx, fontHeightPx - 1);
+      g.fillRect(leftDraw, 0, getFontWidthPx(), getFontHeightPx() - 1);
     }
-    leftDraw += fontWidthPx + LEFT_PADDING_PX;
+    leftDraw += getFontWidthPx() + LEFT_PADDING_PX;
     g.setColor(Color.BLACK);
     g.drawString(editor.getBaseFilename(),
         leftDraw,
-        fontHeightPx - BOTTOM_PADDING_PX);
+        getFontHeightPx() - BOTTOM_PADDING_PX);
     if (focused) {
-      g.drawRect(0, 0, g.getClipBounds().width - 1, fontHeightPx - 1);
+      g.drawRect(0, 0, g.getClipBounds().width - 1, getFontHeightPx() - 1);
     }
   }
 }
 
 @SuppressWarnings("serial")
-public class FileListView extends JPanel implements ListModel.Listener<Editor> {
+public class FileListView extends LinewisePanel implements ListModel.Listener<Editor> {
+  private static final int MIN_WIDTH_PX = 200;
+
   private final ListModel<Editor> editors;
-  private final Box box;
+  private int minWidth;
 
   public FileListView(ListModel<Editor> editors) {
     this.editors = editors;
-    box = Box.createVerticalBox();
-    add(box);
+    setLayout(new StackLayout());
   }
 
   private void updateItems() {
-    box.removeAll();
+    minWidth = MIN_WIDTH_PX;
+    removeAll();
     int i = 0;
     for (Editor editor : editors) {
-      box.add(new FileListEntryView(editor, editors.getFocusedIndex() == i));
+      FileListEntryView entryView = new FileListEntryView(editor, editors.getFocusedIndex() == i);
+      add(entryView);
+      minWidth = Math.max(minWidth, entryView.getPreferredSize().width);
       i++;
     }
+  }
+
+  @Override
+  public Dimension getPreferredSize() {
+    return new Dimension(minWidth, editors.size() * getFontHeightPx());
   }
 
   @Override

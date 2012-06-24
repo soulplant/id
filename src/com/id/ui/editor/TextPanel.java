@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JPanel;
-
 import com.id.app.App;
 import com.id.editor.Editor;
 import com.id.editor.Point;
@@ -14,19 +12,15 @@ import com.id.events.KeyStroke;
 import com.id.file.File;
 import com.id.rendering.EditorRenderer;
 import com.id.rendering.Matrix;
+import com.id.ui.app.LinewisePanel;
 
 @SuppressWarnings("serial")
-public class TextPanel extends JPanel {
-  private final int fontWidthPx;
-  private final int fontHeightPx;
-
+public class TextPanel extends LinewisePanel {
   private final Editor editor;
   private final EditorKeyHandler handler = new EditorKeyHandler();
 
   public TextPanel(Editor editor) {
     this.editor = editor;
-    fontHeightPx = getFontMetrics(App.FONT).getHeight();
-    fontWidthPx = getFontMetrics(App.FONT).getWidths()[70];
     editor.addFileListener(new File.Listener() {
       @Override
       public void onLineInserted(int y, String line) {
@@ -47,7 +41,7 @@ public class TextPanel extends JPanel {
   }
 
   private void updateSize() {
-    setPreferredSize(new Dimension(fontWidthPx, fontHeightPx * editor.getLineCount()));
+    setPreferredSize(new Dimension(getFontWidthPx(), getFontHeightPx() * editor.getLineCount()));
     invalidate();
   }
 
@@ -58,14 +52,14 @@ public class TextPanel extends JPanel {
 
     final int fontDescentPx = g.getFontMetrics().getDescent();
 
-    EditorRenderer renderer = new EditorRenderer(editor, g.getClipBounds(), fontWidthPx, fontHeightPx, fontDescentPx);
+    EditorRenderer renderer = new EditorRenderer(editor, g.getClipBounds(), getFontWidthPx(), getFontHeightPx(), fontDescentPx);
     Matrix matrix = renderer.render();
     matrix.render(g);
     Point point = editor.getCursorPosition();
-    int cursorYPx = point.getY() * fontHeightPx;
-    int cursorXPx = point.getX() * fontWidthPx;
-    int cursorWidthPx = editor.isInInsertMode() ? 2 : fontWidthPx;
-    int cursorHeightPx = fontHeightPx;
+    int cursorYPx = point.getY() * getFontHeightPx();
+    int cursorXPx = point.getX() * getFontWidthPx();
+    int cursorWidthPx = editor.isInInsertMode() ? 2 : getFontWidthPx();
+    int cursorHeightPx = getFontHeightPx();
     if (editor.isInInsertMode()) {
       g.fillRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
     } else {
@@ -75,7 +69,7 @@ public class TextPanel extends JPanel {
   }
 
   public int getTopLineVisible() {
-    return getVisibleRect().y / fontHeightPx;
+    return getVisibleRect().y / getFontHeightPx();
   }
 
   private void drawOutlineBox(Graphics g) {
@@ -101,13 +95,5 @@ public class TextPanel extends JPanel {
 
   public boolean handleKeyPress(KeyEvent e) {
     return handler.handleKeyPress(KeyStroke.fromKeyEvent(e), editor);
-  }
-
-  public int getFontHeightPx() {
-    return fontHeightPx;
-  }
-
-  public int getFontWidthPx() {
-    return fontWidthPx;
   }
 }

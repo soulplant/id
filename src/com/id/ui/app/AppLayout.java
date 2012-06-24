@@ -34,20 +34,22 @@ public class AppLayout implements LayoutManager {
 
   @Override
   public void layoutContainer(Container parent) {
-    int height = parent.getHeight();
+    int parentHeight = parent.getHeight();
     if (minibuffer != null) {
-      height -= getMinibufferHeight();
+      parentHeight -= getMinibufferHeight();
     }
-    int fileListWidth = 250;
+    int fileListWidth = filelist.getPreferredSize().width;
     int remainingWidth = parent.getWidth() - fileListWidth;
-    filelist.setBounds(0, 0, fileListWidth, height);
-    divideHorizontalSpace(remainingWidth, fileListWidth, height, getVisibleEditorComponents());
+    filelist.setBounds(0, 0, fileListWidth, parentHeight);
+    divideHorizontalSpace(remainingWidth, fileListWidth, parentHeight, getVisibleEditorComponents());
     stack.setVisible(isStackVisible);
     if (minibuffer != null) {
-      minibuffer.setBounds(0, height, parent.getWidth(), getMinibufferHeight());
+      minibuffer.setBounds(0, parentHeight, parent.getWidth(), getMinibufferHeight());
     }
     if (fuzzyFinder != null) {
-      fuzzyFinder.setBounds(250, 0, 200, height);
+      int width = (int) fuzzyFinder.getPreferredSize().getWidth();
+      int height = parent.getHeight();
+      fuzzyFinder.setBounds(250, 0, width, height);
     }
   }
 
@@ -96,6 +98,6 @@ public class AppLayout implements LayoutManager {
   }
 
   private int getMinibufferHeight() {
-    return minibuffer.getFontWidthPx();
+    return minibuffer.getFontHeightPx();
   }
 }

@@ -1,11 +1,9 @@
 package com.id.ui.app;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import com.id.fuzzy.FuzzyFinder;
 import com.id.ui.editor.TextPanel;
@@ -13,7 +11,6 @@ import com.id.ui.editor.TextPanel;
 @SuppressWarnings("serial")
 public class FuzzyFinderPanel extends JPanel implements FuzzyFinder.Listener {
   private final FuzzyFinder fuzzyFinder;
-  private final JTextField textField = new JTextField();
   private final TextPanel textPanel;
   private final ItemListPanel itemList = new ItemListPanel();
   private FuzzyFinder.Listener listener;
@@ -21,22 +18,23 @@ public class FuzzyFinderPanel extends JPanel implements FuzzyFinder.Listener {
   public FuzzyFinderPanel(FuzzyFinder fuzzyFinder) {
     this.fuzzyFinder = fuzzyFinder;
     textPanel = new TextPanel(fuzzyFinder.getQueryEditor());
-    textPanel.setPreferredSize(new Dimension(200, 14));
-    add(textPanel, BorderLayout.PAGE_START);
-    add(itemList, BorderLayout.CENTER);
+    FuzzyFinderLayout fuzzyFinderLayout = new FuzzyFinderLayout();
+    setLayout(fuzzyFinderLayout);
+    add(textPanel, FuzzyFinderLayout.MINIBUFFER);
+    add(itemList, FuzzyFinderLayout.ITEMLIST);
     fuzzyFinder.addListener(this);
+  }
+
+  @Override
+  public Dimension getPreferredSize() {
+    Dimension result = new Dimension();
+    result.width = itemList.getPreferredSize().width;
+    result.height = textPanel.getPreferredSize().height + itemList.getPreferredSize().height;
+    return result;
   }
 
   public void setListener(FuzzyFinder.Listener listener) {
     this.listener = listener;
-  }
-
-  @Override
-  public void repaint() {
-    super.repaint();
-    if (textField != null) {
-      textField.repaint();
-    }
   }
 
   @Override
@@ -53,7 +51,6 @@ public class FuzzyFinderPanel extends JPanel implements FuzzyFinder.Listener {
 
   @Override
   public void onSetVisible(boolean visible) {
-    textField.setText(fuzzyFinder.getCurrentQuery());
     onQueryChanged();
     setVisible(visible);
     listener.onSetVisible(visible);

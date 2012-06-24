@@ -448,7 +448,8 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   public void deleteToEndOfLine() {
     startPatch();
-    file.removeText(cursor.getY(), cursor.getX());
+    String removedText = file.removeText(cursor.getY(), cursor.getX());
+    register.setContents(new TextFragment(Visual.Mode.CHAR, false, removedText));
     file.breakPatch();
     applyCursorConstraints();
   }

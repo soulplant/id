@@ -942,4 +942,18 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("sa");
     assertFileContents("a");
   }
+
+  @Test
+  public void testDPutsContentsInRegister() {
+    setFileContents("abc");
+    typeString("Dp");
+    assertFileContents("abc");
+  }
+
+  @Test
+  public void testDpWorksAtStartOfLine() {
+    setFileContents("abc", "def");
+    typeString("jDp");
+    assertFileContents("abc", "def");
+  }
 }

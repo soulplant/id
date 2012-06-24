@@ -24,7 +24,8 @@ public class TextFragment {
   public void put(int y, int x, FileView file) {
     switch (mode) {
     case CHAR:
-      file.insertText(y, x + 1, lineBreakOnLast, lines);
+      int cappedX = Math.min(file.getLine(y).length(), x + 1);
+      file.insertText(y, cappedX, lineBreakOnLast, lines);
       break;
     case LINE:
       file.insertLines(y + 1, lines);

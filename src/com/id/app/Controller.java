@@ -397,11 +397,17 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
 
   public Editor openFileMatchingPattern(String pattern) {
     String filename = fuzzyFinder.findFirstFileMatching(pattern);
+    if (filename == null) {
+      return null;
+    }
     return openFile(filename, true);
   }
 
   // TODO(koz): Make this take an enum, rather than a boolean.
   public Editor openFile(String filename, boolean createNewFile) {
+    if (filename == null) {
+      throw new IllegalStateException("Don't pass null filenames.");
+    }
     Editor existingEditor = attemptToFocusExistingEditor(filename);
     if (existingEditor != null) {
       return existingEditor;

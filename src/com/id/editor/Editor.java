@@ -911,7 +911,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void openFileMatchingWordUnderCursor() {
-    String pattern = file.getFilenameUnder(cursor.getY(), cursor.getX());
+    String pattern = file.getWordUnder(cursor.getY(), cursor.getX());
     environment.openFileMatchingPattern(pattern);
   }
 

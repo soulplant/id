@@ -200,6 +200,13 @@ public class ControllerTest {
   }
 
   @Test
+  public void gFOperatesOnWordNotFilename() {
+    controller.openFile("a");
+    typeString("Sa.d<ESC>gF");
+    assertEquals("src/d.cc", editors.getFocusedItem().getFilename());
+  }
+
+  @Test
   public void yankRegisterIsGlobal() {
     controller.openFile("a");
     typeString("Vy");

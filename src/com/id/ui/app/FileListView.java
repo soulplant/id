@@ -54,6 +54,7 @@ class FileListEntryView extends LinewisePanel {
 @SuppressWarnings("serial")
 public class FileListView extends LinewisePanel implements ListModel.Listener<Editor> {
   private static final int MIN_WIDTH_PX = 200;
+  private static final int MAX_WIDTH_PX = 400;
 
   private final ListModel<Editor> editors;
   private int minWidth;
@@ -73,6 +74,7 @@ public class FileListView extends LinewisePanel implements ListModel.Listener<Ed
       minWidth = Math.max(minWidth, entryView.getPreferredSize().width);
       i++;
     }
+    minWidth = Math.min(MAX_WIDTH_PX, minWidth);
   }
 
   @Override

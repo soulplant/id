@@ -220,7 +220,7 @@ public class FileViewTest extends EditorTestBase {
   public void getDeltaRanges() {
     setFileContents("a", "b", "c", "d");
     typeString("jxjjx");
-    List<Range> deltas = fileView.getDeltas();
+    List<Range> deltas = fileView.getDeltas(0);
     assertEquals("lines modified", 2, fileView.getModifiedLinesCount());
     assertEquals("deltas", 2, deltas.size());
     assertEquals(new Range(1, 1), deltas.get(0));

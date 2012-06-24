@@ -23,7 +23,7 @@ public class FileView implements File.Listener, ModifiedListener {
   public FileView(File file, int start, int end) {
     this.file = file;
     this.start = start;
-    this.end = end;
+    this.end = end == -1 ? file.getLineCount() - 1 : end;
     // TODO Make this not leak.
     file.addListener(this);
   }
@@ -463,7 +463,7 @@ public class FileView implements File.Listener, ModifiedListener {
     return null;
   }
 
-  private boolean hasModifiedMarkers(int y) {
+  public boolean hasModifiedMarkers(int y) {
     return getStatus(y) != Tombstone.Status.NORMAL || !getGrave(y).isEmpty();
   }
 
@@ -687,7 +687,7 @@ public class FileView implements File.Listener, ModifiedListener {
     return result;
   }
 
-  public List<Range> getDeltas() {
+  public List<Range> getDeltas(int padding) {
     List<Range> result = new ArrayList<Range>();
     int deltaStart = -1;
     int deltaEnd = -1;
@@ -696,21 +696,37 @@ public class FileView implements File.Listener, ModifiedListener {
       if (hasModifiedMarkers(y)) {
         if (deltaStart == -1) {
           deltaStart = deltaEnd = y;
-          continue;
         } else {
           deltaEnd = y;
         }
       } else {
         if (deltaStart != -1) {
-          result.add(new Range(deltaStart, deltaEnd));
+          Range candidateDelta = makePaddedDelta(deltaStart, deltaEnd, padding);
+          if (result.isEmpty()) {
+            result.add(candidateDelta);
+          } else {
+            Range lastAddedDelta = result.remove(result.size() - 1);
+            if (lastAddedDelta.isOverlapping(candidateDelta)) {
+              result.add(Range.union(lastAddedDelta, candidateDelta));
+            } else {
+              result.add(lastAddedDelta);
+              result.add(candidateDelta);
+            }
+          }
         }
         deltaStart = deltaEnd = -1;
       }
     }
     if (deltaStart != -1) {
-      result.add(new Range(deltaStart, deltaEnd));
+      result.add(makePaddedDelta(deltaStart, deltaEnd, padding));
     }
     return result;
+  }
+
+  private Range makePaddedDelta(int start, int end, int padding) {
+    start = Math.max(0, start - padding);
+    end = Math.min(getLineCount() - 1, end + padding);
+    return new Range(start, end);
   }
 
   public String getBaseFilename() {

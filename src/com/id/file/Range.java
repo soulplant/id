@@ -5,6 +5,11 @@ public class Range {
   private int start;
   private int end;
 
+  public static Range union(Range r1, Range r2) {
+    return new Range(Math.min(r1.getStart(), r2.getStart()),
+                     Math.max(r1.getEnd(), r2.getEnd()));
+  }
+
   public Range(int start, int end) {
     this.start = start;
     this.end = end;

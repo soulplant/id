@@ -252,17 +252,17 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
 
   private void openDeltasAsSnippetsFromEditor(Editor editor) {
     List<Range> deltas = editor.getDeltas();
-    List<Range> unusedDeltas = new ArrayList<Range>(deltas);
+    List<Range> unconsumedDeltas = new ArrayList<Range>(deltas);
     for (Editor snippet : getSnippetsWithFilename(editor.getFilename())) {
       for (Range delta : deltas) {
         if (snippet.getRange().isOverlapping(delta)) {
           snippet.growToCover(delta);
-          unusedDeltas.remove(delta);
+          unconsumedDeltas.remove(delta);
         }
       }
     }
 
-    for (Range delta : unusedDeltas) {
+    for (Range delta : unconsumedDeltas) {
       editor.makeSnippetFromRange(delta);
     }
   }

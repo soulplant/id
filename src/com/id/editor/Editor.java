@@ -23,6 +23,7 @@ import com.id.platform.FileSystem;
 
 public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.Listener {
   private static final int TAB_SIZE = 2;
+  private static final int DELTA_PADDING = 2;
 
   public interface EditorView {
     void moveViewportToIncludePoint(Point point);
@@ -1041,7 +1042,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public List<Range> getDeltas() {
-    return file.getDeltas();
+    return file.getDeltas(DELTA_PADDING);
   }
 
   public Range getRange() {

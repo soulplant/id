@@ -27,6 +27,7 @@
   <target name="package" depends="test">
     <mkdir dir="${dist}"/>
     <jar destfile="${dist}/id.jar">
+      <zipfileset src="lib/protobuf-java-2.3.0.jar" includes="**/*.class"/>
       <fileset dir="${build}"/>
       <fileset dir="resources"/>
       <manifest>

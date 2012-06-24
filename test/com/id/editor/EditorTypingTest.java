@@ -926,4 +926,13 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("VjJ");
     assertFileContents("abc def", "ghi");
   }
+
+  @Test
+  public void dj() {
+    setFileContents("abc", "def", "ghi");
+    typeString("dj");
+    assertFileContents("ghi");
+    typeString("u");
+    assertFileContents("abc", "def", "ghi");
+  }
 }

@@ -115,8 +115,7 @@ public class Visual {
   }
 
   private TextFragment makeRegister(List<String> lines) {
-    String[] array = new String[lines.size()];
-    return new TextFragment(mode, false, lines.toArray(array));
+    return new TextFragment(mode, false, lines);
   }
 
   public void removeFrom(FileView file) {

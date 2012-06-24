@@ -1,6 +1,7 @@
 package com.id.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.id.app.HighlightPattern;
@@ -254,7 +255,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     startPatchIfNecessary();
 
     String text = "" + keyChar;
-    file.insertText(cursor.getY(), cursor.getX(), text);
+    file.insertText(cursor.getY(), cursor.getX(), Arrays.asList(text));
     cursor.moveBy(0, text.length());
     justInsertedAutoIndent = false;
   }
@@ -350,7 +351,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       }
       String line = file.removeLine(cursor.getY());  // This moves the cursor up by one.
       int targetX = getCurrentLine().length();
-      file.insertText(cursor.getY(), targetX, line);
+      file.insertText(cursor.getY(), targetX, Arrays.asList(line));
       cursor.moveTo(cursor.getY(), targetX);
     } else {
       int charsToRemove = getSpacesBackIncludingSoftTabs(getCurrentLine(), cursor.getX(), TAB_SIZE);
@@ -459,6 +460,24 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     file.breakPatch();
     cursor.moveTo(y, 0);
     applyCursorConstraints();
+  }
+
+  public void deleteDown() {
+    if (isCursorOnLastLine()) {
+      deleteLine();
+      return;
+    }
+    startPatch();
+    int y = cursor.getY();
+    List<String> removedLines = file.removeLineRange(y, y + 1);
+    register.setContents(new TextFragment(Visual.Mode.LINE, false, removedLines));
+    file.breakPatch();
+    cursor.moveTo(y, 0);
+    applyCursorConstraints();
+  }
+
+  private boolean isCursorOnLastLine() {
+    return cursor.getY() == file.getLineCount() - 1;
   }
 
   public void moveCursorToEndOfLine() {
@@ -615,7 +634,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     if (highlightState.isEmpty()) {
       return;
     }
-    file.insertText(cursor.getY(), cursor.getX(), highlightState.getHighlightText());
+    file.insertText(cursor.getY(), cursor.getX(), Arrays.asList(highlightState.getHighlightText()));
     cursor.moveBy(0, highlightState.getHighlightText().length());
   }
 

@@ -1,14 +1,21 @@
 package com.id.editor;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.id.editor.Visual.Mode;
 import com.id.file.FileView;
 
 public class TextFragment {
   private final Mode mode;
-  private final String[] lines;
+  private final List<String> lines;
   private final boolean lineBreakOnLast;
 
-  public TextFragment(Visual.Mode mode, boolean lineBreakOnLast, String... lines) {
+  public TextFragment(Visual.Mode mode, boolean lineBreakOnLast, String... line) {
+    this(mode, lineBreakOnLast, Arrays.asList(line));
+  }
+
+  public TextFragment(Visual.Mode mode, boolean lineBreakOnLast, List<String> lines) {
     this.mode = mode;
     this.lineBreakOnLast = lineBreakOnLast;
     this.lines = lines;
@@ -37,11 +44,11 @@ public class TextFragment {
   }
 
   public int getLineCount() {
-    return lines.length;
+    return lines.size();
   }
 
   public String getLine(int y) {
-    return lines[y];
+    return lines.get(y);
   }
 
   public Mode getMode() {

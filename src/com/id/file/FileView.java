@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.id.data.Data;
 import com.id.editor.Point;
-import com.id.file.Range;
 import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
@@ -172,10 +171,12 @@ public class FileView implements File.Listener, ModifiedListener {
     return file.getGrave(start + y);
   }
 
-  public void removeLineRange(int from, int to) {
+  public List<String> removeLineRange(int from, int to) {
+    List<String> result = new ArrayList<String>();
     for (int i = 0; i < to - from + 1; i++) {
-      removeLine(from);
+      result.add(removeLine(from));
     }
+    return result;
   }
 
   public void appendToLine(int y, String tail) {
@@ -338,15 +339,23 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public void insertText(int y, int x, String... lines) {
+    insertText(y, x, Arrays.asList(lines));
+  }
+
+  public void insertText(int y, int x, List<String> lines) {
     insertText(y, x, false, lines);
   }
 
   public void insertTextWithLineBreak(int y, int x, String... lines) {
+    insertTextWithLineBreak(y, x, Arrays.asList(lines));
+  }
+
+  public void insertTextWithLineBreak(int y, int x, List<String> lines) {
     insertText(y, x, true, lines);
   }
 
-  public void insertText(int y, int x, boolean lineBreakOnLast, String... lines) {
-    if (lines.length == 0) {
+  public void insertText(int y, int x, boolean lineBreakOnLast, List<String> lines) {
+    if (lines.isEmpty()) {
       return;
     }
     if (file.isEmpty()) {
@@ -356,18 +365,18 @@ public class FileView implements File.Listener, ModifiedListener {
     String topLine = getLine(y);
     if (x > topLine.length()) {
       System.out.println("topLine.length = " + topLine.length() + ", x = " + x);
-      System.out.println("insertText(" + y + ", " + x + ", " + lineBreakOnLast + ", " + Arrays.asList(lines) + ")");
+      System.out.println("insertText(" + y + ", " + x + ", " + lineBreakOnLast + ", " + lines + ")");
     }
     String head = topLine.substring(0, x);
     String tail = topLine.substring(x);
-    if (!lineBreakOnLast && lines.length == 1) {
-      changeLine(y, head + lines[0] + tail);
+    if (!lineBreakOnLast && lines.size() == 1) {
+      changeLine(y, head + lines.get(0) + tail);
       return;
     }
-    changeLine(y, head + lines[0]);
+    changeLine(y, head + lines.get(0));
     int lastInsertedLine = y;
-    for (int i = 1; i < lines.length; i++) {
-      insertLine(y + i, lines[i]);
+    for (int i = 1; i < lines.size(); i++) {
+      insertLine(y + i, lines.get(i));
       lastInsertedLine = y + i;
     }
     if (lineBreakOnLast) {
@@ -378,10 +387,14 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public void insertLines(int y, String... lines) {
+    insertLines(y, Arrays.asList(lines));
+  }
+
+  public void insertLines(int y, List<String> lines) {
     // NOTE(koz): We insert lines in reverse order so the markers get restored
     // to their original state.
-    for (int i = lines.length - 1; i >= 0; i--) {
-      String line = lines[i];
+    for (int i = lines.size() - 1; i >= 0; i--) {
+      String line = lines.get(i);
       insertLine(y, line);
     }
   }
@@ -616,6 +629,7 @@ public class FileView implements File.Listener, ModifiedListener {
       return isValid;
     }
 
+    @Override
     public Point getPoint() {
       return lastPoint;
     }

@@ -73,7 +73,7 @@ public class FileViewTest extends EditorTestBase {
   @Test
   public void getWordUnderCursor() {
     setFileContents("abc asdf", "def");
-    assertEquals("abc", fileView.getWordUnder(0, 1));
+    assertEquals("abc", fileView.getWordAt(0, 1));
   }
 
   @Test
@@ -164,7 +164,7 @@ public class FileViewTest extends EditorTestBase {
   @Test
   public void underscoreIsConsideredAnIdentifierLetter() {
     setFileContents("a_c");
-    assertEquals("a_c", fileView.getWordUnder(0, 0));
+    assertEquals("a_c", fileView.getWordAt(0, 0));
   }
 
   @Test

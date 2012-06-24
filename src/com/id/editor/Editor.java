@@ -601,14 +601,14 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void highlightWordUnderCursor() {
-    setHighlightPattern(Patterns.wholeWord(file.getWordUnder(cursor.getY(), cursor.getX())));
+    setHighlightPattern(Patterns.wholeWord(file.getWordAt(cursor.getY(), cursor.getX())));
   }
 
   public void highlightWordBeforeCursor() {
     if (cursor.getX() == 0) {
       return;
     }
-    setHighlightPattern(Patterns.wholeWord(file.getWordUnder(cursor.getY(), cursor.getX() - 1)));
+    setHighlightPattern(Patterns.wholeWord(file.getWordAt(cursor.getY(), cursor.getX() - 1)));
   }
 
   public void insertLastHighlightedWord() {
@@ -907,11 +907,11 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void openFileUnderCursor() {
-    environment.openFile(file.getFilenameUnder(cursor.getY(), cursor.getX()));
+    environment.openFile(file.getFilenameAt(cursor.getY(), cursor.getX()));
   }
 
   public void openFileMatchingWordUnderCursor() {
-    String pattern = file.getWordUnder(cursor.getY(), cursor.getX());
+    String pattern = file.getWordAt(cursor.getY(), cursor.getX());
     environment.openFileMatchingPattern(pattern);
   }
 

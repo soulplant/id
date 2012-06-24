@@ -277,7 +277,7 @@ public class FileView implements File.Listener, ModifiedListener {
     return c == ' ';
   }
 
-  public String getWordUnder(int y, int x) {
+  public String getWordAt(int y, int x) {
     int start = findWordStart(y, x);
     int end = findWordEnd(y, x);
     return getLine(y).substring(start, end + 1);
@@ -301,7 +301,7 @@ public class FileView implements File.Listener, ModifiedListener {
     return i;
   }
 
-  public String getFilenameUnder(int y, int x) {
+  public String getFilenameAt(int y, int x) {
     int start = findFilenameStart(y, x);
     int end = findFilenameEnd(y, x);
     return getLine(y).substring(start, end + 1);

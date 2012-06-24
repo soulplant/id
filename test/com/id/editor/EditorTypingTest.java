@@ -935,4 +935,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("u");
     assertFileContents("abc", "def", "ghi");
   }
+
+  @Test
+  public void sOnEmptyFile() {
+    setFileContents();
+    typeString("sa");
+    assertFileContents("a");
+  }
 }

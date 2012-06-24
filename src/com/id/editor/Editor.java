@@ -519,6 +519,9 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void delete(boolean breakPatch) {
+    if (file.isEmpty()) {
+      return;
+    }
     startPatch();
     if (isInVisual()) {
       register.setContents(visual.getRegister(file));

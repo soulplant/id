@@ -18,6 +18,7 @@
   <target name="compile">
     <mkdir dir="${build}"/>
     <javac destdir="${build}" debug="on" includeAntRuntime="false">
+      <compilerarg value="-Xlint"/>
       <src path="${src}"/>
       <src path="gen"/>
       <classpath refid="build.classpath"/>
@@ -39,6 +40,7 @@
 
   <target name="test" depends="compile">
     <javac destdir="${build}" debug="on" includeAntRuntime="false">
+      <compilerarg value="-Xlint"/>
       <src path="${test}"/>
       <src path="gen"/>
       <classpath refid="test.classpath"/>

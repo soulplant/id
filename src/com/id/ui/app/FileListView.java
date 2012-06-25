@@ -12,6 +12,7 @@ import com.id.editor.Editor;
 class FileListEntryView extends LinewisePanel {
   private static final int BOTTOM_PADDING_PX = 3;
   private static final int LEFT_PADDING_PX = 3;
+  private static final int PADDED_ELEMENT_COUNT = 3;
 
   private final Editor editor;
   private final boolean focused;
@@ -19,7 +20,14 @@ class FileListEntryView extends LinewisePanel {
   public FileListEntryView(Editor editor, boolean focused) {
     this.editor = editor;
     this.focused = focused;
-    setPreferredSize(new Dimension(editor.getFilename().length() * getFontWidthPx(), getFontHeightPx()));
+    setPreferredSize(new Dimension(getPreferredWidth(), getFontHeightPx()));
+  }
+
+  private int getPreferredWidth() {
+    int filenameLengthPx = editor.getBaseFilename().length() * getFontWidthPx();
+    int leftPaddingPx = LEFT_PADDING_PX + PADDED_ELEMENT_COUNT * (getFontWidthPx() + LEFT_PADDING_PX);
+    int rightPaddingPx = 2 * LEFT_PADDING_PX;
+    return leftPaddingPx + filenameLengthPx + rightPaddingPx;
   }
 
   @Override

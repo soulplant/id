@@ -16,6 +16,7 @@ import com.id.file.FileTest;
 import com.id.file.FileViewTest;
 import com.id.file.GraveyardTest;
 import com.id.file.PatchworkTest;
+import com.id.file.TokenCounterTest;
 import com.id.fuzzy.FuzzyFinderTest;
 import com.id.platform.InMemoryFileSystemTest;
 import com.id.rendering.EditorRendererTest;
@@ -27,6 +28,6 @@ import com.id.rendering.SlugTest;
     InMemoryFileSystemTest.class, EditorTypingTest.class, SlugTest.class,
     CachingHighlightTest.class, MinibufferTest.class, EditorRendererTest.class,
     EditorFileViewTest.class, ControllerTest.class, KeyStrokeParserTest.class,
-    PatchworkTest.class, ListModelTest.class })
+    PatchworkTest.class, ListModelTest.class, TokenCounterTest.class })
 public class AllTests {
 }

@@ -88,7 +88,7 @@ public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.L
   public void onSetVisible(boolean visible) {
     if (visible) {
       add(fuzzyFinderPanel, "fuzzyfinder");
-      setLayer(fuzzyFinderPanel, 100);
+      setLayer(fuzzyFinderPanel, JLayeredPane.POPUP_LAYER);
     } else {
       remove(fuzzyFinderPanel);
     }

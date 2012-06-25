@@ -13,6 +13,7 @@ import com.id.events.KeyStrokeHandler;
 import com.id.events.KeyStrokeParser;
 import com.id.events.ShortcutTree;
 import com.id.file.File;
+import com.id.file.Trie;
 
 public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   public interface Listener {
@@ -25,6 +26,68 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
     void onItemSelected(String item);
   }
 
+  private interface MatchGetter {
+    List<String> getMatches(String query);
+  }
+
+  private class RegexMatchGetter implements MatchGetter {
+    private final File file;
+
+    public RegexMatchGetter(File file) {
+      this.file = file;
+    }
+
+    @Override
+    public List<String> getMatches(String query) {
+      List<String> result = new ArrayList<String>();
+      Pattern pattern = Pattern.compile(".*" + query + ".*");
+      for (int i = 0; i < file.getLineCount(); i++) {
+        String candidate = file.getLine(i);
+        Matcher matcher = pattern.matcher(candidate);
+        if (matcher.matches()) {
+          result.add(candidate);
+        }
+      }
+      return result;
+    }
+  }
+
+  private class FuzzyMatchGetter implements MatchGetter, File.Listener {
+    private final File file;
+    private Trie trie = new Trie();
+
+    public FuzzyMatchGetter(File file) {
+      this.file = file;
+      for (int i = 0; i < file.getLineCount(); i++) {
+        onLineInserted(i, file.getLine(i));
+      }
+      file.addListener(this);
+    }
+
+    // MatchGetter
+    @Override
+    public List<String> getMatches(String query) {
+      return trie.doFuzzyMatch(true, "", query);
+    }
+
+    // File.Listener
+    @Override
+    public void onLineInserted(int y, String line) {
+      trie.addToken(line);
+    }
+
+    @Override
+    public void onLineRemoved(int y, String line) {
+      trie.removeToken(line);
+    }
+
+    @Override
+    public void onLineChanged(int y, String oldLine, String newLine) {
+      trie.removeToken(oldLine);
+      trie.addToken(newLine);
+    }
+  }
+
   private final File file;
   private boolean visible = false;
   private final Minibuffer minibuffer = new Minibuffer();
@@ -32,9 +95,11 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   private final ShortcutTree shortcuts = new ShortcutTree();
   private SelectionListener selectionListener;
   private int cursor = 0;
+  private final MatchGetter matchGetter;
 
   public FuzzyFinder(File file) {
     this.file = file;
+    matchGetter = new FuzzyMatchGetter(file);
     minibuffer.addListener(this);
     shortcuts.setShortcut(Arrays.asList(KeyStroke.escape()), new ShortcutTree.Action() {
       @Override
@@ -101,16 +166,7 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
   }
 
   public List<String> getMatches() {
-    List<String> result = new ArrayList<String>();
-    Pattern pattern = Pattern.compile(".*" + minibuffer.getText() + ".*");
-    for (int i = 0; i < file.getLineCount(); i++) {
-      String candidate = file.getLine(i);
-      Matcher matcher = pattern.matcher(candidate);
-      if (matcher.matches()) {
-        result.add(candidate);
-      }
-    }
-    return result;
+    return matchGetter.getMatches(minibuffer.getText());
   }
 
   public boolean contains(String filename) {

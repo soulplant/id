@@ -10,6 +10,7 @@ import java.util.List;
 import com.id.ui.editor.TextPanel;
 
 public class AppLayout implements LayoutManager {
+  private static final int FUZZY_FINDER_TOP_PADDING_PX = 5;
   private Component filelist = null;
   private Component spotlight = null;
   private Component stack = null;
@@ -49,7 +50,8 @@ public class AppLayout implements LayoutManager {
     if (fuzzyFinder != null) {
       int width = (int) fuzzyFinder.getPreferredSize().getWidth();
       int height = parent.getHeight();
-      fuzzyFinder.setBounds(250, 0, width, height);
+      fuzzyFinder.setBounds(fileListWidth, minibuffer.getFontHeightPx() + FUZZY_FINDER_TOP_PADDING_PX,
+          width, height);
     }
   }
 

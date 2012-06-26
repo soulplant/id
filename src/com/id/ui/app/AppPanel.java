@@ -35,7 +35,17 @@ public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.L
     add(spotlightView, "spotlight");
     add(stackView, "stack");
     add(minibufferView, "minibuffer");
+    add(fuzzyFinderPanel, "fuzzyfinder");
+    setLayer(fuzzyFinderPanel, JLayeredPane.POPUP_LAYER);
+    fuzzyFinderPanel.setVisible(false);
     fuzzyFinderPanel.setListener(this);
+  }
+
+  // This is needed so that this Panel doesn't assume that its components don't overlap.
+  // JComponent
+  @Override
+  public boolean isOptimizedDrawingEnabled() {
+    return false;
   }
 
   @Override
@@ -86,13 +96,7 @@ public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.L
 
   @Override
   public void onSetVisible(boolean visible) {
-    if (visible) {
-      add(fuzzyFinderPanel, "fuzzyfinder");
-      setLayer(fuzzyFinderPanel, JLayeredPane.POPUP_LAYER);
-    } else {
-      remove(fuzzyFinderPanel);
-    }
-    repaint();
+    fuzzyFinderPanel.setVisible(visible);
   }
 
   @Override

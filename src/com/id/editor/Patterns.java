@@ -10,11 +10,11 @@ import com.id.app.HighlightPattern;
 public class Patterns {
   public static HighlightPattern wholeWord(String word) {
     Pattern pattern = Pattern.compile("\\b" + Pattern.quote(word) + "\\b");
-    return new HighlightPattern(word, pattern);
+    return new HighlightPattern(word, HighlightPattern.MatchType.WHOLE_WORD);
   }
 
   public static HighlightPattern partWord(String word) {
     Pattern pattern = Pattern.compile(Pattern.quote(word));
-    return new HighlightPattern(word, pattern);
+    return new HighlightPattern(word, HighlightPattern.MatchType.PART_WORD);
   }
 }

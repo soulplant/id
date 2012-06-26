@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import com.id.app.ControllerTest;
+import com.id.app.HighlightStateTest;
 import com.id.app.ListModelTest;
 import com.id.editor.CachingHighlightTest;
 import com.id.editor.EditorFileViewTest;
@@ -30,6 +31,6 @@ import com.id.rendering.SlugTest;
     CachingHighlightTest.class, MinibufferTest.class, EditorRendererTest.class,
     EditorFileViewTest.class, ControllerTest.class, KeyStrokeParserTest.class,
     PatchworkTest.class, ListModelTest.class, TokenCounterTest.class,
-    TrieTest.class })
+    TrieTest.class, HighlightStateTest.class })
 public class AllTests {
 }

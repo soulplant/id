@@ -121,7 +121,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   private final Visual visual;
   private boolean inInsertMode = false;
   private EditorView view = new EmptyView();
-  private EditorEnvironment environment = new EmptyEditorEnvironment();
+  private final EditorEnvironment environment;
 
   private final EditorKeyHandler keyHandler;
   private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();

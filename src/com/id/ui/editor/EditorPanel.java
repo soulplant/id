@@ -26,7 +26,8 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
   private final JLabel filenameLabel;
   private final ListModel<Editor> containerModel;
 
-  public EditorPanel(Editor editor, final ListModel<Editor> containerModel) {
+  public EditorPanel(Editor editor, final ListModel<Editor> containerModel,
+      boolean showScrollbars) {
     this.containerModel = containerModel;
     setLayout(new BorderLayout());
     setBorder(new Border() {
@@ -56,6 +57,10 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
     filenameLabel = new JLabel(getTitle());
     this.add(filenameLabel, BorderLayout.PAGE_START);
     scrollPane = new JScrollPane(panel);
+    if (!showScrollbars) {
+      scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+      scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    }
     this.add(scrollPane, BorderLayout.CENTER);
     editor.setView(this);
     editor.addFileModifiedListener(this);

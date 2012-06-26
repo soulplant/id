@@ -2,6 +2,9 @@ package com.id.ui.app;
 
 import javax.swing.JPanel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.id.app.ListModel;
 import com.id.editor.Editor;
 import com.id.ui.editor.EditorPanel;
@@ -20,7 +23,7 @@ public class StackView extends JPanel implements ListModel.Listener<Editor> {
   private void updateEditors() {
     removeAll();
     for (int i = 0; i < editors.size(); i++) {
-      EditorPanel editorPanel = new EditorPanel(editors.get(i), editors);
+      EditorPanel editorPanel = new EditorPanel(editors.get(i), editors, false);
       add(editorPanel);
     }
   }

@@ -22,7 +22,7 @@ public class EditorSwapperPanel extends JPanel implements ListModel.Listener<Edi
     setLayout(new BorderLayout());
     for (int i = 0; i < editors.size(); i++) {
       Editor editor = editors.get(i);
-      EditorPanel editorPanel = new EditorPanel(editor, editors);
+      EditorPanel editorPanel = new EditorPanel(editor, editors, true);
       map.put(editor, editorPanel);
     }
     refresh();
@@ -46,7 +46,7 @@ public class EditorSwapperPanel extends JPanel implements ListModel.Listener<Edi
     // send move events as well as add/remove, so that we don't leak EditorPanels.
     EditorPanel editorPanel = map.get(editor);
     if (editorPanel == null) {
-      editorPanel = new EditorPanel(editor, editors);
+      editorPanel = new EditorPanel(editor, editors, true);
       map.put(editor, editorPanel);
     }
     refresh();

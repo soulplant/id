@@ -58,4 +58,13 @@
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
   </target>
+  <target name="build-file">
+    <mkdir dir="${build}"/>
+    <javac destdir="${build}" debug="on" includeAntRuntime="false" classpathref="build.classpath">
+      <src path="${src}"/>
+      <src path="${test}"/>
+      <src path="gen"/>
+      <include name="${file}"/>
+    </javac>
+  </target>
 </project>

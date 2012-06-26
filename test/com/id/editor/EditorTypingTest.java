@@ -963,4 +963,18 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("Sa");
     assertFileContents("a");
   }
+
+  @Test
+  public void gi() {
+    setFileContents("...", "...");
+    typeString("ia<ESC>jgib");
+    assertFileContents("ab...", "...");
+  }
+
+  @Test
+  public void giWithNoHistory() {
+    setFileContents("...", "...");
+    typeString("giab");
+    assertFileContents("ab...", "...");
+  }
 }

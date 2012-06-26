@@ -134,6 +134,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   private final HighlightState highlightState;
   private boolean justInsertedAutoIndent = false;
   private final Register register;
+  private Point lastInsertPoint = null;
 
   public Editor(FileView fileView, HighlightState highlightState,
       Register register, EditorEnvironment editorEnvironment) {
@@ -239,6 +240,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     }
     if (isInInsertMode()) {
       inInsertMode = false;
+      lastInsertPoint = cursor.getPoint();
       if (justInsertedAutoIndent && isAllWhitespace(getCurrentLine())) {
         file.changeLine(cursor.getY(), "");
       }
@@ -246,6 +248,13 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       file.breakPatch();
       cursor.moveBy(0, -1);
       applyCursorConstraints();
+    }
+  }
+
+  public void insertAtLastInsert() {
+    insert();
+    if (lastInsertPoint != null) {
+      cursor.moveTo(lastInsertPoint.getY(), lastInsertPoint.getX());
     }
   }
 

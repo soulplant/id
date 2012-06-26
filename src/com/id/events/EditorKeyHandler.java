@@ -197,6 +197,12 @@ public class EditorKeyHandler {
         editor.openFileUnderCursor();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("gi"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.insertAtLastInsert();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("gF"), new ShortcutTree.Action() {
       @Override
       public void execute() {

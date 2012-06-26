@@ -956,4 +956,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("jDp");
     assertFileContents("abc", "def");
   }
+
+  @Test
+  public void SOnAnEmptyFile() {
+    setFileContents();
+    typeString("Sa");
+    assertFileContents("a");
+  }
 }

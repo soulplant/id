@@ -558,6 +558,10 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void substituteLine() {
+    if (file.isEmpty()) {
+      insert();
+      return;
+    }
     if (isInVisual()) {
       substitute();
       return;

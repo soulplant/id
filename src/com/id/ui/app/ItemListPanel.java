@@ -61,10 +61,12 @@ public class ItemListPanel extends LinewisePanel {
     g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
     int i = 0;
     for (String item : items) {
-      g.drawString(item, 0, getFontHeightPx() * (i + 1) - BOTTOM_PADDING_PX);
       if (selectedIndex == i) {
-        g.drawRect(0, getFontHeightPx() * i, g.getClipBounds().width - 1, getFontHeightPx());
+        g.setColor(new Color(200, 200, 200));
+        g.fillRect(0, getFontHeightPx() * i, getWidth() - 1, getFontHeightPx());
       }
+      g.setColor(Color.BLACK);
+      g.drawString(item, 0, getFontHeightPx() * (i + 1) - BOTTOM_PADDING_PX);
       i++;
     }
   }

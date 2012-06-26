@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.id.file.File;
+import com.id.util.StringUtils;
 
 public class RealFileSystem implements FileSystem {
   private final java.io.File workingDirectory;
@@ -73,7 +74,7 @@ public class RealFileSystem implements FileSystem {
       e.printStackTrace();
       return null;
     }
-    file.setFilename(filename);
+    file.setFilename(StringUtils.normalizePath(filename));
     return file;
   }
 

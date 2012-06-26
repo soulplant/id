@@ -25,6 +25,7 @@ import com.id.fuzzy.FuzzyFinder;
 import com.id.git.Diff;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
+import com.id.util.StringUtils;
 
 public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListener {
   private final ListModel<Editor> editors;
@@ -448,6 +449,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   }
 
   private Editor attemptToFocusExistingEditor(String filename) {
+    filename = StringUtils.normalizePath(filename);
     for (int i = 0; i < editors.size(); i++) {
       if (filename.equals(editors.get(i).getFilename())) {
         editors.setFocusedIndex(i);

@@ -8,9 +8,10 @@ import javax.swing.JPanel;
 import com.id.app.App;
 import com.id.editor.Editor;
 import com.id.file.Tombstone;
+import com.id.ui.app.LinewisePanel;
 
 @SuppressWarnings("serial")
-public class MarkerPanel extends JPanel {
+public class MarkerPanel extends LinewisePanel {
   private final Editor editor;
 
   public MarkerPanel(Editor editor) {
@@ -22,8 +23,8 @@ public class MarkerPanel extends JPanel {
     super.paint(g);
     g.setFont(App.FONT);
     // TODO Make this only render things in the clip rect.
-    int fontHeightPx = g.getFontMetrics().getHeight();
-    int widthPx = 10;
+    int fontHeightPx = getFontHeightPx();
+    int widthPx = getFontWidthPx();
     int height = editor.getLineCount();
 
     for (int i = 0; i < height; i++) {

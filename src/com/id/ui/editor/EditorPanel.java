@@ -80,6 +80,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
     return prefix + " " + editor.getFilename();
   }
 
+  // ModifiedListener.
   @Override
   public void onModifiedStateChanged() {
     filenameLabel.setText(getTitle());
@@ -97,16 +98,10 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
     return editor;
   }
 
+  // EditorView.
   @Override
   public void moveViewportToIncludePoint(Point point) {
     textPanel.scrollRectToVisible(cursorPointToRect(point));
-  }
-
-  private Rectangle cursorPointToRect(Point point) {
-    int fontWidthPx = textPanel.getFontWidthPx();
-    int fontHeightPx = textPanel.getFontHeightPx();
-    return new Rectangle(point.getX() * fontWidthPx, point.getY() * fontHeightPx, fontWidthPx,
-        fontHeightPx);
   }
 
   @Override
@@ -123,7 +118,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
 
   @Override
   public int getViewportHeight() {
-    return getHeight() / 14;
+    return getHeight() / textPanel.getFontHeightPx();
   }
 
   @Override
@@ -142,5 +137,12 @@ public class EditorPanel extends JPanel implements Editor.EditorView, ModifiedLi
   public void setTopLineVisible(int topLine) {
     // TODO(koz): Implement this properly.
     recenterScreenOnPoint(new Point(topLine, 0));
+  }
+
+  private Rectangle cursorPointToRect(Point point) {
+    int fontWidthPx = textPanel.getFontWidthPx();
+    int fontHeightPx = textPanel.getFontHeightPx();
+    return new Rectangle(point.getX() * fontWidthPx, point.getY() * fontHeightPx, fontWidthPx,
+        fontHeightPx);
   }
 }

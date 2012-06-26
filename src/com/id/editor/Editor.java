@@ -44,15 +44,15 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     NONE,
     FIND_FORWARDS,
     FIND_BACKWARDS,
-    TIL_FORWARDS,
-    TIL_BACKWARDS,;
+    TILL_FORWARDS,
+    TILL_BACKWARDS,;
 
     public FindMode opposite() {
       switch (this) {
       case FIND_BACKWARDS: return FIND_FORWARDS;
       case FIND_FORWARDS: return FIND_BACKWARDS;
-      case TIL_FORWARDS: return TIL_BACKWARDS;
-      case TIL_BACKWARDS: return TIL_FORWARDS;
+      case TILL_FORWARDS: return TILL_BACKWARDS;
+      case TILL_BACKWARDS: return TILL_FORWARDS;
       case NONE: return NONE;
       }
       return null;

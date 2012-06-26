@@ -129,17 +129,17 @@ public class FuzzyFinder implements KeyStrokeHandler, Minibuffer.Listener {
 
   public void moveSelectionUp() {
     cursor--;
-    int matches = getMatches().size();
-    if (cursor >= matches) {
-      cursor = matches - 1;
+    if (cursor < 0) {
+      cursor = 0;
     }
     fireSelectionChanged();
   }
 
   public void moveSelectionDown() {
     cursor++;
-    if (cursor < 0) {
-      cursor = 0;
+    int matches = getMatches().size();
+    if (cursor >= matches) {
+      cursor = matches - 1;
     }
     fireSelectionChanged();
   }

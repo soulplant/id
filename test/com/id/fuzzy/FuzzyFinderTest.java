@@ -111,6 +111,23 @@ public class FuzzyFinderTest {
     assertEquals(0, fuzzyFinder.getCursorIndex());
   }
 
+  @Test
+  public void upStaysInBounds() {
+    setupWithFiles("abc");
+    fuzzyFinder.setVisible(true);
+    fuzzyFinder.setSelectionListener(selectionListener);
+    typeString("<UP><CR>");
+    verify(selectionListener).onItemSelected("abc");
+  }
+
+  @Test
+  public void downStaysInBounds() {
+    setupWithFiles("aaa");
+    fuzzyFinder.setSelectionListener(selectionListener);
+    typeString("<DOWN><DOWN><CR>");
+    verify(selectionListener).onItemSelected("aaa");
+  }
+
   private void type(KeyStroke keyStroke) {
     fuzzyFinder.handleKeyStroke(keyStroke);
   }

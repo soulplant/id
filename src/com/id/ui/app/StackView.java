@@ -2,9 +2,6 @@ package com.id.ui.app;
 
 import javax.swing.JPanel;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.id.app.ListModel;
 import com.id.editor.Editor;
 import com.id.ui.editor.EditorPanel;

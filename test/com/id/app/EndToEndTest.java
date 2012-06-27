@@ -9,11 +9,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.id.app.CommandExecutor;
 import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
 import com.id.file.Tombstone;
-import com.id.fuzzy.FuzzyFinder;
+import com.id.fuzzy.Finder;
+import com.id.fuzzy.FuzzyFinderDriver;
 import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.RealFileSystem;
@@ -22,7 +22,7 @@ public class EndToEndTest {
   private ListModel<Editor> editors;
   private ListModel<Editor> stack;
   private Repository repository;
-  private FuzzyFinder fuzzyFinder;
+  private Finder fuzzyFinder;
   private Controller controller;
   private File tempDir;
   private RealFileSystem fileSystem;
@@ -39,7 +39,8 @@ public class EndToEndTest {
     stack = new ListModel<Editor>();
     fileSystem = new RealFileSystem(tempDir);
     repository = new GitRepository(shell);
-    fuzzyFinder = new FuzzyFinder(new com.id.file.File());
+    com.id.file.File files = new com.id.file.File();
+    fuzzyFinder = new Finder(new FuzzyFinderDriver(files), files);
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();

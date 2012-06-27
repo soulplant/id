@@ -3,20 +3,9 @@ package com.id.file;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import com.id.app.HighlightState;
-import com.id.editor.Editor;
-import com.id.editor.Register;
-import com.id.events.EditorKeyHandler;
-import com.id.events.KeyStroke;
-import com.id.file.File;
-import com.id.file.FileView;
-import com.id.file.Tombstone;
+import org.junit.Test;
 
 public class TrieTest {
   private static final String phr_cc =

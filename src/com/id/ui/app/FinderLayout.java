@@ -5,7 +5,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 
-public class FuzzyFinderLayout implements LayoutManager {
+public class FinderLayout implements LayoutManager {
   public static final String ITEMLIST = "itemlist";
   public static final String MINIBUFFER = "minibuffer";
 

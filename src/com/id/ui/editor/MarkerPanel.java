@@ -3,8 +3,6 @@ package com.id.ui.editor;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import javax.swing.JPanel;
-
 import com.id.app.App;
 import com.id.editor.Editor;
 import com.id.file.Tombstone;

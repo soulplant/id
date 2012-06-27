@@ -21,17 +21,17 @@ import com.id.events.ShortcutTree;
 import com.id.file.File;
 import com.id.file.FileView;
 import com.id.file.Range;
-import com.id.fuzzy.FuzzyFinder;
+import com.id.fuzzy.Finder;
 import com.id.git.Diff;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
 import com.id.util.StringUtils;
 
-public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListener {
+public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
   private final ListModel<Editor> editors;
   private final FileSystem fileSystem;
   private final ShortcutTree shortcuts = new ShortcutTree();
-  private final FuzzyFinder fuzzyFinder;
+  private final Finder fuzzyFinder;
   private final Repository repository;
   private final HighlightState highlightState;
   private final Register register = new Register();
@@ -65,7 +65,7 @@ public class Controller implements KeyStrokeHandler, FuzzyFinder.SelectionListen
   };
 
   public Controller(ListModel<Editor> editors, FileSystem fileSystem,
-      FuzzyFinder fuzzyFinder, Repository repository,
+      Finder fuzzyFinder, Repository repository,
       HighlightState highlightState, ListModel<Editor> stack, Minibuffer minibuffer,
       CommandExecutor commandExecutor) {
     this.editors = editors;

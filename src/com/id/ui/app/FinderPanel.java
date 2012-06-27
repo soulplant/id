@@ -5,24 +5,24 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import com.id.fuzzy.FuzzyFinder;
+import com.id.fuzzy.Finder;
 import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
-public class FuzzyFinderPanel extends JPanel implements FuzzyFinder.Listener {
-  private final FuzzyFinder fuzzyFinder;
+public class FinderPanel extends JPanel implements Finder.Listener {
+  private final Finder finder;
   private final TextPanel textPanel;
   private final ItemListPanel itemList = new ItemListPanel();
-  private FuzzyFinder.Listener listener;
+  private Finder.Listener listener;
 
-  public FuzzyFinderPanel(FuzzyFinder fuzzyFinder) {
-    this.fuzzyFinder = fuzzyFinder;
-    textPanel = new TextPanel(fuzzyFinder.getQueryEditor());
-    FuzzyFinderLayout fuzzyFinderLayout = new FuzzyFinderLayout();
+  public FinderPanel(Finder finder) {
+    this.finder = finder;
+    textPanel = new TextPanel(finder.getQueryEditor());
+    FinderLayout fuzzyFinderLayout = new FinderLayout();
     setLayout(fuzzyFinderLayout);
-    add(textPanel, FuzzyFinderLayout.MINIBUFFER);
-    add(itemList, FuzzyFinderLayout.ITEMLIST);
-    fuzzyFinder.addListener(this);
+    add(textPanel, FinderLayout.MINIBUFFER);
+    add(itemList, FinderLayout.ITEMLIST);
+    finder.addListener(this);
   }
 
   @Override
@@ -33,13 +33,13 @@ public class FuzzyFinderPanel extends JPanel implements FuzzyFinder.Listener {
     return result;
   }
 
-  public void setListener(FuzzyFinder.Listener listener) {
+  public void setListener(Finder.Listener listener) {
     this.listener = listener;
   }
 
   @Override
   public void onQueryChanged() {
-    List<String> matches = fuzzyFinder.getMatches();
+    List<String> matches = finder.getMatches();
     itemList.setItems(matches);
     listener.onQueryChanged();
   }

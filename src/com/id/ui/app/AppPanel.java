@@ -9,20 +9,20 @@ import javax.swing.JLayeredPane;
 import com.id.app.Controller;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
-import com.id.fuzzy.FuzzyFinder;
+import com.id.fuzzy.Finder;
 import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
-public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.Listener, Controller.Listener {
+public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listener, Controller.Listener {
   private final SpotlightView spotlightView;
   private final FileListView fileListView;
   private final Component stackView;
   private final KeyStrokeHandler handler;
-  private final FuzzyFinderPanel fuzzyFinderPanel;
+  private final FinderPanel fuzzyFinderPanel;
   private final AppLayout appLayout = new AppLayout();
 
   public AppPanel(FileListView fileListView, SpotlightView spotlightView,
-      Component stackView, KeyStrokeHandler handler, FuzzyFinderPanel fuzzyFinderPanel,
+      Component stackView, KeyStrokeHandler handler, FinderPanel fuzzyFinderPanel,
       TextPanel minibufferView) {
     this.spotlightView = spotlightView;
     this.fileListView = fileListView;
@@ -84,6 +84,7 @@ public class AppPanel extends JLayeredPane implements KeyListener, FuzzyFinder.L
     // Do nothing.
   }
 
+  // FuzzyFinder.Listener.
   @Override
   public void onQueryChanged() {
     repaint();

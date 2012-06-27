@@ -17,7 +17,8 @@ import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
 import com.id.file.File;
 import com.id.file.FileView;
-import com.id.fuzzy.FuzzyFinder;
+import com.id.fuzzy.Finder;
+import com.id.fuzzy.FuzzyFinderDriver;
 import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
@@ -25,8 +26,8 @@ import com.id.platform.RealFileSystem;
 import com.id.ui.app.AppFrame;
 import com.id.ui.app.AppPanel;
 import com.id.ui.app.FileListView;
+import com.id.ui.app.FinderPanel;
 import com.id.ui.app.FullscreenSwapper;
-import com.id.ui.app.FuzzyFinderPanel;
 import com.id.ui.app.SpotlightView;
 import com.id.ui.app.StackView;
 import com.id.ui.editor.TextPanel;
@@ -52,17 +53,17 @@ public class App {
     BashShell shell = new BashShell(null);
     Repository repository = new GitRepository(shell);
     File files = fileSystem.getFileOrNewFile(".files");
-    FuzzyFinder fuzzyFinder = new FuzzyFinder(files);
+    Finder finder = new Finder(new FuzzyFinderDriver(files), files);
     HighlightState highlightState = new HighlightState();
     final Controller controller = new Controller(editors, fileSystem,
-        fuzzyFinder, repository, highlightState, stack, minibuffer,
+        finder, repository, highlightState, stack, minibuffer,
         commandExecutor);
 
     final SpotlightView spotlightView = new SpotlightView(editors);
     final FileListView fileListView = new FileListView(editors);
     StackView stackView = new StackView(stack);
     TextPanel minibufferView = new TextPanel(minibuffer.getEditor());
-    FuzzyFinderPanel fuzzyFinderPanel = new FuzzyFinderPanel(fuzzyFinder);
+    FinderPanel fuzzyFinderPanel = new FinderPanel(finder);
     final AppPanel panel = new AppPanel(fileListView, spotlightView, stackView,
         controller, fuzzyFinderPanel, minibufferView);
 

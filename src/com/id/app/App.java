@@ -53,11 +53,11 @@ public class App {
     BashShell shell = new BashShell(null);
     Repository repository = new GitRepository(shell);
     File files = fileSystem.getFileOrNewFile(".files");
-    Finder finder = new Finder(new FuzzyFinderDriver(files), files);
+    Finder finder = new Finder(files);
     HighlightState highlightState = new HighlightState();
     final Controller controller = new Controller(editors, fileSystem,
         finder, repository, highlightState, stack, minibuffer,
-        commandExecutor, null);
+        commandExecutor, null, new FuzzyFinderDriver(files));
 
     final SpotlightView spotlightView = new SpotlightView(editors);
     final FileListView fileListView = new FileListView(editors);

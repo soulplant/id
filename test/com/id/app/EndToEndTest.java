@@ -40,12 +40,12 @@ public class EndToEndTest {
     fileSystem = new RealFileSystem(tempDir);
     repository = new GitRepository(shell);
     com.id.file.File files = new com.id.file.File();
-    fuzzyFinder = new Finder(new FuzzyFinderDriver(files), files);
+    fuzzyFinder = new Finder(files);
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();
     controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState, stack,
-        minibuffer, commandExecutor, null);
+        minibuffer, commandExecutor, null, new FuzzyFinderDriver(files));
     repository.init();
   }
 

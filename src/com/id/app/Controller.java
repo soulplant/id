@@ -14,6 +14,7 @@ import com.id.data.Data.Session.Builder;
 import com.id.editor.Editor;
 import com.id.editor.Editor.EditorEnvironment;
 import com.id.editor.Minibuffer;
+import com.id.editor.Patterns;
 import com.id.editor.Register;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
@@ -23,6 +24,7 @@ import com.id.file.FileView;
 import com.id.file.Range;
 import com.id.fuzzy.Finder;
 import com.id.fuzzy.FinderDriver;
+import com.id.fuzzy.FuzzyFinderDriver;
 import com.id.git.Diff;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
@@ -41,6 +43,7 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
   private final CommandExecutor commandExecutor;
   private final FinderDriver autocompleteDriver;
   private Editor autocompletingEditor = null;
+  private boolean isSelectingPreviousHighlight = false;
 
   private boolean isInMinibuffer = false;
   private boolean isStackVisible = false;
@@ -71,11 +74,13 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
       Controller.this.autocomplete(query, editor);
     }
   };
+  private final FinderDriver fileFinderDriver;
 
   public Controller(ListModel<Editor> editors, FileSystem fileSystem,
-      Finder fuzzyFinder, Repository repository,
-      HighlightState highlightState, ListModel<Editor> stack, Minibuffer minibuffer,
-      CommandExecutor commandExecutor, FinderDriver autocompleteDriver) {
+      Finder fuzzyFinder, Repository repository, HighlightState highlightState,
+      ListModel<Editor> stack, Minibuffer minibuffer,
+      CommandExecutor commandExecutor, FinderDriver autocompleteDriver,
+      FinderDriver fileFinderDriver) {
     this.editors = editors;
     this.fileSystem = fileSystem;
     this.finder = fuzzyFinder;
@@ -85,6 +90,8 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
     this.minibuffer = minibuffer;
     this.commandExecutor = commandExecutor;
     this.autocompleteDriver = autocompleteDriver;
+    this.fileFinderDriver = fileFinderDriver;
+
     commandExecutor.setEnvironment(new CommandExecutor.Environment() {
       @Override
       public void openFile(String filename) {
@@ -166,7 +173,7 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
     shortcuts.setShortcut(KeyStroke.fromString("t"), new ShortcutTree.Action() {
       @Override
       public void execute() {
-        showFuzzyFinder();
+        showFileFinder();
       }
     });
     shortcuts.setShortcut(KeyStroke.fromString("q"), new ShortcutTree.Action() {
@@ -215,6 +222,12 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
       @Override
       public void execute() {
         enterMinibuffer();
+      }
+    });
+    shortcuts.setShortcut(KeyStroke.fromString("?"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        selectPreviousHighlight();
       }
     });
   }
@@ -375,7 +388,8 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
     getFocusedList().getFocusedItem().save(fileSystem);
   }
 
-  public void showFuzzyFinder() {
+  public void showFileFinder() {
+    finder.setDriver(fileFinderDriver);
     finder.clearQuery();
     finder.setVisible(true);
   }
@@ -511,13 +525,21 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
 
   @Override
   public void onItemSelected(String item) {
+    // TODO(koz): Rather than all being handled here like this, each time we
+    // setVisible(true) on the finder, we should do something like
+    // finder.find(x), where x is a delegate that handles events from the
+    // finder.
     if (autocompletingEditor != null) {
       autocompletingEditor.autocompleteFinish(item);
       autocompletingEditor = null;
+    } else if (isSelectingPreviousHighlight) {
+      highlightState.setHighlightPattern(Patterns.wholeWord(item));
+      isSelectingPreviousHighlight = false;
     } else {
       openFile(item);
     }
     finder.setVisible(false);
+    finder.clearQuery();
   }
 
   private void jumpToLine(int lineNumber) {
@@ -559,5 +581,16 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
 
   public void addListener(Listener listener) {
     listeners.add(listener);
+  }
+
+  private void selectPreviousHighlight() {
+    List<HighlightPattern> previousHighlights = highlightState.getPreviousHighlights();
+    List<String> items = new ArrayList<String>();
+    for (int i = previousHighlights.size() - 1; i >= 0 ; i--) {
+      items.add(previousHighlights.get(i).getText());
+    }
+    isSelectingPreviousHighlight = true;
+    finder.setDriver(new FuzzyFinderDriver(new File(items)));
+    finder.setVisible(true);
   }
 }

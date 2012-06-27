@@ -31,7 +31,8 @@ public class FuzzyFinderTest {
 
   private void setupWithFiles(String... filenames) {
     File file = new File(filenames);
-    fuzzyFinder = new Finder(new FuzzyFinderDriver(file), file);
+    fuzzyFinder = new Finder(file);
+    fuzzyFinder.setDriver(new FuzzyFinderDriver(file));
     listener = mock(Finder.Listener.class);
     selectionListener = mock(Finder.SelectionListener.class);
   }

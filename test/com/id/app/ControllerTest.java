@@ -47,14 +47,15 @@ public class ControllerTest {
     editors = new ListModel<Editor>();
     stack = new ListModel<Editor>();
     fileSystem = new InMemoryFileSystem();
-    fuzzyFinder = new Finder(new FuzzyFinderDriver(files), files);
+    fuzzyFinder = new Finder(files);
     fuzzyListener = mock(Finder.Listener.class);
     repo = new InMemoryRepository();
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();
     controller = new Controller(editors, fileSystem, fuzzyFinder, repo,
-        highlightState, stack, minibuffer, commandExecutor, null);
+        highlightState, stack, minibuffer, commandExecutor, null,
+        new FuzzyFinderDriver(files));
 
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");
@@ -78,13 +79,13 @@ public class ControllerTest {
   @Test
   public void controllerCanBringUpTheFuzzyFinder() {
     fuzzyFinder.addListener(fuzzyListener);
-    controller.showFuzzyFinder();
+    controller.showFileFinder();
     verify(fuzzyListener).onSetVisible(true);
   }
 
   @Test
   public void typingGoesToTheFuzzyFinderWhenItsUp() {
-    controller.showFuzzyFinder();
+    controller.showFileFinder();
     fuzzyFinder.addListener(fuzzyListener);
     typeString("hi");
     verify(fuzzyListener, times(2)).onQueryChanged();
@@ -425,6 +426,17 @@ public class ControllerTest {
     typeString(":e a<CR>V;");
     assertTrue(controller.isStackVisible());
     verify(listener).onStackVisibilityChanged(true);
+  }
+
+  @Test
+  public void previousHighlightsAccessibleWithQuestionMark() {
+    typeString(":e doesnt-exist<CR>");
+    typeString("ia b b c<ESC>*hh*");
+    // 'b' should be highlighted, so there should be two matches.
+    assertEquals(2, editors.get(0).getHighlightMatchCount());
+    typeString("?<DOWN><CR>");
+    // 'c' should be highlighted, so there should be one match.
+    assertEquals(1, editors.get(0).getHighlightMatchCount());
   }
 
   @Test

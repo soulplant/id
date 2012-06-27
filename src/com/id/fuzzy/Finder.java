@@ -30,11 +30,10 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
   private final ShortcutTree shortcuts = new ShortcutTree();
   private SelectionListener selectionListener;
   private int cursor = 0;
-  private FinderDriver driver;
+  private FinderDriver driver = null;
 
-  public Finder(FinderDriver driver, File file) {
+  public Finder(File file) {
     this.file = file;
-    this.driver = driver;
     minibuffer.addListener(this);
     shortcuts.setShortcut(Arrays.asList(KeyStroke.escape()), new ShortcutTree.Action() {
       @Override

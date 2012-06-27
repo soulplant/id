@@ -38,6 +38,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     void openFile(String filename);
     void openFileMatchingPattern(String pattern);
     void addSnippet(FileView fileView);
+    void autocompleteStart(String query, Editor editor);
   }
 
   public enum FindMode {
@@ -114,6 +115,11 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     public void openFileMatchingPattern(String pattern) {
       // Do nothing.
     }
+
+    @Override
+    public void autocompleteStart(String query, Editor editor) {
+      // Do nothing.
+    }
   }
 
   private final FileView file;
@@ -135,6 +141,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   private boolean justInsertedAutoIndent = false;
   private final Register register;
   private Point lastInsertPoint = null;
+  private Point autocompleteStart = null;
 
   public Editor(FileView fileView, HighlightState highlightState,
       Register register, EditorEnvironment editorEnvironment) {
@@ -1077,5 +1084,25 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   public void jumpToLine(int lineNumber) {
     cursor.jumpTo(lineNumber, 0);
     applyCursorConstraints();
+  }
+
+  public void autocompleteStart() {
+    if (!isInInsertMode()) {
+      throw new IllegalStateException();
+    }
+    int x = file.findWordStart(cursor.getY(), cursor.getX());
+    autocompleteStart = new Point(cursor.getY(), x);
+    environment.autocompleteStart(file.getWordAt(cursor.getY(), cursor.getX() - 1), this);
+  }
+
+  public void autocompleteFinish(String item) {
+    if (!isInInsertMode()) {
+      throw new IllegalStateException();
+    }
+    int length = cursor.getX() - autocompleteStart.getX();
+    file.removeText(autocompleteStart.getY(), autocompleteStart.getX(), length);
+    file.insertText(cursor.getY(), autocompleteStart.getX(), item);
+    cursor.moveTo(cursor.getY(), autocompleteStart.getX() + item.length());
+    autocompleteStart = null;
   }
 }

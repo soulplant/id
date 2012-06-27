@@ -293,7 +293,7 @@ public class FileView implements File.Listener, ModifiedListener {
     return i;
   }
 
-  private int findWordStart(int y, int x) {
+  public int findWordStart(int y, int x) {
     String line = getLine(y);
     int i = x;
     while (i > 0 && isWordCharacter(line.charAt(i - 1))) {

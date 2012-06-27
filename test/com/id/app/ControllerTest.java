@@ -53,7 +53,8 @@ public class ControllerTest {
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repo, highlightState, stack, minibuffer, commandExecutor);
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repo,
+        highlightState, stack, minibuffer, commandExecutor, null);
 
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");

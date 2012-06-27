@@ -977,4 +977,12 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("giab");
     assertFileContents("ab...", "...");
   }
+
+  @Test
+  public void autocomplete() {
+    typeString("iabc def<ESC>Fca");
+    editor.autocompleteStart();
+    editor.autocompleteFinish("abcdef");
+    assertFileContents("abcdef def");
+  }
 }

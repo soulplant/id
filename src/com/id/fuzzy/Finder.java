@@ -30,7 +30,7 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
   private final ShortcutTree shortcuts = new ShortcutTree();
   private SelectionListener selectionListener;
   private int cursor = 0;
-  private final FinderDriver driver;
+  private FinderDriver driver;
 
   public Finder(FinderDriver driver, File file) {
     this.file = file;
@@ -60,6 +60,10 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
         moveSelectionDown();
       }
     });
+  }
+
+  public void setDriver(FinderDriver driver) {
+    this.driver = driver;
   }
 
   public void moveSelectionUp() {

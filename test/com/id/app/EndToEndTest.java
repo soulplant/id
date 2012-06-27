@@ -45,7 +45,7 @@ public class EndToEndTest {
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();
     controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState, stack,
-        minibuffer, commandExecutor);
+        minibuffer, commandExecutor, null);
     repository.init();
   }
 

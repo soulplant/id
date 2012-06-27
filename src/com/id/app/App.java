@@ -57,7 +57,7 @@ public class App {
     HighlightState highlightState = new HighlightState();
     final Controller controller = new Controller(editors, fileSystem,
         finder, repository, highlightState, stack, minibuffer,
-        commandExecutor);
+        commandExecutor, null);
 
     final SpotlightView spotlightView = new SpotlightView(editors);
     final FileListView fileListView = new FileListView(editors);

@@ -22,6 +22,7 @@ import com.id.file.File;
 import com.id.file.FileView;
 import com.id.file.Range;
 import com.id.fuzzy.Finder;
+import com.id.fuzzy.FinderDriver;
 import com.id.git.Diff;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
@@ -31,13 +32,15 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
   private final ListModel<Editor> editors;
   private final FileSystem fileSystem;
   private final ShortcutTree shortcuts = new ShortcutTree();
-  private final Finder fuzzyFinder;
+  private final Finder finder;
   private final Repository repository;
   private final HighlightState highlightState;
   private final Register register = new Register();
   private final ListModel<Editor> stack;
   private final Minibuffer minibuffer;
   private final CommandExecutor commandExecutor;
+  private final FinderDriver autocompleteDriver;
+  private Editor autocompletingEditor = null;
 
   private boolean isInMinibuffer = false;
   private boolean isStackVisible = false;
@@ -62,20 +65,26 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
     public void openFileMatchingPattern(String pattern) {
       Controller.this.openFileMatchingPattern(pattern);
     }
+
+    @Override
+    public void autocompleteStart(String query, Editor editor) {
+      Controller.this.autocomplete(query, editor);
+    }
   };
 
   public Controller(ListModel<Editor> editors, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository,
       HighlightState highlightState, ListModel<Editor> stack, Minibuffer minibuffer,
-      CommandExecutor commandExecutor) {
+      CommandExecutor commandExecutor, FinderDriver autocompleteDriver) {
     this.editors = editors;
     this.fileSystem = fileSystem;
-    this.fuzzyFinder = fuzzyFinder;
+    this.finder = fuzzyFinder;
     this.repository = repository;
     this.highlightState = highlightState;
     this.stack = stack;
     this.minibuffer = minibuffer;
     this.commandExecutor = commandExecutor;
+    this.autocompleteDriver = autocompleteDriver;
     commandExecutor.setEnvironment(new CommandExecutor.Environment() {
       @Override
       public void openFile(String filename) {
@@ -208,6 +217,12 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
         enterMinibuffer();
       }
     });
+  }
+
+  protected void autocomplete(String query, Editor editor) {
+    finder.setDriver(autocompleteDriver);
+    finder.setVisible(true);
+    autocompletingEditor = editor;
   }
 
   private void enterMinibuffer() {
@@ -361,8 +376,8 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
   }
 
   public void showFuzzyFinder() {
-    fuzzyFinder.clearQuery();
-    fuzzyFinder.setVisible(true);
+    finder.clearQuery();
+    finder.setVisible(true);
   }
 
   private void moveFocusUp() {
@@ -397,7 +412,7 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
   }
 
   public Editor openFileMatchingPattern(String pattern) {
-    String filename = fuzzyFinder.findFirstFileMatching(pattern);
+    String filename = finder.findFirstFileMatching(pattern);
     if (filename == null) {
       return null;
     }
@@ -469,7 +484,7 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
 
   @Override
   public boolean handleKeyStroke(KeyStroke keyStroke) {
-    if (fuzzyFinder.isVisible() && fuzzyFinder.handleKeyStroke(keyStroke)) {
+    if (finder.isVisible() && finder.handleKeyStroke(keyStroke)) {
       return true;
     }
     if (isInMinibuffer) {
@@ -495,9 +510,14 @@ public class Controller implements KeyStrokeHandler, Finder.SelectionListener {
   }
 
   @Override
-  public void onItemSelected(String fuzzyFinderFile) {
-    openFile(fuzzyFinderFile);
-    fuzzyFinder.setVisible(false);
+  public void onItemSelected(String item) {
+    if (autocompletingEditor != null) {
+      autocompletingEditor.autocompleteFinish(item);
+      autocompletingEditor = null;
+    } else {
+      openFile(item);
+    }
+    finder.setVisible(false);
   }
 
   private void jumpToLine(int lineNumber) {

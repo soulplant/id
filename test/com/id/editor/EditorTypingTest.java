@@ -985,4 +985,11 @@ public class EditorTypingTest extends EditorTestBase {
     editor.autocompleteFinish("abcdef");
     assertFileContents("abcdef def");
   }
+
+  @Test
+  public void CPutsDeletedLinesInTheRegister() {
+    setFileContents("abc");
+    typeString("lC<ESC>p");
+    assertFileContents("abc");
+  }
 }

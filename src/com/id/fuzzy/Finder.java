@@ -61,6 +61,12 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
     });
   }
 
+  public void runFindAction(FinderDriver driver, SelectionListener listener) {
+    this.driver = driver;
+    this.selectionListener = listener;
+    setVisible(true);
+  }
+
   public void setDriver(FinderDriver driver) {
     this.driver = driver;
   }
@@ -93,6 +99,8 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
       return;
     }
     fireItemSelected(matches.get(cursor));
+    clearQuery();
+    setVisible(false);
   }
 
   public void setVisible(boolean visible) {

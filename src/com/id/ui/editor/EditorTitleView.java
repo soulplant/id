@@ -22,7 +22,7 @@ public class EditorTitleView extends LinewisePanel {
   @Override
   public void paint(Graphics g) {
     super.paint(g);
-    g.setFont(App.FONT);
+    App.configureFont(g);
     g.setColor(isFocused() ? Color.BLACK: Color.GRAY);
     g.drawString(getTitle(), 0, getFontHeightPx() - 3);
   }

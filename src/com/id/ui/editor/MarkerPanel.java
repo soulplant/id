@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import com.id.app.App;
 import com.id.editor.Editor;
 import com.id.file.Tombstone;
+import com.id.ui.Constants;
 import com.id.ui.app.LinewisePanel;
 
 @SuppressWarnings("serial")
@@ -14,6 +15,7 @@ public class MarkerPanel extends LinewisePanel {
 
   public MarkerPanel(Editor editor) {
     this.editor = editor;
+    setBackground(Constants.BG);
   }
 
   @Override

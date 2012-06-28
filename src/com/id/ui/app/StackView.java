@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 
 import com.id.app.ListModel;
 import com.id.editor.Editor;
+import com.id.ui.Constants;
 import com.id.ui.editor.EditorPanel;
 
 @SuppressWarnings("serial")
@@ -15,6 +16,7 @@ public class StackView extends JPanel implements ListModel.Listener<Editor> {
     setLayout(new StackLayout());
     updateEditors();
     editors.addListener(this);
+    setBackground(Constants.BG);
   }
 
   private void updateEditors() {

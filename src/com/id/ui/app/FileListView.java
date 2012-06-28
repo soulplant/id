@@ -49,13 +49,10 @@ class FileListEntryView extends LinewisePanel {
       g.fillRect(leftDraw, 0, getFontWidthPx(), getFontHeightPx() - 1);
     }
     leftDraw += getFontWidthPx() + LEFT_PADDING_PX;
-    g.setColor(Color.BLACK);
+    g.setColor(focused ? Color.BLACK : Color.GRAY);
     g.drawString(editor.getBaseFilename(),
         leftDraw,
         getFontHeightPx() - BOTTOM_PADDING_PX);
-    if (focused) {
-      g.drawRect(0, 0, g.getClipBounds().width - 1, getFontHeightPx() - 1);
-    }
   }
 }
 

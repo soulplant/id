@@ -12,6 +12,7 @@ import com.id.events.KeyStroke;
 import com.id.file.File;
 import com.id.rendering.EditorRenderer;
 import com.id.rendering.Matrix;
+import com.id.ui.Constants;
 import com.id.ui.app.LinewisePanel;
 
 @SuppressWarnings("serial")
@@ -38,6 +39,7 @@ public class TextPanel extends LinewisePanel {
       }
     });
     updateSize();
+    setBackground(Constants.BG);
   }
 
   private void updateSize() {

@@ -25,6 +25,7 @@ import com.id.file.Range;
 import com.id.fuzzy.Finder;
 import com.id.fuzzy.FinderDriver;
 import com.id.fuzzy.FuzzyFinderDriver;
+import com.id.fuzzy.SubstringFinderDriver;
 import com.id.git.Diff;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
@@ -571,10 +572,10 @@ public class Controller implements KeyStrokeHandler {
   private void selectPreviousHighlight() {
     List<HighlightPattern> previousHighlights = highlightState.getPreviousHighlights();
     List<String> items = new ArrayList<String>();
-    for (int i = previousHighlights.size() - 1; i >= 0 ; i--) {
-      items.add(previousHighlights.get(i).getText());
+    for (HighlightPattern pattern : previousHighlights) {
+      items.add(pattern.getText());
     }
-    finder.runFindAction(new FuzzyFinderDriver(new File(items)), new Finder.SelectionListener() {
+    finder.runFindAction(new SubstringFinderDriver(new File(items)), new Finder.SelectionListener() {
       @Override
       public void onItemSelected(String item) {
         highlightState.setHighlightPattern(Patterns.wholeWord(item));

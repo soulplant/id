@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.id.data.Data;
@@ -94,6 +95,11 @@ public class Controller implements KeyStrokeHandler {
       @Override
       public void openFile(String filename) {
         Controller.this.openFile(filename, true);
+      }
+
+      @Override
+      public void reloadFile(String filename) {
+        Controller.this.reloadFile(filename);
       }
 
       @Override
@@ -487,6 +493,26 @@ public class Controller implements KeyStrokeHandler {
       return filename;
     }
     return filename.substring(0, i);
+  }
+
+  private void reloadFile(String filename) {
+    closeEditorsWithName(editors, filename);
+    closeEditorsWithName(stack, filename);
+    if (stack.isEmpty()) {
+      focusEditors();
+      updateStackVisibility();
+    }
+    openFile(filename, false);
+  }
+
+  private void closeEditorsWithName(ListModel<Editor> editors, String filename) {
+    Iterator<Editor> i = editors.iterator();
+    while (i.hasNext()) {
+      Editor editor = i.next();
+      if (filename.equals(editor.getFilename())) {
+        i.remove();
+      }
+    }
   }
 
   public Editor openFileView(FileView fileView) {

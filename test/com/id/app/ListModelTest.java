@@ -130,4 +130,14 @@ public class ListModelTest {
     model.removeFocused();
     assertEquals(0, model.getFocusedIndex());
   }
+
+  @Test
+  public void removingAfterFocusedDoesntMoveFocused() {
+    model.add("hi");
+    model.add("there");
+    model.add("mate");
+    model.moveUp();
+    model.remove(2);
+    assertEquals(1, model.getFocusedIndex());
+  }
 }

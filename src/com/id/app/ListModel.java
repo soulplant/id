@@ -125,9 +125,11 @@ public class ListModel<T> implements Iterable<T> {
 
   public void remove(int i) {
     T removed = items.remove(i);
-    focusedIndex--;
-    if (focusedIndex < 0 && !items.isEmpty()) {
-      focusedIndex = 0;
+    if (focusedIndex >= i) {
+      focusedIndex--;
+      if (focusedIndex < 0 && !items.isEmpty()) {
+        focusedIndex = 0;
+      }
     }
     fireOnRemoved(i, removed);
     if (focusedIndex == -1) {
@@ -205,7 +207,8 @@ public class ListModel<T> implements Iterable<T> {
 
       @Override
       public void remove() {
-        throw new UnsupportedOperationException();
+        i--;
+        ListModel.this.remove(i);
       }
     };
   }

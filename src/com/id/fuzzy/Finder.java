@@ -38,6 +38,7 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
     shortcuts.setShortcut(Arrays.asList(KeyStroke.escape()), new ShortcutTree.Action() {
       @Override
       public void execute() {
+        clearQuery();
         setVisible(false);
       }
     });

@@ -4,8 +4,8 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
 import com.id.editor.Editor;
-import com.id.editor.Visual;
 import com.id.editor.Editor.FindMode;
+import com.id.editor.Visual;
 
 public class EditorKeyHandler {
   private final ShortcutTree normalTree;

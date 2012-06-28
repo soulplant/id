@@ -3,8 +3,6 @@ package com.id.app;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.id.app.HighlightPattern;
-
 // Contains a highlight pattern and exposes a listener interface. The main use
 // case for this is as the singleton highlight state for the app.
 public class HighlightState {

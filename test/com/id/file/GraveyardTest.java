@@ -9,10 +9,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.id.file.Grave;
-import com.id.file.Graveyard;
-import com.id.file.Tombstone;
-
 public class GraveyardTest {
   @Test
   public void addRemoveOnEmpty() {

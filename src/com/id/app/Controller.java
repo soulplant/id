@@ -24,7 +24,6 @@ import com.id.file.FileView;
 import com.id.file.Range;
 import com.id.fuzzy.Finder;
 import com.id.fuzzy.FinderDriver;
-import com.id.fuzzy.FuzzyFinderDriver;
 import com.id.fuzzy.SubstringFinderDriver;
 import com.id.git.Diff;
 import com.id.git.Repository;
@@ -226,6 +225,12 @@ public class Controller implements KeyStrokeHandler {
       @Override
       public void execute() {
         selectPreviousHighlight();
+      }
+    });
+    shortcuts.setShortcut(KeyStroke.fromString("<C-6>"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        openOtherFiles();
       }
     });
   }
@@ -454,6 +459,34 @@ public class Controller implements KeyStrokeHandler {
       return null;
     }
     return openFileView(fileView);
+  }
+
+  private void openOtherFiles() {
+    String filename = getFocusedEditor().getFilename();
+    String parentPath = new java.io.File(filename).getParent();
+    for (String subdir : fileSystem.getSubdirectories(parentPath)) {
+      subdir = new java.io.File(parentPath, subdir).getPath();
+      if (subdir.equals(filename)) {
+        continue;
+      }
+      if (fileSystem.isFile(subdir)) {
+        if (isSameButForExtension(subdir, filename)) {
+          openFile(subdir, false);
+        }
+      }
+    }
+  }
+
+  private boolean isSameButForExtension(String filename1, String filename2) {
+    return removeExtension(filename1).equals(removeExtension(filename2));
+  }
+
+  private String removeExtension(String filename) {
+    int i = filename.lastIndexOf('.');
+    if (i == -1) {
+      return filename;
+    }
+    return filename.substring(0, i);
   }
 
   public Editor openFileView(FileView fileView) {

@@ -43,7 +43,7 @@ public class ControllerTest {
 
   @Before
   public void setup() {
-    File files = new File("a", "b", "src/c.cc", "src/d.cc");
+    File files = new File("a", "b", "src/c.h", "src/c.cc", "src/d.cc");
     editors = new ListModel<Editor>();
     stack = new ListModel<Editor>();
     fileSystem = new InMemoryFileSystem();
@@ -443,6 +443,12 @@ public class ControllerTest {
   public void closingTheFinalSnippetMakesTheStackInvisible() {
     typeString(":e a<CR>V;Lq");
     assertFalse(controller.isStackVisible());
+  }
+
+  @Test
+  public void ctrlOOpensOtherFilesWithDifferentExtensions() {
+    typeString(":e src/c.h<CR><C-6>");
+    assertEquals(2, editors.size());
   }
 
   private void createSnippetFromCurrentLine() {

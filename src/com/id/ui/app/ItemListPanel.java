@@ -63,7 +63,7 @@ public class ItemListPanel extends LinewisePanel {
     for (String item : items) {
       if (selectedIndex == i) {
         g.setColor(new Color(200, 200, 200));
-        g.fillRect(0, getFontHeightPx() * i, getWidth() - 1, getFontHeightPx());
+        g.fillRect(1, 1 + getFontHeightPx() * i, getWidth() - 2, getFontHeightPx());
       }
       g.setColor(Color.BLACK);
       g.drawString(item, 0, getFontHeightPx() * (i + 1) - BOTTOM_PADDING_PX);

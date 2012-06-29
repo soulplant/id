@@ -9,11 +9,12 @@ import com.id.ui.editor.EditorPanel;
 
 @SuppressWarnings("serial")
 public class StackView extends JPanel implements ListModel.Listener<Editor> {
+  private final static int SNIPPET_PADDING_PX = 0;
   private final ListModel<Editor> editors;
 
   public StackView(ListModel<Editor> editors) {
     this.editors = editors;
-    setLayout(new StackLayout());
+    setLayout(new StackLayout(SNIPPET_PADDING_PX));
     updateEditors();
     editors.addListener(this);
     setBackground(Constants.BG_COLOR);

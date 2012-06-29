@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.border.EmptyBorder;
 import javax.swing.JLayeredPane;
 
 import com.id.app.Controller;
@@ -29,6 +30,7 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
     this.stackView = stackView;
     this.handler = handler;
     this.fuzzyFinderPanel = fuzzyFinderPanel;
+    setBorder(new EmptyBorder(22, 22, 22, 22));
     setLayout(appLayout);
     setFocusTraversalKeysEnabled(false);
     add(fileListView, "filelist");

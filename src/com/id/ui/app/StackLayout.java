@@ -7,6 +7,11 @@ import java.awt.LayoutManager;
 import java.awt.Rectangle;
 
 public class StackLayout implements LayoutManager {
+  private final int padding;
+
+  public StackLayout(int padding) {
+    this.padding = padding;
+  }
 
   @Override
   public void addLayoutComponent(String text, Component parent) {
@@ -21,7 +26,7 @@ public class StackLayout implements LayoutManager {
       Dimension preferredSize = component.getPreferredSize();
       component.setBounds(new Rectangle(0, currentHeight, parent.getWidth(),
           (int) preferredSize.getHeight()));
-      currentHeight += preferredSize.getHeight();
+      currentHeight += preferredSize.getHeight() + padding;
     }
   }
 

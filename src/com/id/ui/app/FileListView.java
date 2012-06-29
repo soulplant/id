@@ -10,9 +10,12 @@ import com.id.ui.Constants;
 
 @SuppressWarnings("serial")
 class FileListEntryView extends LinewisePanel {
-  private static final int BOTTOM_PADDING_PX = 3;
+  private static final int TOP_PADDING_PX = 9;
+  private static final int BOTTOM_PADDING_PX = 13;
   private static final int LEFT_PADDING_PX = 3;
   private static final int PADDED_ELEMENT_COUNT = 3;
+  private static final int RIBBON_WIDTH_PX = 2;
+  private static final int RIBBON_PADDING_PX = 4;
 
   private final Editor editor;
   private final boolean focused;
@@ -20,7 +23,7 @@ class FileListEntryView extends LinewisePanel {
   public FileListEntryView(Editor editor, boolean focused) {
     this.editor = editor;
     this.focused = focused;
-    setPreferredSize(new Dimension(getPreferredWidth(), getFontHeightPx()));
+    setPreferredSize(new Dimension(getPreferredWidth(), getPreferredHeight()));
   }
 
   private int getPreferredWidth() {
@@ -30,29 +33,40 @@ class FileListEntryView extends LinewisePanel {
     return leftPaddingPx + filenameLengthPx + rightPaddingPx;
   }
 
+  private int getPreferredHeight() {
+    return getFontHeightPx() + TOP_PADDING_PX + BOTTOM_PADDING_PX;
+  }
+
   @Override
   public void paint(Graphics g) {
     super.paint(g);
     App.configureFont(g);
+    if (focused) {
+      int textAreaLeft = LEFT_PADDING_PX + getFontWidthPx() + LEFT_PADDING_PX +
+          RIBBON_WIDTH_PX + RIBBON_PADDING_PX + RIBBON_WIDTH_PX;
+      g.setColor(Constants.SELECTED_FILE_LIST_COLOR);
+      g.fillRect(textAreaLeft, 0, getWidth() - textAreaLeft, getHeight());
+    }
     int leftDraw = LEFT_PADDING_PX;
     if (editor.isModified()) {
-      g.drawString("*", leftDraw, getFontHeightPx() - BOTTOM_PADDING_PX);
+      g.setColor(Constants.TEXT_COLOR);
+      g.drawString("*", leftDraw, getHeight() - BOTTOM_PADDING_PX);
     }
     leftDraw += getFontWidthPx() + LEFT_PADDING_PX;
     if (editor.getHighlightMatchCount() > 0) {
       g.setColor(Constants.HIGHLIGHT_COLOR);
-      g.fillRect(leftDraw, 0, getFontWidthPx(), getFontHeightPx() - 1);
+      g.fillRect(leftDraw, 0, RIBBON_WIDTH_PX, getHeight());
     }
-    leftDraw += getFontWidthPx() + LEFT_PADDING_PX;
+    leftDraw += RIBBON_WIDTH_PX + RIBBON_PADDING_PX;
     if (!editor.isMarkersClear()) {
       g.setColor(Constants.FILE_MODIFIED_COLOR);
-      g.fillRect(leftDraw, 0, getFontWidthPx(), getFontHeightPx() - 1);
+      g.fillRect(leftDraw, 0, RIBBON_WIDTH_PX, getHeight());
     }
     leftDraw += getFontWidthPx() + LEFT_PADDING_PX;
-    g.setColor(focused ? Constants.TEXT_COLOR : Constants.FADED_TEXT_COLOR);
+    g.setColor(Constants.TEXT_COLOR);
     g.drawString(editor.getBaseFilename(),
         leftDraw,
-        getFontHeightPx() - BOTTOM_PADDING_PX);
+        getHeight() - BOTTOM_PADDING_PX);
   }
 }
 
@@ -60,13 +74,14 @@ class FileListEntryView extends LinewisePanel {
 public class FileListView extends LinewisePanel implements ListModel.Listener<Editor> {
   private static final int MIN_WIDTH_PX = 200;
   private static final int MAX_WIDTH_PX = 400;
+  private static final int FILE_LIST_ENTRY_PADDING_PX = 2;
 
   private final ListModel<Editor> editors;
   private int minWidth;
 
   public FileListView(ListModel<Editor> editors) {
     this.editors = editors;
-    setLayout(new StackLayout());
+    setLayout(new StackLayout(FILE_LIST_ENTRY_PADDING_PX));
   }
 
   private void updateItems() {

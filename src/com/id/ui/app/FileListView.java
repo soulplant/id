@@ -1,12 +1,12 @@
 package com.id.ui.app;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
 import com.id.app.App;
 import com.id.app.ListModel;
 import com.id.editor.Editor;
+import com.id.ui.Constants;
 
 @SuppressWarnings("serial")
 class FileListEntryView extends LinewisePanel {
@@ -40,16 +40,16 @@ class FileListEntryView extends LinewisePanel {
     }
     leftDraw += getFontWidthPx() + LEFT_PADDING_PX;
     if (editor.getHighlightMatchCount() > 0) {
-      g.setColor(Color.CYAN);
+      g.setColor(Constants.HIGHLIGHT_COLOR);
       g.fillRect(leftDraw, 0, getFontWidthPx(), getFontHeightPx() - 1);
     }
     leftDraw += getFontWidthPx() + LEFT_PADDING_PX;
     if (!editor.isMarkersClear()) {
-      g.setColor(Color.ORANGE);
+      g.setColor(Constants.FILE_MODIFIED_COLOR);
       g.fillRect(leftDraw, 0, getFontWidthPx(), getFontHeightPx() - 1);
     }
     leftDraw += getFontWidthPx() + LEFT_PADDING_PX;
-    g.setColor(focused ? Color.BLACK : Color.GRAY);
+    g.setColor(focused ? Constants.TEXT_COLOR : Constants.FADED_TEXT_COLOR);
     g.drawString(editor.getBaseFilename(),
         leftDraw,
         getFontHeightPx() - BOTTOM_PADDING_PX);

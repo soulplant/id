@@ -15,7 +15,7 @@ public class MarkerPanel extends LinewisePanel {
 
   public MarkerPanel(Editor editor) {
     this.editor = editor;
-    setBackground(Constants.BG);
+    setBackground(Constants.BG_COLOR);
   }
 
   @Override
@@ -33,10 +33,10 @@ public class MarkerPanel extends LinewisePanel {
       Tombstone.Status status = editor.getStatus(i);
       switch (status) {
       case MODIFIED:
-        g.setColor(Color.ORANGE);
+        g.setColor(Constants.MARKER_MODIFIED_COLOR);
         break;
       case NEW:
-        g.setColor(Color.GREEN);
+        g.setColor(Constants.MARKER_ADDED_COLOR);
         break;
       case NORMAL:
         draw = false;
@@ -46,7 +46,7 @@ public class MarkerPanel extends LinewisePanel {
         g.fillRect(0, i * fontHeightPx, widthPx, fontHeightPx);
       }
       if (!editor.getGrave(i).isEmpty()) {
-        g.setColor(Color.RED);
+        g.setColor(Constants.MARKER_REMOVED_COLOR);
         g.fillRect(0, (i + 1) * fontHeightPx - 5, widthPx, 5);
       }
       if (i == 0 && !editor.getGrave(-1).isEmpty()) {

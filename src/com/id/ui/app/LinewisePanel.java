@@ -13,7 +13,7 @@ public class LinewisePanel extends JPanel {
   public LinewisePanel() {
     fontHeightPx = getFontMetrics(App.FONT).getHeight();
     fontWidthPx = getFontMetrics(App.FONT).getWidths()['a'];
-    setBackground(Constants.BG);
+    setBackground(Constants.BG_COLOR);
   }
 
   public int getFontWidthPx() {

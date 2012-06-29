@@ -1,8 +1,9 @@
 package com.id.rendering;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+
+import com.id.ui.Constants;
 
 public class Matrix {
   private final ArrayList<Slug> slugs = new ArrayList<Slug>();
@@ -58,24 +59,24 @@ public class Matrix {
         int boxY = (lineOffset + y) * charHeightPx;
         int boxX = x * charWidthPx;
         if (slug.isVisual(x)) {
-          g.setColor(Color.GRAY);
+          g.setColor(Constants.VISUAL_COLOR);
           g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
         } else if (slug.isHighlight(x) || slug.isSearchHighlight(x)) {
-          g.setColor(Color.CYAN);
+          g.setColor(Constants.HIGHLIGHT_COLOR);
           g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
         }
         if (slug.isWhitespaceIndicator(x)) {
-          g.setColor(Color.GRAY);
+          g.setColor(Constants.WHITESPACE_INDICATOR_COLOR);
           g.fillRect(boxX + charWidthPx, boxY, 2, charHeightPx);
         }
         if (slug.is80CharIndicator(x)) {
-          g.setColor(Color.GRAY);
+          g.setColor(Constants.EIGHTY_CHAR_INDICATOR_COLOR);
           g.fillRect(boxX + charWidthPx, boxY, 2, charHeightPx);
         }
       }
       // NOTE drawString() takes the bottom y coordinate of the rect to draw the text in.
       int textY = (lineOffset + y + 1) * charHeightPx - fontDescentPx;
-      g.setColor(Color.black);
+      g.setColor(Constants.TEXT_COLOR);
       g.drawString(slug.getString(), charOffset * charWidthPx, textY);
     }
   }

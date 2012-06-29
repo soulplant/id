@@ -16,7 +16,7 @@ public class StackView extends JPanel implements ListModel.Listener<Editor> {
     setLayout(new StackLayout());
     updateEditors();
     editors.addListener(this);
-    setBackground(Constants.BG);
+    setBackground(Constants.BG_COLOR);
   }
 
   private void updateEditors() {

@@ -39,7 +39,7 @@ public class TextPanel extends LinewisePanel {
       }
     });
     updateSize();
-    setBackground(Constants.BG);
+    setBackground(Constants.BG_COLOR);
   }
 
   private void updateSize() {

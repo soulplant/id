@@ -13,7 +13,7 @@ public class TitlePanel extends JLabel {
 
   public TitlePanel(Editor editor) {
     setText(editor.getFilename());
-    setBackground(Constants.BG);
+    setBackground(Constants.BG_COLOR);
   }
 
   @Override

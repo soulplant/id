@@ -79,7 +79,7 @@ public class App {
     controller.openFileView(new FileView(files));
   }
 
-  private static boolean isMacOS() {
+  public static boolean isMacOS() {
     return "Mac OS X".equals(System.getProperty("os.name"));
   }
 

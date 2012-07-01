@@ -3,6 +3,7 @@ package com.id.ui.app;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +12,13 @@ import com.id.ui.editor.TextPanel;
 
 public class AppLayout implements LayoutManager {
   private static final int FUZZY_FINDER_TOP_PADDING_PX = 5;
+  private static final int FILE_LIST_RIGHT_PADDING_PX = 15;
+
   private Component filelist = null;
   private Component spotlight = null;
   private Component stack = null;
   private Component fuzzyFinder = null;
   private TextPanel minibuffer = null;
-  private boolean isStackVisible = false;
 
   @Override
   public void addLayoutComponent(String name, Component component) {
@@ -33,44 +35,46 @@ public class AppLayout implements LayoutManager {
     }
   }
 
+  // TODO(koz): Much of this work should be done by configuring panels with
+  // simpler, more general layouts, rather than laying them all out here.
   @Override
   public void layoutContainer(Container parent) {
-    int parentHeight = parent.getHeight() - getMinibufferHeight();
-    int fileListWidth = filelist.getPreferredSize().width;
-    int remainingWidth = parent.getWidth() - fileListWidth;
+    Insets insets = parent.getInsets();
 
-    filelist.setBounds(0, 0, fileListWidth, parentHeight);
-    divideHorizontalSpace(remainingWidth, fileListWidth, parentHeight, getVisibleEditorComponents());
-    stack.setVisible(isStackVisible);
+    int parentHeight = parent.getHeight() - insets.top - insets.bottom;
+    int parentWidth = parent.getWidth() - insets.left - insets.right;
+    int remainingHeight = parentHeight - getMinibufferHeight();
+    int fileListWidth = filelist.getPreferredSize().width;
+    int remainingWidth = parentWidth - fileListWidth - FILE_LIST_RIGHT_PADDING_PX;
+
+    filelist.setBounds(insets.left, insets.top, fileListWidth, remainingHeight);
+    int editorsLeft = insets.left + fileListWidth + FILE_LIST_RIGHT_PADDING_PX;
+    divideHorizontalSpace(remainingWidth, editorsLeft, insets.top, remainingHeight, getVisibleEditorComponents());
     if (minibuffer != null) {
-      minibuffer.setBounds(0, parentHeight, parent.getWidth(), getMinibufferHeight());
+      minibuffer.setBounds(insets.left, remainingHeight, remainingWidth, getMinibufferHeight());
     }
     if (fuzzyFinder != null) {
       int width = (int) fuzzyFinder.getPreferredSize().getWidth();
       fuzzyFinder.setBounds(fileListWidth, minibuffer.getFontHeightPx() + FUZZY_FINDER_TOP_PADDING_PX,
-          width, parentHeight);
+          width, remainingHeight);
     }
   }
 
   private List<Component> getVisibleEditorComponents() {
     List<Component> result = new ArrayList<Component>();
     result.add(spotlight);
-    if (isStackVisible) {
+    if (stack.isVisible()) {
       result.add(stack);
     }
     return result;
   }
 
-  private void divideHorizontalSpace(int remainingWidth, int left, int height, List<Component> components) {
+  private void divideHorizontalSpace(int remainingWidth, int left, int top, int height, List<Component> components) {
     int componentWidth = remainingWidth / components.size();
     for (Component component : components) {
-      component.setBounds(left, 0, componentWidth, height);
+      component.setBounds(left, top, componentWidth, height);
       left += componentWidth;
     }
-  }
-
-  public void setStackVisible(boolean isStackVisible) {
-    this.isStackVisible = isStackVisible;
   }
 
   @Override

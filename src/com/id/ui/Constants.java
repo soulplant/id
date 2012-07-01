@@ -14,6 +14,6 @@ public class Constants {
   public static final Color EIGHTY_CHAR_INDICATOR_COLOR = Color.GRAY;
   public static final Color TEXT_COLOR = Color.BLACK;
   public static final Color FADED_TEXT_COLOR = Color.GRAY;
-  public static final Color VISUAL_COLOR = Color.GRAY;
+  public static final Color VISUAL_COLOR = new Color(230, 230, 230);
   public static final Color FILE_MODIFIED_COLOR = MARKER_MODIFIED_COLOR;
 }

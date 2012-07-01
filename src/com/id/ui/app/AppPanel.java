@@ -1,6 +1,7 @@
 package com.id.ui.app;
 
 import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -11,6 +12,7 @@ import com.id.app.Controller;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.fuzzy.Finder;
+import com.id.ui.Constants;
 import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
@@ -30,7 +32,9 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
     this.stackView = stackView;
     this.handler = handler;
     this.fuzzyFinderPanel = fuzzyFinderPanel;
+    stackView.setVisible(false);
     setBorder(new EmptyBorder(22, 22, 22, 22));
+    setBackground(Constants.BG_COLOR);
     setLayout(appLayout);
     setFocusTraversalKeysEnabled(false);
     add(fileListView, "filelist");
@@ -41,6 +45,13 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
     setLayer(fuzzyFinderPanel, JLayeredPane.POPUP_LAYER);
     fuzzyFinderPanel.setVisible(false);
     fuzzyFinderPanel.setListener(this);
+  }
+
+  @Override
+  protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    g.setColor(Constants.BG_COLOR);
+    g.fillRect(0, 0, getWidth(), getHeight());
   }
 
   // This is needed so that this Panel doesn't assume that its components don't overlap.
@@ -104,7 +115,7 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
 
   @Override
   public void onStackVisibilityChanged(boolean isStackVisible) {
-    appLayout.setStackVisible(isStackVisible);
+    stackView.setVisible(isStackVisible);
     invalidate();
   }
 }

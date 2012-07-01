@@ -3,7 +3,6 @@ package com.id.ui.app;
 import javax.swing.JPanel;
 
 import com.id.app.App;
-import com.id.ui.Constants;
 
 @SuppressWarnings("serial")
 public class LinewisePanel extends JPanel {
@@ -13,7 +12,6 @@ public class LinewisePanel extends JPanel {
   public LinewisePanel() {
     fontHeightPx = getFontMetrics(App.FONT).getHeight();
     fontWidthPx = getFontMetrics(App.FONT).getWidths()['a'];
-    setBackground(Constants.BG_COLOR);
   }
 
   public int getFontWidthPx() {

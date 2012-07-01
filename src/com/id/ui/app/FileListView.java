@@ -2,6 +2,9 @@ package com.id.ui.app;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridLayout;
+
+import javax.swing.JScrollPane;
 
 import com.id.app.App;
 import com.id.app.ListModel;
@@ -18,12 +21,17 @@ class FileListEntryView extends LinewisePanel {
   private static final int RIBBON_PADDING_PX = 4;
 
   private final Editor editor;
-  private final boolean focused;
+  private boolean focused;
 
   public FileListEntryView(Editor editor, boolean focused) {
     this.editor = editor;
     this.focused = focused;
     setPreferredSize(new Dimension(getPreferredWidth(), getPreferredHeight()));
+  }
+
+  public void setFocused(boolean focused) {
+    this.focused = focused;
+    invalidate();
   }
 
   private int getPreferredWidth() {
@@ -79,20 +87,25 @@ public class FileListView extends LinewisePanel implements ListModel.Listener<Ed
   private final ListModel<Editor> editors;
   private int minWidth;
 
+  private final VerticalPanel panel;
+  private final JScrollPane scrollPane;
+
   public FileListView(ListModel<Editor> editors) {
     this.editors = editors;
-    setLayout(new StackLayout(FILE_LIST_ENTRY_PADDING_PX));
+    this.panel = new VerticalPanel(FILE_LIST_ENTRY_PADDING_PX);
+    this.scrollPane = new JScrollPane(panel);
+    setLayout(new GridLayout(1, 1));
+
+    scrollPane.setBorder(null);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    add(scrollPane);
   }
 
-  private void updateItems() {
+  private void updatePreferredSize() {
     minWidth = MIN_WIDTH_PX;
-    removeAll();
-    int i = 0;
-    for (Editor editor : editors) {
-      FileListEntryView entryView = new FileListEntryView(editor, editors.getFocusedIndex() == i);
-      add(entryView);
-      minWidth = Math.max(minWidth, entryView.getPreferredSize().width);
-      i++;
+    for (int i = 0; i < panel.getComponentCount(); i++) {
+      minWidth = Math.max(minWidth, panel.getComponent(i).getPreferredSize().width);
     }
     minWidth = Math.min(MAX_WIDTH_PX, minWidth);
   }
@@ -103,23 +116,32 @@ public class FileListView extends LinewisePanel implements ListModel.Listener<Ed
   }
 
   @Override
-  public void onAdded(int i, Editor t) {
-    updateItems();
+  public void onAdded(int i, Editor editor) {
+    panel.add(new FileListEntryView(editor, editors.isFocused(editor)), i);
+    updatePreferredSize();
   }
 
   @Override
   public void onSelectionChanged(int i, Editor t) {
-    updateItems();
+    for (int j = 0; j < panel.getComponentCount(); j++) {
+      FileListEntryView c = (FileListEntryView) panel.getComponent(j);
+      boolean focused = j == i;
+      c.setFocused(focused);
+      if (focused) {
+        panel.scrollRectToVisible(c.getBounds());
+      }
+    }
   }
 
   @Override
   public void onRemoved(int i, Editor t) {
-    updateItems();
+    panel.remove(i);
+    updatePreferredSize();
   }
 
   @Override
   public void onSelectionLost() {
-    updateItems();
+    onSelectionChanged(-1, null);
   }
 
   @Override

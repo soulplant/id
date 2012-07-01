@@ -10,7 +10,6 @@ import javax.swing.JScrollPane;
 import com.id.app.ListModel;
 import com.id.editor.Editor;
 import com.id.editor.Point;
-import com.id.ui.Constants;
 
 @SuppressWarnings("serial")
 public class EditorPanel extends JPanel implements Editor.EditorView {
@@ -28,10 +27,11 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
     panel.setLayout(new BorderLayout());
     panel.add(new MarkerPanel(editor), BorderLayout.LINE_START);
     panel.add(textPanel, BorderLayout.CENTER);
-    // TODO(koz): Implement an actual scrollbar in terms of the scrollPane.
-    JPanel scrollBar = new JPanel();
-    panel.add(scrollBar, BorderLayout.LINE_END);
-    scrollBar.setBackground(Constants.BG_COLOR);
+    if (showScrollbars) {
+      // TODO(koz): Implement an actual scrollbar in terms of the scrollPane.
+      JPanel scrollBar = new JPanel();
+      panel.add(scrollBar, BorderLayout.LINE_END);
+    }
     titleView = new EditorTitleView(editor, editors);
     this.add(titleView, BorderLayout.PAGE_START);
     scrollPane = new JScrollPane(panel);

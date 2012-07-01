@@ -15,7 +15,6 @@ public class MarkerPanel extends LinewisePanel {
 
   public MarkerPanel(Editor editor) {
     this.editor = editor;
-    setBackground(Constants.BG_COLOR);
   }
 
   @Override

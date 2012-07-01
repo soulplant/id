@@ -49,9 +49,11 @@ public class AppLayout implements LayoutManager {
 
     filelist.setBounds(insets.left, insets.top, fileListWidth, remainingHeight);
     int editorsLeft = insets.left + fileListWidth + FILE_LIST_RIGHT_PADDING_PX;
-    divideHorizontalSpace(remainingWidth, editorsLeft, insets.top, remainingHeight, getVisibleEditorComponents());
+    divideHorizontalSpace(remainingWidth, editorsLeft, insets.top,
+        remainingHeight, getVisibleEditorComponents());
     if (minibuffer != null) {
-      minibuffer.setBounds(insets.left, remainingHeight, remainingWidth, getMinibufferHeight());
+      minibuffer.setBounds(insets.left, insets.top + remainingHeight,
+          remainingWidth, getMinibufferHeight());
     }
     if (fuzzyFinder != null) {
       int width = (int) fuzzyFinder.getPreferredSize().getWidth();

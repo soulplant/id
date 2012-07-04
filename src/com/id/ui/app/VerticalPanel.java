@@ -4,10 +4,13 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
+import com.id.ui.Constants;
+
 @SuppressWarnings("serial")
 public class VerticalPanel extends JPanel {
   public VerticalPanel(int verticalPaddingPx) {
     setLayout(new StackLayout(verticalPaddingPx));
+    setBackground(Constants.BG_COLOR);
   }
 
   @Override

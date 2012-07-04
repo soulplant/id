@@ -9,13 +9,14 @@ import javax.swing.JPanel;
 
 import com.id.app.ListModel;
 import com.id.editor.Editor;
+import com.id.ui.Constants;
 import com.id.ui.editor.EditorPanel;
 
 @SuppressWarnings("serial")
 public class SpotlightView extends JPanel implements ListModel.Listener<Editor> {
   private final Map<Editor, EditorPanel> map = new HashMap<Editor, EditorPanel>();
   private final ListModel<Editor> editors;
-  private final JLabel placeholderLabel = new JLabel("No more things to edit");
+  private final LinewisePanel placeholder = new LinewisePanel();
 
   public SpotlightView(ListModel<Editor> editors) {
     this.editors = editors;
@@ -31,7 +32,7 @@ public class SpotlightView extends JPanel implements ListModel.Listener<Editor> 
   private void refresh() {
     super.removeAll();
     if (editors.isEmpty()) {
-      super.add(placeholderLabel);
+      super.add(placeholder);
       return;
     }
     super.add(map.get(editors.getFocusedItem()));

@@ -1,6 +1,7 @@
 package com.id.ui.app;
 
 import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -11,6 +12,7 @@ import com.id.app.Controller;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.fuzzy.Finder;
+import com.id.ui.Constants;
 import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
@@ -49,6 +51,13 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
   @Override
   public boolean isOptimizedDrawingEnabled() {
     return false;
+  }
+
+  @Override
+  public void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    g.setColor(Constants.BG_COLOR);
+    g.fillRect(0, 0, getWidth(), getHeight());
   }
 
   @Override

@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import com.id.app.ListModel;
 import com.id.editor.Editor;
 import com.id.editor.Point;
+import com.id.ui.app.LinewisePanel;
 
 @SuppressWarnings("serial")
 public class EditorPanel extends JPanel implements Editor.EditorView {
@@ -29,7 +30,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
     panel.add(textPanel, BorderLayout.CENTER);
     if (showScrollbars) {
       // TODO(koz): Implement an actual scrollbar in terms of the scrollPane.
-      JPanel scrollBar = new JPanel();
+      JPanel scrollBar = new LinewisePanel();
       panel.add(scrollBar, BorderLayout.LINE_END);
     }
     titleView = new EditorTitleView(editor, editors);

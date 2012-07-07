@@ -4,12 +4,10 @@ import java.awt.BorderLayout;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.id.app.ListModel;
 import com.id.editor.Editor;
-import com.id.ui.Constants;
 import com.id.ui.editor.EditorPanel;
 
 @SuppressWarnings("serial")

@@ -1,6 +1,7 @@
 package com.id.ui.editor;
 
 import java.awt.BorderLayout;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
@@ -10,6 +11,7 @@ import javax.swing.JScrollPane;
 import com.id.app.ListModel;
 import com.id.editor.Editor;
 import com.id.editor.Point;
+import com.id.perf.TimeTracker;
 import com.id.ui.app.LinewisePanel;
 
 @SuppressWarnings("serial")
@@ -67,6 +69,14 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
     Rectangle rect = new Rectangle(point.getX() * fontWidthPx,
         point.getY() * fontHeightPx - padding, fontWidthPx, viewportHeight);
     textPanel.scrollRectToVisible(rect);
+  }
+
+  @Override
+  public void paint(Graphics g) {
+    long paintStartTime = System.nanoTime();
+    super.paint(g);
+    long paintEndTime = System.nanoTime();
+    TimeTracker.trackTime("draw", (int) ((paintEndTime - paintStartTime) / 1000));
   }
 
   @Override

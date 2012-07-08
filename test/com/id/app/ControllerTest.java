@@ -446,7 +446,7 @@ public class ControllerTest {
   }
 
   @Test
-  public void ctrlOOpensOtherFilesWithDifferentExtensions() {
+  public void ctrl6OpensOtherFilesWithDifferentExtensions() {
     typeString(":e src/c.h<CR><C-6>");
     assertEquals(2, editors.size());
   }

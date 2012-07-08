@@ -103,7 +103,8 @@ public class Trie {
   }
 
   public List<String> doFuzzyMatch(boolean onBoundary, String prefix, String query) {
-    PriorityQueue<FuzzyResult> results = doFuzzyMatch(0, onBoundary, prefix, query);
+    PriorityQueue<FuzzyResult> results = new PriorityQueue<FuzzyResult>();
+    doFuzzyMatch(results, 0, onBoundary, prefix, query);
     List<String> stringResults = new ArrayList<String>();
     Set<String> uniqueStrings = new HashSet<String>();
     for (FuzzyResult result : results) {
@@ -117,31 +118,29 @@ public class Trie {
   // boundariesPassed - how many word boundaries have been passed
   // onBoundary - are we matching directly after a boundary
   // prefix - characters passed
-  public PriorityQueue<FuzzyResult> doFuzzyMatch(
+  public void doFuzzyMatch(PriorityQueue<FuzzyResult> result,
       int boundariesPassed, boolean onBoundary, String prefix, String query) {
     if (query.isEmpty()) {
-      PriorityQueue<FuzzyResult> result = new PriorityQueue<FuzzyResult>();
       for (String completion : getCompletions(prefix, query)) {
         result.add(new FuzzyResult(boundariesPassed * 20, completion));
       }
-      return result;
+      return;
     }
 
     char queryHead = query.charAt(0);
     String queryTail = query.substring(1);
     boolean isNextBoundary = isBoundary(queryHead);
-    PriorityQueue<FuzzyResult> result = new PriorityQueue<FuzzyResult>();
 
     for (char c : children.keySet()) {
       boolean isBoundaryMatch = (onBoundary || isBoundary(c)) && isNextBoundary;
       int boundaryCount = boundariesPassed + (isBoundary(c) ? 1 : 0);
       Trie child = children.get(c);
       if (equal(c, queryHead, isBoundaryMatch)) {
-        result.addAll(child.doFuzzyMatch(boundaryCount, isBoundaryStart(c), prefix + c, queryTail));
+       child.doFuzzyMatch(result, boundaryCount, isBoundaryStart(c), prefix + c, queryTail);
       }
-      result.addAll(child.doFuzzyMatch(boundaryCount, isBoundaryStart(c), prefix + c, query));
+      child.doFuzzyMatch(result, boundaryCount, isBoundaryStart(c), prefix + c, query);
     }
-    return result;
+    return;
   }
 
   private boolean isBoundaryStart(char c) {

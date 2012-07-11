@@ -15,7 +15,7 @@ public class TrieTest {
   @Test
   public void testNoFuzzyMatches() {
     Trie<String> trie = new Trie<String>();
-    trie.addToken(phr_cc, phr_cc);
+    trie.add(phr_cc, phr_cc);
     List<String> matches = trie.doFuzzyMatch(true, "", "PHA");
     assertTrue(matches.isEmpty());
   }
@@ -23,7 +23,7 @@ public class TrieTest {
   @Test
   public void testOneFuzzyMatch() {
     Trie<String> trie = new Trie<String>();
-    trie.addToken(phr_cc, phr_cc);
+    trie.add(phr_cc, phr_cc);
     List<String> matches = trie.doFuzzyMatch(true, "", "PHR");
     assertEquals(1, matches.size());
     assertEquals(phr_cc, matches.get(0));
@@ -32,8 +32,8 @@ public class TrieTest {
   @Test
   public void testTwoFuzzyMatches() {
     Trie<String> trie = new Trie<String>();
-    trie.addToken(phr_cc, phr_cc);
-    trie.addToken(phr_h, phr_h);
+    trie.add(phr_cc, phr_cc);
+    trie.add(phr_h, phr_h);
     List<String> matches = trie.doFuzzyMatch(true, "", "PHR");
     assertEquals(2, matches.size());
   }
@@ -41,8 +41,8 @@ public class TrieTest {
   @Test
   public void testNormalMatchingWorks() {
     Trie<String> trie = new Trie<String>();
-    trie.addToken(phr_cc, phr_cc);
-    trie.addToken(phr_h, phr_h);
+    trie.add(phr_cc, phr_cc);
+    trie.add(phr_h, phr_h);
     List<String> matches = trie.doFuzzyMatch(true, "", "protocol_handler_registry");
     assertEquals(2, matches.size());
   }
@@ -50,8 +50,8 @@ public class TrieTest {
   @Test
   public void testDifferingKeysValues() {
     Trie<String> trie = new Trie<String>();
-    trie.addToken("AAA", phr_cc);
-    trie.addToken("BBB", phr_h);
+    trie.add("AAA", phr_cc);
+    trie.add("BBB", phr_h);
     List<String> matches = trie.doFuzzyMatch(true, "", "A");
     assertEquals(1, matches.size());
     assertEquals(phr_cc, matches.get(0));

@@ -38,7 +38,7 @@ public class Trie<T> {
   public Trie() {
   }
 
-  public void addToken(String token, T t) {
+  public void add(String token, T t) {
     if (token.isEmpty()) {
       endPoints.add(t);
     } else {
@@ -47,17 +47,17 @@ public class Trie<T> {
       if (!children.containsKey(next)) {
         children.put(next, new Trie<T>());
       }
-      children.get(next).addToken(substring, t);
+      children.get(next).add(substring, t);
     }
   }
 
-  public boolean removeToken(String token, T t) {
+  public boolean remove(String token, T t) {
     if (token.isEmpty()) {
       endPoints.remove(t);
     } else {
       char next = token.charAt(0);
       if (children.containsKey(next)) {
-        if (children.get(next).removeToken(token.substring(1), t)) {
+        if (children.get(next).remove(token.substring(1), t)) {
           children.remove(next);
         }
       }

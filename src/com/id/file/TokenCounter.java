@@ -42,10 +42,10 @@ public class TokenCounter implements File.Listener {
   }
 
   private void addToken(String token) {
-    trie.addToken(token, token);
+    trie.add(token, token);
   }
 
   private void removeToken(String token) {
-    trie.removeToken(token, token);
+    trie.remove(token, token);
   }
 }

@@ -25,17 +25,17 @@ public class FuzzyFinderDriver implements FinderDriver, File.Listener {
   // File.Listener
   @Override
   public void onLineInserted(int y, String line) {
-    trie.addToken(line, line);
+    trie.add(line, line);
   }
 
   @Override
   public void onLineRemoved(int y, String line) {
-    trie.removeToken(line, line);
+    trie.remove(line, line);
   }
 
   @Override
   public void onLineChanged(int y, String oldLine, String newLine) {
-    trie.removeToken(oldLine, oldLine);
-    trie.addToken(newLine, newLine);
+    trie.remove(oldLine, oldLine);
+    trie.add(newLine, newLine);
   }
 }

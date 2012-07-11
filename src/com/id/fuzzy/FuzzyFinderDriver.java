@@ -6,7 +6,7 @@ import com.id.file.File;
 import com.id.file.Trie;
 
 public class FuzzyFinderDriver implements FinderDriver, File.Listener {
-  private final Trie trie = new Trie();
+  private final Trie<String> trie = new Trie<String>();
 
   public FuzzyFinderDriver(File file) {
     for (int i = 0; i < file.getLineCount(); i++) {
@@ -25,17 +25,17 @@ public class FuzzyFinderDriver implements FinderDriver, File.Listener {
   // File.Listener
   @Override
   public void onLineInserted(int y, String line) {
-    trie.addToken(line);
+    trie.addToken(line, line);
   }
 
   @Override
   public void onLineRemoved(int y, String line) {
-    trie.removeToken(line);
+    trie.removeToken(line, line);
   }
 
   @Override
   public void onLineChanged(int y, String oldLine, String newLine) {
-    trie.removeToken(oldLine);
-    trie.addToken(newLine);
+    trie.removeToken(oldLine, oldLine);
+    trie.addToken(newLine, newLine);
   }
 }

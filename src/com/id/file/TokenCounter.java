@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TokenCounter implements File.Listener {
-  private Trie trie = new Trie();
+  private final Trie<String> trie = new Trie<String>();
 
   public TokenCounter() {
   }
@@ -42,10 +42,10 @@ public class TokenCounter implements File.Listener {
   }
 
   private void addToken(String token) {
-    trie.addToken(token);
+    trie.addToken(token, token);
   }
 
   private void removeToken(String token) {
-    trie.removeToken(token);
+    trie.removeToken(token, token);
   }
 }

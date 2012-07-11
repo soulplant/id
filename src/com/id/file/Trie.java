@@ -8,9 +8,10 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-public class Trie {
-  private int wordCount = 0;
-  private final Map<Character, Trie> children = new HashMap<Character, Trie>();
+public class Trie<T> {
+  private final List<T> endPoints = new ArrayList<T>();
+
+  private final Map<Character, Trie<T>> children = new HashMap<Character, Trie<T>>();
 
   private static class FuzzyResult implements Comparable<FuzzyResult> {
     private final int score;
@@ -37,40 +38,38 @@ public class Trie {
   public Trie() {
   }
 
-  public void addToken(String token) {
+  public void addToken(String token, T t) {
     if (token.isEmpty()) {
-      wordCount++;
+      endPoints.add(t);
     } else {
       char next = token.charAt(0);
       String substring = token.substring(1);
       if (!children.containsKey(next)) {
-        children.put(next, new Trie());
+        children.put(next, new Trie<T>());
       }
-      children.get(next).addToken(substring);
+      children.get(next).addToken(substring, t);
     }
   }
 
-  public boolean removeToken(String token) {
+  public boolean removeToken(String token, T t) {
     if (token.isEmpty()) {
-      if (wordCount > 0) {
-        wordCount--;
-      }
+      endPoints.remove(t);
     } else {
       char next = token.charAt(0);
       if (children.containsKey(next)) {
-        if (children.get(next).removeToken(token.substring(1))) {
+        if (children.get(next).removeToken(token.substring(1), t)) {
           children.remove(next);
         }
       }
     }
-    return wordCount == 0 && children.isEmpty();
+    return endPoints.isEmpty() && children.isEmpty();
   }
 
   public List<String> getCompletions(String prefix, String query) {
     if (query.isEmpty()) {
       List<String> result = new ArrayList<String>();
-      if (wordCount > 0) {
-        result.add(prefix);
+      for (T endPoint : endPoints) {
+        result.add(endPoint.toString());
       }
       for (char c : children.keySet()) {
         result.addAll(children.get(c).getCompletions(prefix + c, query));
@@ -134,7 +133,7 @@ public class Trie {
     for (char c : children.keySet()) {
       boolean isBoundaryMatch = (onBoundary || isBoundary(c)) && isNextBoundary;
       int boundaryCount = boundariesPassed + (isBoundary(c) ? 1 : 0);
-      Trie child = children.get(c);
+      Trie<T> child = children.get(c);
       if (equal(c, queryHead, isBoundaryMatch)) {
        child.doFuzzyMatch(result, boundaryCount, isBoundaryStart(c), prefix + c, queryTail);
       }

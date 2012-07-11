@@ -45,7 +45,8 @@ public class EditorRenderer {
 
   private String safeSubstring(String line, int x, int length) {
     int endIndex = Math.min(line.length(), x + length);
-    return line.substring(x, endIndex);
+    int startIndex = Math.max(0, x);
+    return line.substring(startIndex, endIndex);
   }
 
   private void setLine(int matrixY, int startX, int length, Matrix matrix, int lineY) {

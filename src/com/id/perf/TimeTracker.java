@@ -14,9 +14,6 @@ public class TimeTracker {
       times.put(eventName, new ArrayList<Integer>());
     }
     times.get(eventName).add(duration);
-    if (++timesTracked % 10 == 0) {
-      dumpTrackedTimeAverages();
-    }
   }
 
   private static void dumpTrackedTimeAverages() {

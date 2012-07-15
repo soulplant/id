@@ -48,13 +48,6 @@ public class FuzzyFinderDriver implements FinderDriver, File.Listener {
 
   private String getIndexString(String filename) {
     List<String> words = new ArrayList<String>(Arrays.asList(filename.split("/")));
-    String basename = words.remove(words.size() - 1);
-    StringBuffer buffer = new StringBuffer();
-    for (String word : words) {
-      buffer.append(word.substring(0, 1));
-      buffer.append("/");
-    }
-    buffer.append(basename);
-    return buffer.toString();
+    return words.remove(words.size() - 1);
   }
 }

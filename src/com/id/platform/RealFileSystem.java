@@ -69,12 +69,11 @@ public class RealFileSystem implements FileSystem {
     try {
       FileReader fileReader = new FileReader(file(filename));
       BufferedReader bufferedReader = new BufferedReader(fileReader);
-      file = File.loadFrom(bufferedReader);
+      file = File.loadFrom(StringUtils.normalizePath(filename), bufferedReader);
     } catch (IOException e) {
       e.printStackTrace();
       return null;
     }
-    file.setFilename(StringUtils.normalizePath(filename));
     return file;
   }
 

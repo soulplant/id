@@ -63,10 +63,11 @@ public class FileTest {
   @Test
   public void loadFileTest() throws IOException {
     StringReader stringReader = new StringReader("this\nis");
-    File file = File.loadFrom(new BufferedReader(stringReader));
+    File file = File.loadFrom("filename", new BufferedReader(stringReader));
     assertEquals("this", file.getLine(0));
     assertEquals("is", file.getLine(1));
     assertEquals(2, file.getLineCount());
+    assertEquals("filename", file.getFilename());
     assertTrue(isAllStatus(Tombstone.Status.NORMAL, file));
   }
 

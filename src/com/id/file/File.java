@@ -210,13 +210,16 @@ public class File {
     return graveyard.getGrave(y);
   }
 
-  public static File loadFrom(BufferedReader bufferedReader) throws IOException {
+  public static File loadFrom(String filename, BufferedReader bufferedReader)
+      throws IOException {
     List<String> lines = new ArrayList<String>();
     String line;
     while ((line = bufferedReader.readLine()) != null) {
       lines.add(line);
     }
-    return new File(lines);
+    File file = new File(lines);
+    file.setFilename(filename);
+    return file;
   }
 
   private void reset() {

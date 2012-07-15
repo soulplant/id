@@ -98,6 +98,7 @@ public class ListModel<T> implements Iterable<T> {
     int i = getFocusedIndex();
     remove(i);
     insert(i + 1, focusedItem);
+    setFocusedIndex(i + 1);
   }
 
   private boolean isFocusAtEnd() {

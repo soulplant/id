@@ -140,4 +140,14 @@ public class ListModelTest {
     model.remove(2);
     assertEquals(1, model.getFocusedIndex());
   }
+
+  @Test
+  public void movingFocusedItemDownMovesFocusedIndex() {
+    model.setFocusLatest(false);
+    model.add("hi");
+    model.add("there");
+    model.moveUp();
+    model.moveFocusedItemDown();
+    assertEquals(1, model.getFocusedIndex());
+  }
 }

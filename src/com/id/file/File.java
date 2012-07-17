@@ -20,11 +20,17 @@ public class File {
     void onLineChanged(int y, String oldLine, String newLine);
   }
 
+  public interface SaveAction {
+    void onSave(File file);
+  }
+
   private final List<String> lines = new ArrayList<String>();
   private final List<Listener> listeners = new ArrayList<Listener>();
   private final List<ModifiedListener> modifiedListeners = new ArrayList<ModifiedListener>();
   private final Patchwork patchwork;
   private final Graveyard graveyard;
+  // TODO(koz): Make regular save a SaveAction.
+  private SaveAction saveAction = null;
   private String filename;
 
   public static File createNewFile(String filename) {
@@ -247,6 +253,9 @@ public class File {
     fileSystem.save(this);
     if (patchwork.isModified()) {
       patchwork.onSaved();
+      if (saveAction != null) {
+        saveAction.onSave(this);
+      }
     } else {
       if (patchwork.isDogEared()) {
         patchwork.clearDogEar();
@@ -301,6 +310,16 @@ public class File {
     graveyard.resetRange(y, y);
   }
 
+  public void wipeRange(int startY, int endY) {
+    for (int i = endY; i >= startY; i--) {
+      wipe(i);
+    }
+  }
+
+  public void wipeAll() {
+    wipeRange(0, getLineCount() - 1);
+  }
+
   public List<String> getLineRange(int startY, int endY) {
     List<String> result = new ArrayList<String>();
     for (int i = startY; i <= endY; i++) {
@@ -326,5 +345,9 @@ public class File {
       }
     }
     return -1;
+  }
+
+  public void setSaveAction(SaveAction saveAction) {
+    this.saveAction = saveAction;
   }
 }

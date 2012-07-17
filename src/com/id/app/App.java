@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
 import com.id.file.File;
+import com.id.file.FilesRenameInterpreter;
 import com.id.file.FileView;
 import com.id.fuzzy.Finder;
 import com.id.fuzzy.FuzzyFinderDriver;
@@ -52,7 +53,7 @@ public class App {
     FileSystem fileSystem = new RealFileSystem();
     BashShell shell = new BashShell(null);
     Repository repository = new GitRepository(shell);
-    File files = fileSystem.getFileOrNewFile(".files");
+    File files = getFilesFile(fileSystem, shell);
     Finder finder = new Finder(files);
     HighlightState highlightState = new HighlightState();
     final Controller controller = new Controller(editors, fileSystem,
@@ -77,6 +78,13 @@ public class App {
 
     new FullscreenSwapper(normalAppFrame, fullscreenAppFrame);
     controller.openFileView(new FileView(files));
+  }
+
+  private static File getFilesFile(final FileSystem fileSystem,
+                                   final Shell shell) {
+    File file = fileSystem.getFileOrNewFile(".files");
+    file.setSaveAction(new FilesRenameInterpreter(fileSystem, shell));
+    return file;
   }
 
   public static boolean isMacOS() {

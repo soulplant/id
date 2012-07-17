@@ -492,9 +492,7 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public void wipeRange(int startY, int endY) {
-    for (int i = endY; i >= startY; i--) {
-      wipe(i);
-    }
+    file.wipeRange(startY, endY);
   }
 
   public void wipe(int y) {

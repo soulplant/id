@@ -23,6 +23,7 @@ import com.id.fuzzy.FuzzyFinderTest;
 import com.id.platform.InMemoryFileSystemTest;
 import com.id.rendering.EditorRendererTest;
 import com.id.rendering.SlugTest;
+import com.id.util.UtilTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ EditorTest.class, VisualTest.class, FileTest.class,
@@ -31,6 +32,6 @@ import com.id.rendering.SlugTest;
     CachingHighlightTest.class, MinibufferTest.class, EditorRendererTest.class,
     EditorFileViewTest.class, ControllerTest.class, KeyStrokeParserTest.class,
     PatchworkTest.class, ListModelTest.class, TokenCounterTest.class,
-    TrieTest.class, HighlightStateTest.class })
+    TrieTest.class, HighlightStateTest.class, UtilTest.class })
 public class AllTests {
 }

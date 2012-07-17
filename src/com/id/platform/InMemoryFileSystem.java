@@ -32,6 +32,9 @@ class Node {
   }
 
   public Node getChildNamed(String name) {
+    if (".".equals(name)) {
+      return this;
+    }
     for (Node child : children) {
       if (child.hasName(name)) {
         return child;
@@ -112,7 +115,7 @@ public class InMemoryFileSystem implements FileSystem {
   public String[] getSubdirectories(String path) {
     Node node = getNode(path);
     if (node == null) {
-      return null;
+      return new String[]{};
     }
     List<String> subDirs = new ArrayList<String>();
     for (Node child : node.getChildren()) {

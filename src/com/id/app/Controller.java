@@ -592,7 +592,18 @@ public class Controller implements KeyStrokeHandler {
   }
 
   public void importDiffs() {
-    Diff diff = repository.getDiffTo(repository.getHead());
+    List<String> revisions = repository.getRevisionList();
+    finder.runFindAction(new SubstringFinderDriver(new File(revisions)),
+        new Finder.SelectionListener() {
+      @Override
+      public void onItemSelected(String item) {
+        importDiffsRelativeTo(item.split(" ")[0]);
+      }
+    });
+  }
+
+  public void importDiffsRelativeTo(String revision) {
+    Diff diff = repository.getDiffRelativeTo(revision);
     for (String filename : diff.getModifiedFiles()) {
       Editor editor = openFile(filename);
       if (editor == null) {

@@ -1,5 +1,8 @@
 package com.id.git;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InMemoryRepository implements Repository {
   private Diff nextDiffResult;
 
@@ -9,7 +12,7 @@ public class InMemoryRepository implements Repository {
   }
 
   @Override
-  public Diff getDiffTo(String rev) {
+  public Diff getDiffRelativeTo(String rev) {
     return nextDiffResult;
   }
 
@@ -25,5 +28,10 @@ public class InMemoryRepository implements Repository {
   @Override
   public void init() {
     // Do nothing.
+  }
+
+  @Override
+  public List<String> getRevisionList() {
+    return new ArrayList<String>();
   }
 }

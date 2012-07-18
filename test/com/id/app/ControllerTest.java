@@ -139,7 +139,7 @@ public class ControllerTest {
     fileDeltas.put("a", fileDelta);
     Diff diff = new Diff(fileDeltas);
     repo.setDiffResult(diff);
-    controller.importDiffs();
+    controller.importDiffsRelativeTo("HEAD");
     assertEquals(Tombstone.Status.NEW, editors.get(0).getStatus(0));
     assertEquals(2, editors.get(0).getGrave(0).size());
   }

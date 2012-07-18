@@ -2,6 +2,8 @@ package com.id.git;
 
 import com.id.app.Shell;
 
+import java.util.List;
+
 public class GitRepository implements Repository {
   private final Shell shell;
 
@@ -15,8 +17,8 @@ public class GitRepository implements Repository {
   }
 
   @Override
-  public Diff getDiffTo(String rev) {
-    Diff lines = Diff.fromLines(shell.exec("git diff " + getHead()));
+  public Diff getDiffRelativeTo(String rev) {
+    Diff lines = Diff.fromLines(shell.exec("git diff " + rev));
     System.out.println(lines);
     return lines;
   }
@@ -31,5 +33,10 @@ public class GitRepository implements Repository {
   @Override
   public void init() {
     shell.exec("git init");
+  }
+
+  @Override
+  public List<String> getRevisionList() {
+    return shell.exec("git log --pretty=oneline -n 10");
   }
 }

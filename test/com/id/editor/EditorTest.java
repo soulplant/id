@@ -247,4 +247,12 @@ public class EditorTest extends EditorTestBase {
     fileView2.removeLine(0);
     assertCursorPosition(0, 0);
   }
+
+  @Test
+  public void removingALineFromTheFileViewKeepsCursorWithinBounds() {
+    setFileContents("abcd", ".");
+    typeString("$");
+    fileView.removeLine(0);
+    assertCursorPosition(0, 0);
+  }
 }

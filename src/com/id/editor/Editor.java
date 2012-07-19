@@ -1045,6 +1045,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   public void onLineRemoved(int y, String line) {
     if (y <= cursor.getY()) {
       cursor.moveBy(-1, 0);
+      applyCursorConstraints();
     }
   }
 

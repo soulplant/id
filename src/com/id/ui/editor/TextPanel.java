@@ -41,7 +41,8 @@ public class TextPanel extends LinewisePanel {
   }
 
   private void updateSize() {
-    setPreferredSize(new Dimension(getFontWidthPx(), getFontHeightPx() * editor.getLineCount()));
+    setPreferredSize(new Dimension(
+        getFontWidthPx() + 1, getFontHeightPx() * editor.getLineCount() + 1));
     invalidate();
   }
 

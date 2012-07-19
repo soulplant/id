@@ -1005,4 +1005,16 @@ public class EditorTypingTest extends EditorTestBase {
     setFileContents();
     typeString("\\>");
   }
+
+  @Test
+  public void gfOnEmptyLineShouldntCrash() {
+    setFileContents("");
+    typeString("gf");
+  }
+
+  @Test
+  public void gfOnEmptyFileShouldntCrash() {
+    setFileContents();
+    typeString("gf");
+  }
 }

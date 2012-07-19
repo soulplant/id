@@ -949,7 +949,13 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void openFileUnderCursor() {
-    environment.openFile(file.getFilenameAt(cursor.getY(), cursor.getX()));
+    if (file.isEmpty()) {
+      return;
+    }
+    String filename = file.getFilenameAt(cursor.getY(), cursor.getX());
+    if (filename != null) {
+      environment.openFile(filename);
+    }
   }
 
   public void openFileMatchingWordUnderCursor() {

@@ -303,6 +303,9 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public String getFilenameAt(int y, int x) {
+    if (getLine(y).isEmpty()) {
+      return null;
+    }
     int start = findFilenameStart(y, x);
     int end = findFilenameEnd(y, x);
     return getLine(y).substring(start, end + 1);

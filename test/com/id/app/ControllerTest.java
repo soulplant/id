@@ -60,6 +60,7 @@ public class ControllerTest {
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");
     fileSystem.insertFile("src/c.cc", "ccc");
+    fileSystem.insertFile("src/c.h", "chc");
     fileSystem.insertFile("src/d.cc", "ddd");
   }
 
@@ -449,6 +450,17 @@ public class ControllerTest {
   public void ctrl6OpensOtherFilesWithDifferentExtensions() {
     typeString(":e src/c.h<CR><C-6>");
     assertEquals(2, editors.size());
+  }
+
+  @Test
+  public void reloadCurrentFile() {
+    typeString(":e src/c.h<CR>");
+    String startContents = editors.getFocusedItem().getLine(0);
+    typeString("Stest<ESC>");
+    assertEquals("test", editors.getFocusedItem().getLine(0));
+    typeString(":e<CR>");
+    String endContents = editors.getFocusedItem().getLine(0);
+    assertEquals(startContents, endContents);
   }
 
   private void createSnippetFromCurrentLine() {

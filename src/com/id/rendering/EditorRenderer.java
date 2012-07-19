@@ -44,6 +44,9 @@ public class EditorRenderer {
   }
 
   private String safeSubstring(String line, int x, int length) {
+    if (x < 0) {
+      throw new IllegalStateException("x should be >= 0");
+    }
     int endIndex = Math.min(line.length(), x + length);
     int startIndex = Math.max(0, x);
     return line.substring(startIndex, endIndex);

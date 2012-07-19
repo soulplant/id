@@ -973,6 +973,9 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   private void indentLine(int y) {
+    if (getLine(y).isEmpty()) {
+      return;
+    }
     String indent = getIndentForLine(y);
     int remainder = indent.length() % TAB_SIZE;
     int indentAmount = TAB_SIZE - remainder;

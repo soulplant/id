@@ -992,4 +992,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("lC<ESC>p");
     assertFileContents("abc");
   }
+
+  @Test
+  public void indentOnEmptyLineShouldDoNothing() {
+    setFileContents("");
+    typeString("\\>");
+    assertFileContents("");
+  }
 }

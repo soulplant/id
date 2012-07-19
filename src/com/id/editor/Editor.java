@@ -958,6 +958,9 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void indent() {
+    if (file.isEmpty()) {
+      return;
+    }
     startPatch();
     if (isInVisual()) {
       int startY = visual.getStartPoint().getY();

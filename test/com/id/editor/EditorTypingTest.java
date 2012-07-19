@@ -999,4 +999,10 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("\\>");
     assertFileContents("");
   }
+
+  @Test
+  public void indentOnEmptyFileShouldntCrash() {
+    setFileContents();
+    typeString("\\>");
+  }
 }

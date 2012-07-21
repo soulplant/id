@@ -7,21 +7,21 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import com.id.app.ListModel;
-import com.id.editor.Editor;
-import com.id.ui.editor.EditorPanel;
 
 @SuppressWarnings("serial")
-public class SpotlightView extends JPanel implements ListModel.Listener<Editor> {
-  private final Map<Editor, EditorPanel> map = new HashMap<Editor, EditorPanel>();
-  private final ListModel<Editor> editors;
+public class SpotlightView<M, V extends JPanel> extends JPanel implements ListModel.Listener<M> {
+  private final Map<M, V> map = new HashMap<M, V>();
+  private final ListModel<M> editors;
   private final LinewisePanel placeholder = new LinewisePanel();
+  private final ViewFactory<M, V> viewFactory;
 
-  public SpotlightView(ListModel<Editor> editors) {
+  public SpotlightView(ListModel<M> editors, ViewFactory<M, V> viewFactory) {
     this.editors = editors;
+    this.viewFactory = viewFactory;
     setLayout(new BorderLayout());
     for (int i = 0; i < editors.size(); i++) {
-      Editor editor = editors.get(i);
-      EditorPanel editorPanel = new EditorPanel(editor, editors, true);
+      M editor = editors.get(i);
+      V editorPanel = viewFactory.createView(editor);
       map.put(editor, editorPanel);
     }
     refresh();
@@ -37,27 +37,27 @@ public class SpotlightView extends JPanel implements ListModel.Listener<Editor> 
   }
 
   @Override
-  public void onAdded(int i, Editor editor) {
+  public void onAdded(int i, M editor) {
     // TODO(koz): This is some hax here. We don't remove old editors, in case they are
     // being added and removed straight away. This currently happens when ctrl-j/k is
     // typed. We don't want to throw away the EditorPanel because it holds state such
     // as the scroll (which is also a design flaw). What should happen is we should
     // send move events as well as add/remove, so that we don't leak EditorPanels.
-    EditorPanel editorPanel = map.get(editor);
+    V editorPanel = map.get(editor);
     if (editorPanel == null) {
-      editorPanel = new EditorPanel(editor, editors, true);
+      editorPanel = viewFactory.createView(editor);
       map.put(editor, editorPanel);
     }
     refresh();
   }
 
   @Override
-  public void onSelectionChanged(int i, Editor editor) {
+  public void onSelectionChanged(int i, M editor) {
     refresh();
   }
 
   @Override
-  public void onRemoved(int i, Editor editor) {
+  public void onRemoved(int i, M editor) {
     // EditorPanel editorPanel = map.remove(editor);
     refresh();
   }

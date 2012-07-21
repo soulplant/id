@@ -24,15 +24,15 @@ import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
 import com.id.platform.RealFileSystem;
-import com.id.ui.EditorContainerView;
 import com.id.ui.ListModelBinder;
+import com.id.ui.SpotlightView;
+import com.id.ui.StackView;
 import com.id.ui.ViewFactory;
 import com.id.ui.app.AppFrame;
 import com.id.ui.app.AppPanel;
 import com.id.ui.app.FileListView;
 import com.id.ui.app.FinderPanel;
 import com.id.ui.app.FullscreenSwapper;
-import com.id.ui.app.StackView;
 import com.id.ui.editor.EditorPanel;
 import com.id.ui.editor.TextPanel;
 
@@ -63,18 +63,24 @@ public class App {
         finder, repository, highlightState, stack, minibuffer,
         commandExecutor, null, new FuzzyFinderDriver(files));
 
-    EditorContainerView spotlightView = new EditorContainerView();
-    final ListModelBinder<Editor, EditorPanel> spotlight =
-        new ListModelBinder<Editor, EditorPanel>(editors,
-            new ViewFactory<Editor, EditorPanel>() {
-      @Override
-      public EditorPanel createView(Editor editor) {
-        return new EditorPanel(editor, editors, true);
-      }
-    }, spotlightView);
+    SpotlightView spotlightView = new SpotlightView();
+    final ListModelBinder<Editor, EditorPanel> spotlight = new ListModelBinder<Editor, EditorPanel>(
+        editors, new ViewFactory<Editor, EditorPanel>() {
+          @Override
+          public EditorPanel createView(Editor editor) {
+            return new EditorPanel(editor, editors, true);
+          }
+        }, spotlightView);
 
     final FileListView fileListView = new FileListView(editors);
-    StackView stackView = new StackView(stack);
+    StackView stackView = new StackView();
+    ListModelBinder<Editor, EditorPanel> stackBinder = new ListModelBinder<Editor, EditorPanel>(
+        stack, new ViewFactory<Editor, EditorPanel>() {
+          @Override
+          public EditorPanel createView(Editor editor) {
+            return new EditorPanel(editor, stack, false);
+          }
+        }, stackView);
     TextPanel minibufferView = new TextPanel(minibuffer.getEditor());
     FinderPanel fuzzyFinderPanel = new FinderPanel(finder);
     final AppPanel panel = new AppPanel(fileListView, spotlightView, stackView,
@@ -84,6 +90,7 @@ public class App {
 
     editors.addListener(fileListView);
     editors.addListener(spotlight);
+    stack.addListener(stackBinder);
 
     AppFrame fullscreenAppFrame = new AppFrame(panel, true);
     AppFrame normalAppFrame = new AppFrame(panel, false, new Dimension(1024, 768));

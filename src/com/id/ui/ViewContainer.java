@@ -1,6 +1,9 @@
 package com.id.ui;
 
-public interface ViewContainer<V> {
-  void removeAll();
-  void add(V view);
+import java.util.Map;
+
+import com.id.app.ListModel;
+
+public interface ViewContainer<M, V> {
+  void refreshFrom(ListModel<M> models, Map<M, V> viewMap);
 }

@@ -9,10 +9,10 @@ public class ListModelBinder<M, V> implements ListModel.Listener<M> {
   private final Map<M, V> map = new HashMap<M, V>();
   private final ListModel<M> models;
   private final ViewFactory<M, V> viewFactory;
-  private final ViewContainer<V> viewContainer;
+  private final ViewContainer<M, V> viewContainer;
 
   public ListModelBinder(ListModel<M> models, ViewFactory<M, V> viewFactory,
-      ViewContainer<V> viewContainer) {
+      ViewContainer<M, V> viewContainer) {
     this.models = models;
     this.viewFactory = viewFactory;
     this.viewContainer = viewContainer;
@@ -26,11 +26,11 @@ public class ListModelBinder<M, V> implements ListModel.Listener<M> {
   }
 
   private void refresh() {
-    viewContainer.removeAll();
-    if (models.isEmpty()) {
-      return;
-    }
-    viewContainer.add(map.get(models.getFocusedItem()));
+    // TODO(koz): So how this currently works is we just pass over all our data
+    // whenever the view changes. As per the TODO below, this could be made a
+    // lot better if we actually told the viewContainer what things changed and
+    // when.
+    viewContainer.refreshFrom(models,  map);
   }
 
   @Override

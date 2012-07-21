@@ -17,14 +17,14 @@ import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
 public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listener, Controller.Listener {
-  private final SpotlightView spotlightView;
-  private final FileListView fileListView;
+  private final Component spotlightView;
+  private final Component fileListView;
   private final Component stackView;
   private final KeyStrokeHandler handler;
   private final FinderPanel fuzzyFinderPanel;
   private final AppLayout appLayout = new AppLayout();
 
-  public AppPanel(FileListView fileListView, SpotlightView spotlightView,
+  public AppPanel(Component fileListView, Component spotlightView,
       Component stackView, KeyStrokeHandler handler, FinderPanel fuzzyFinderPanel,
       TextPanel minibufferView) {
     this.spotlightView = spotlightView;
@@ -60,6 +60,7 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
     g.fillRect(0, 0, getWidth(), getHeight());
   }
 
+  // KeyListener.
   @Override
   public void keyTyped(KeyEvent e) {
     // Do nothing.
@@ -79,16 +80,12 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
       System.exit(0);
     }
 
+    // TODO(koz): Don't repaint on every keystroke.
     this.handler.handleKeyStroke(keyStroke);
     this.spotlightView.repaint();
     this.fileListView.repaint();
     this.stackView.repaint();
     this.fuzzyFinderPanel.repaint();
-  }
-
-  private void logEventTranslationInfo(KeyEvent event, KeyStroke keyStroke) {
-//    System.out.println("event: " + event);
-//    System.out.println("keystroke: " + keyStroke);
   }
 
   @Override
@@ -99,22 +96,28 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
   // FuzzyFinder.Listener.
   @Override
   public void onQueryChanged() {
-    repaint();
+    fuzzyFinderPanel.repaint();
   }
 
   @Override
   public void onSelectionChanged(int index) {
-    repaint();
+    fuzzyFinderPanel.repaint();
   }
 
   @Override
   public void onSetVisible(boolean visible) {
     fuzzyFinderPanel.setVisible(visible);
+    invalidate();
   }
 
   @Override
   public void onStackVisibilityChanged(boolean isStackVisible) {
     stackView.setVisible(isStackVisible);
     invalidate();
+  }
+
+  private void logEventTranslationInfo(KeyEvent event, KeyStroke keyStroke) {
+//    System.out.println("event: " + event);
+//    System.out.println("keystroke: " + keyStroke);
   }
 }

@@ -43,12 +43,13 @@ public class EditorRenderer {
     return matrix;
   }
 
+  private int cap(int x, int low, int high) {
+    return Math.min(high, Math.max(low, x));
+  }
+
   private String safeSubstring(String line, int x, int length) {
-    if (x < 0) {
-      throw new IllegalStateException("x should be >= 0");
-    }
-    int endIndex = Math.min(line.length(), x + length);
-    int startIndex = Math.max(0, x);
+    int endIndex = cap(x + length, 0, line.length());
+    int startIndex = cap(x, 0, line.length());
     return line.substring(startIndex, endIndex);
   }
 

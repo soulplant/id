@@ -1,25 +1,22 @@
 package com.id.ui;
 
-import java.awt.BorderLayout;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JPanel;
-
 import com.id.app.ListModel;
-import com.id.ui.app.LinewisePanel;
 
-@SuppressWarnings("serial")
-public class ListModelView<M, V extends JPanel> extends JPanel implements ListModel.Listener<M> {
+public class ListModelBinder<M, V> implements ListModel.Listener<M> {
   private final Map<M, V> map = new HashMap<M, V>();
   private final ListModel<M> models;
-  private final LinewisePanel placeholder = new LinewisePanel();
   private final ViewFactory<M, V> viewFactory;
+  private final ViewContainer<V> viewContainer;
 
-  public ListModelView(ListModel<M> models, ViewFactory<M, V> viewFactory) {
+  public ListModelBinder(ListModel<M> models, ViewFactory<M, V> viewFactory,
+      ViewContainer<V> viewContainer) {
     this.models = models;
     this.viewFactory = viewFactory;
-    setLayout(new BorderLayout());
+    this.viewContainer = viewContainer;
+
     for (int i = 0; i < models.size(); i++) {
       M model = models.get(i);
       V view = viewFactory.createView(model);
@@ -29,12 +26,11 @@ public class ListModelView<M, V extends JPanel> extends JPanel implements ListMo
   }
 
   private void refresh() {
-    super.removeAll();
+    viewContainer.removeAll();
     if (models.isEmpty()) {
-      super.add(placeholder);
       return;
     }
-    super.add(map.get(models.getFocusedItem()));
+    viewContainer.add(map.get(models.getFocusedItem()));
   }
 
   @Override

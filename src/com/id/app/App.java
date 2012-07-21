@@ -16,15 +16,16 @@ import javax.swing.SwingUtilities;
 import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
 import com.id.file.File;
-import com.id.file.FilesRenameInterpreter;
 import com.id.file.FileView;
+import com.id.file.FilesRenameInterpreter;
 import com.id.fuzzy.Finder;
 import com.id.fuzzy.FuzzyFinderDriver;
 import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
 import com.id.platform.RealFileSystem;
-import com.id.ui.ListModelView;
+import com.id.ui.EditorContainerView;
+import com.id.ui.ListModelBinder;
 import com.id.ui.ViewFactory;
 import com.id.ui.app.AppFrame;
 import com.id.ui.app.AppPanel;
@@ -62,14 +63,15 @@ public class App {
         finder, repository, highlightState, stack, minibuffer,
         commandExecutor, null, new FuzzyFinderDriver(files));
 
-    final ListModelView<Editor, EditorPanel> spotlightView =
-        new ListModelView<Editor, EditorPanel>(editors,
+    EditorContainerView spotlightView = new EditorContainerView();
+    final ListModelBinder<Editor, EditorPanel> spotlight =
+        new ListModelBinder<Editor, EditorPanel>(editors,
             new ViewFactory<Editor, EditorPanel>() {
       @Override
       public EditorPanel createView(Editor editor) {
         return new EditorPanel(editor, editors, true);
       }
-    });
+    }, spotlightView);
 
     final FileListView fileListView = new FileListView(editors);
     StackView stackView = new StackView(stack);
@@ -81,7 +83,7 @@ public class App {
     controller.addListener(panel);
 
     editors.addListener(fileListView);
-    editors.addListener(spotlightView);
+    editors.addListener(spotlight);
 
     AppFrame fullscreenAppFrame = new AppFrame(panel, true);
     AppFrame normalAppFrame = new AppFrame(panel, false, new Dimension(1024, 768));

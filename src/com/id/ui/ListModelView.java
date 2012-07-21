@@ -1,4 +1,4 @@
-package com.id.ui.app;
+package com.id.ui;
 
 import java.awt.BorderLayout;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import com.id.app.ListModel;
+import com.id.ui.app.LinewisePanel;
 
 @SuppressWarnings("serial")
 public class ListModelView<M, V extends JPanel> extends JPanel implements ListModel.Listener<M> {

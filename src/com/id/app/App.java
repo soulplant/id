@@ -24,14 +24,14 @@ import com.id.git.GitRepository;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
 import com.id.platform.RealFileSystem;
+import com.id.ui.ListModelView;
+import com.id.ui.ViewFactory;
 import com.id.ui.app.AppFrame;
 import com.id.ui.app.AppPanel;
 import com.id.ui.app.FileListView;
 import com.id.ui.app.FinderPanel;
 import com.id.ui.app.FullscreenSwapper;
-import com.id.ui.app.ListModelView;
 import com.id.ui.app.StackView;
-import com.id.ui.app.ViewFactory;
 import com.id.ui.editor.EditorPanel;
 import com.id.ui.editor.TextPanel;
 

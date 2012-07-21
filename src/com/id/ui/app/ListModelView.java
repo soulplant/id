@@ -9,13 +9,13 @@ import javax.swing.JPanel;
 import com.id.app.ListModel;
 
 @SuppressWarnings("serial")
-public class SpotlightView<M, V extends JPanel> extends JPanel implements ListModel.Listener<M> {
+public class ListModelView<M, V extends JPanel> extends JPanel implements ListModel.Listener<M> {
   private final Map<M, V> map = new HashMap<M, V>();
   private final ListModel<M> models;
   private final LinewisePanel placeholder = new LinewisePanel();
   private final ViewFactory<M, V> viewFactory;
 
-  public SpotlightView(ListModel<M> models, ViewFactory<M, V> viewFactory) {
+  public ListModelView(ListModel<M> models, ViewFactory<M, V> viewFactory) {
     this.models = models;
     this.viewFactory = viewFactory;
     setLayout(new BorderLayout());

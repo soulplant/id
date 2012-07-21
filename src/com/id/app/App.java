@@ -29,7 +29,7 @@ import com.id.ui.app.AppPanel;
 import com.id.ui.app.FileListView;
 import com.id.ui.app.FinderPanel;
 import com.id.ui.app.FullscreenSwapper;
-import com.id.ui.app.SpotlightView;
+import com.id.ui.app.ListModelView;
 import com.id.ui.app.StackView;
 import com.id.ui.app.ViewFactory;
 import com.id.ui.editor.EditorPanel;
@@ -62,8 +62,8 @@ public class App {
         finder, repository, highlightState, stack, minibuffer,
         commandExecutor, null, new FuzzyFinderDriver(files));
 
-    final SpotlightView<Editor, EditorPanel> spotlightView =
-        new SpotlightView<Editor, EditorPanel>(editors,
+    final ListModelView<Editor, EditorPanel> spotlightView =
+        new ListModelView<Editor, EditorPanel>(editors,
             new ViewFactory<Editor, EditorPanel>() {
       @Override
       public EditorPanel createView(Editor editor) {

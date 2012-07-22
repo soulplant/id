@@ -12,7 +12,7 @@ import com.id.platform.FileSystem;
 public class Util {
   public static List<String> readFile(String filename) {
     try {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("resources/diff")));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
       List<String> result = new ArrayList<String>();
       String line;
       while ((line = reader.readLine()) != null) {

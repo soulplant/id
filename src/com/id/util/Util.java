@@ -18,6 +18,7 @@ public class Util {
       while ((line = reader.readLine()) != null) {
         result.add(line);
       }
+      reader.close();
       return result;
     } catch (IOException e) {
       e.printStackTrace();

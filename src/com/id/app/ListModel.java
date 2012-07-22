@@ -271,4 +271,12 @@ public class ListModel<T> implements Iterable<T>, Focusable {
   public boolean isFocused(Editor editor) {
     return getFocusedItem() == editor;
   }
+
+  public boolean isFocusOnLast() {
+    return focusedIndex == size() - 1;
+  }
+
+  public boolean isFocusOnFirst() {
+    return focusedIndex == 0;
+  }
 }

@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 
 import com.id.editor.Editor;
 import com.id.editor.EditorList;
+import com.id.editor.Hideable;
 import com.id.editor.Minibuffer;
 import com.id.editor.Stack;
 import com.id.editor.StackList;
@@ -91,7 +92,7 @@ public class App {
 
     final FileListView fileListView = new FileListView(editorList);
 
-    SpotlightView<Stack, StackView> stackSpotlight = new SpotlightView<Stack, StackView>();
+    final SpotlightView<Stack, StackView> stackSpotlight = new SpotlightView<Stack, StackView>();
     bindList(stackList, new ViewFactory<Stack, StackView>() {
       @Override
       public StackView createView(Stack model) {
@@ -100,12 +101,16 @@ public class App {
         return stackView;
       }
     }, stackSpotlight);
+    stackList.addHideableListener(new Hideable.Listener() {
+      @Override
+      public void onHiddenChanged(boolean hidden) {
+        stackSpotlight.setVisible(!hidden);
+      }
+    });
     TextPanel minibufferView = new TextPanel(minibuffer.getEditor());
     FinderPanel fuzzyFinderPanel = new FinderPanel(finder);
     final AppPanel panel = new AppPanel(fileListView, spotlightView, stackSpotlight,
         controller, fuzzyFinderPanel, minibufferView);
-
-    controller.addListener(panel);
 
     editorList.addListener(fileListView);
 

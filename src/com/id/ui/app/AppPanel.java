@@ -8,7 +8,6 @@ import java.awt.event.KeyListener;
 import javax.swing.JLayeredPane;
 import javax.swing.border.EmptyBorder;
 
-import com.id.app.Controller;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.fuzzy.Finder;
@@ -16,7 +15,7 @@ import com.id.ui.Constants;
 import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
-public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listener, Controller.Listener {
+public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listener {
   private final Component spotlightView;
   private final Component fileListView;
   private final Component stackView;
@@ -32,7 +31,6 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
     this.stackView = stackView;
     this.handler = handler;
     this.fuzzyFinderPanel = fuzzyFinderPanel;
-    stackView.setVisible(false);
     setBorder(new EmptyBorder(22, 22, 22, 22));
     setLayout(appLayout);
     setFocusTraversalKeysEnabled(false);
@@ -107,12 +105,6 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
   @Override
   public void onSetVisible(boolean visible) {
     fuzzyFinderPanel.setVisible(visible);
-    invalidate();
-  }
-
-  @Override
-  public void onStackVisibilityChanged(boolean isStackVisible) {
-    stackView.setVisible(isStackVisible);
     invalidate();
   }
 

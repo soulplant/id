@@ -94,6 +94,7 @@ public class RealFileSystem implements FileSystem {
         bufferedWriter.write(line + "\n");
       }
       bufferedWriter.flush();
+      bufferedWriter.close();
     } catch (IOException e) {
       e.printStackTrace();
     }

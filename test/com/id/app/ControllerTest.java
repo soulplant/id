@@ -420,16 +420,13 @@ public class ControllerTest {
 
   @Test
   public void controllerStartsWithStackInvisible() {
-    assertFalse(controller.isStackVisible());
+    assertTrue(stackList.isHidden());
   }
 
   @Test
   public void creatingASnippetMakesTheStackVisible() {
-    Controller.Listener listener = mock(Controller.Listener.class);
-    controller.addListener(listener);
     typeString(":e a<CR>V;");
-    assertTrue(controller.isStackVisible());
-    verify(listener).onStackVisibilityChanged(true);
+    assertFalse(stackList.isHidden());
   }
 
   @Test
@@ -446,7 +443,7 @@ public class ControllerTest {
   @Test
   public void closingTheFinalSnippetMakesTheStackInvisible() {
     typeString(":e a<CR>V;Lq");
-    assertFalse(controller.isStackVisible());
+    assertTrue(stackList.isHidden());
   }
 
   @Test
@@ -464,6 +461,13 @@ public class ControllerTest {
     typeString(":e<CR>");
     String endContents = editors.getFocusedItem().getLine(0);
     assertEquals(startContents, endContents);
+  }
+
+  @Test
+  public void multipleStacks() {
+    typeString(":e a<CR>");
+    typeString("V;]V;");
+    assertEquals(2, stackList.size());
   }
 
   private void createSnippetFromCurrentLine() {

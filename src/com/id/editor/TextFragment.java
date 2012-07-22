@@ -30,6 +30,8 @@ public class TextFragment {
     case LINE:
       file.insertLines(y + 1, lines);
       break;
+    default:
+      throw new UnsupportedOperationException();
     }
   }
 
@@ -41,6 +43,8 @@ public class TextFragment {
     case LINE:
       file.insertLines(y, lines);
       break;
+    default:
+      throw new UnsupportedOperationException();
     }
   }
 

@@ -134,6 +134,8 @@ public class Visual {
     case LINE:
       file.removeLineRange(getStartPoint().getY(), getEndPoint().getY());
       break;
+    default:
+      throw new UnsupportedOperationException();
     }
   }
 }

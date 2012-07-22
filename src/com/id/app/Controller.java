@@ -40,12 +40,6 @@ public class Controller implements KeyStrokeHandler {
   private final FinderDriver autocompleteDriver;
 
   private boolean isInMinibuffer = false;
-  private boolean isStackVisible = false;
-  private final List<Listener> listeners = new ArrayList<Listener>();
-
-  public interface Listener {
-    void onStackVisibilityChanged(boolean isStackVisible);
-  }
 
   private final EditorEnvironment editorEnvironment = new EditorEnvironment() {
     @Override
@@ -72,7 +66,7 @@ public class Controller implements KeyStrokeHandler {
 
   public Controller(EditorList editorList, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository, HighlightState highlightState,
-      StackList stackList, Minibuffer minibuffer,
+      final StackList stackList, Minibuffer minibuffer,
       CommandExecutor commandExecutor, FinderDriver autocompleteDriver,
       FinderDriver fileFinderDriver) {
     this.editorList = editorList;
@@ -102,7 +96,6 @@ public class Controller implements KeyStrokeHandler {
         Controller.this.jumpToLine(lineNumber);
       }
     });
-    stackList.setFocusLatest(false);
     minibuffer.addListener(new Minibuffer.Listener() {
       @Override
       public void onDone() {
@@ -199,6 +192,18 @@ public class Controller implements KeyStrokeHandler {
         openOtherFiles();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("["), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        stackList.focusPreviousStack();
+      }
+    });
+    shortcuts.setShortcut(KeyStroke.fromString("]"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        stackList.focusNextStack();
+      }
+    });
   }
 
   protected void autocomplete(String query, final Editor editor) {
@@ -252,7 +257,6 @@ public class Controller implements KeyStrokeHandler {
     stackList.removeFocused();
     if (stackList.isEmpty()) {
       focusEditors();
-      updateStackVisibility();
     }
   }
 
@@ -403,7 +407,6 @@ public class Controller implements KeyStrokeHandler {
     }
     if (stackList.isEmpty()) {
       focusEditors();
-      updateStackVisibility();
     }
     openFile(filename, false);
   }
@@ -431,7 +434,6 @@ public class Controller implements KeyStrokeHandler {
   private Editor addSnippet(FileView fileView) {
     Editor editor = makeEditor(fileView);
     stackList.addSnippet(editor);
-    updateStackVisibility();
     return editor;
   }
 
@@ -453,7 +455,6 @@ public class Controller implements KeyStrokeHandler {
     }
     if (stackList.isEmpty()) {
       focusEditors();
-      updateStackVisibility();
     }
   }
 
@@ -515,21 +516,6 @@ public class Controller implements KeyStrokeHandler {
       }
       editor.setDiffMarkers(diff.getDelta(filename));
     }
-  }
-
-  private void updateStackVisibility() {
-    isStackVisible = !stackList.isEmpty();
-    for (Listener listener : listeners) {
-      listener.onStackVisibilityChanged(isStackVisible);
-    }
-  }
-
-  public boolean isStackVisible() {
-    return isStackVisible;
-  }
-
-  public void addListener(Listener listener) {
-    listeners.add(listener);
   }
 
   private void selectPreviousHighlight() {

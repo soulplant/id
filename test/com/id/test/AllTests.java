@@ -11,6 +11,7 @@ import com.id.editor.EditorFileViewTest;
 import com.id.editor.EditorTest;
 import com.id.editor.EditorTypingTest;
 import com.id.editor.MinibufferTest;
+import com.id.editor.StackListTest;
 import com.id.editor.VisualTest;
 import com.id.events.KeyStrokeParserTest;
 import com.id.file.FileTest;
@@ -32,6 +33,6 @@ import com.id.util.UtilTest;
     CachingHighlightTest.class, MinibufferTest.class, EditorRendererTest.class,
     EditorFileViewTest.class, ControllerTest.class, KeyStrokeParserTest.class,
     PatchworkTest.class, ListModelTest.class, TokenCounterTest.class,
-    TrieTest.class, HighlightStateTest.class, UtilTest.class })
+    TrieTest.class, HighlightStateTest.class, UtilTest.class, StackListTest.class })
 public class AllTests {
 }

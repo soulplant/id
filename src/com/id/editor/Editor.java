@@ -21,7 +21,7 @@ import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
 
-public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.Listener {
+public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.Listener, Focusable {
   private static final int TAB_SIZE = 2;
   private static final int DELTA_PADDING = 2;
 
@@ -142,6 +142,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   private final Register register;
   private Point lastInsertPoint = null;
   private Point autocompleteStart = null;
+  private boolean focused = false;
 
   public Editor(FileView fileView, HighlightState highlightState,
       Register register, EditorEnvironment editorEnvironment) {
@@ -1115,5 +1116,15 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     file.insertText(cursor.getY(), autocompleteStart.getX(), item);
     cursor.moveTo(cursor.getY(), autocompleteStart.getX() + item.length());
     autocompleteStart = null;
+  }
+
+  @Override
+  public void setFocused(boolean selected) {
+    this.focused = selected;
+  }
+
+  @Override
+  public boolean isFocused() {
+    return focused;
   }
 }

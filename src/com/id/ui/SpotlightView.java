@@ -6,18 +6,16 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import com.id.app.ListModel;
-import com.id.editor.Editor;
-import com.id.ui.editor.EditorPanel;
 
 @SuppressWarnings("serial")
-public class SpotlightView extends JPanel implements ViewContainer<Editor, EditorPanel> {
+public class SpotlightView<M, V extends JPanel> extends JPanel implements ViewContainer<M, V> {
   public SpotlightView() {
     setLayout(new BorderLayout());
   }
 
   @Override
-  public void refreshFrom(ListModel<Editor> models,
-      Map<Editor, EditorPanel> viewMap) {
+  public void refreshFrom(ListModel<M> models,
+      Map<M, V> viewMap) {
     removeAll();
     if (models.isEmpty()) {
       return;

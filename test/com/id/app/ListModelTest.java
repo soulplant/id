@@ -1,11 +1,15 @@
 package com.id.app;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.id.editor.Focusable;
 
 public class ListModelTest {
   private ListModel<String> model;
@@ -149,5 +153,53 @@ public class ListModelTest {
     model.moveUp();
     model.moveFocusedItemDown();
     assertEquals(1, model.getFocusedIndex());
+  }
+
+  private class FocusableThing implements Focusable {
+    private boolean focused = false;
+
+    @Override
+    public void setFocused(boolean selected) {
+      this.focused = selected;
+
+    }
+
+    @Override
+    public boolean isFocused() {
+      return focused;
+    }
+  }
+
+  @Test
+  public void itFocusesAndUnfocusesItsItemsCorrectly() {
+    ListModel<FocusableThing> things = new ListModel<FocusableThing>();
+    things.focus();
+    FocusableThing f1 = new FocusableThing();
+    FocusableThing f2 = new FocusableThing();
+
+    things.add(f1);
+    assertTrue(f1.isFocused());
+    things.add(f2);
+    assertFalse(f1.isFocused());
+    assertTrue(f2.isFocused());
+    things.remove(1);
+    assertTrue(f1.isFocused());
+    assertFalse(f2.isFocused());
+
+    things.setFocused(false);
+    assertFalse(f1.isFocused());
+    things.setFocused(true);
+    assertTrue(f1.isFocused());
+  }
+
+  @Test
+  public void itDoesntFocusAnythingUnlessItHasTheFocus() {
+    ListModel<FocusableThing> things = new ListModel<FocusableThing>();
+    FocusableThing f1 = new FocusableThing();
+    things.setFocused(false);
+    things.add(f1);
+    assertFalse(f1.isFocused());
+    things.setFocused(true);
+    assertTrue(f1.isFocused());
   }
 }

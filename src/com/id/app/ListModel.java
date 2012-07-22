@@ -5,12 +5,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.id.editor.Editor;
+import com.id.editor.Focusable;
 
 
 // TODO(koz): This class confuses 'focus' and 'selection'. Focus should refer
 // to the whether or not the entire list has focus, and the selection should
 // refer to which item in the list is selected.
-public class ListModel<T> implements Iterable<T> {
+public class ListModel<T> implements Iterable<T>, Focusable {
   public interface Listener<T> {
     void onAdded(int i, T t);
     void onSelectionChanged(int i, T t);
@@ -42,6 +43,7 @@ public class ListModel<T> implements Iterable<T> {
   }
 
   public void insert(int i, T t) {
+    setItemFocused(t, false);
     items.add(i, t);
     if (isFocusLatestEnabled || items.size() == 1) {
       setFocusedIndexImpl(i, false);
@@ -110,10 +112,33 @@ public class ListModel<T> implements Iterable<T> {
   }
 
   private void setFocusedIndexImpl(int index, boolean notify) {
+    blurItem();
     int clampedIndex = Math.min(items.size() - 1, Math.max(index, 0));
     focusedIndex = clampedIndex;
+    focusItem();
     if (notify) {
       fireSelectionChanged();
+    }
+  }
+
+  private void focusItem() {
+    T focusedItem = getFocusedItemOrNull();
+    if (focusedItem != null) {
+      setItemFocused(focusedItem, true);
+    }
+
+  }
+
+  private void setItemFocused(T item, boolean focused) {
+    if (item != null && item instanceof Focusable) {
+      ((Focusable) item).setFocused(isFocused() && focused);
+    }
+  }
+
+  private void blurItem() {
+    T focusedItem = getFocusedItemOrNull();
+    if (focusedItem != null) {
+      setItemFocused(focusedItem, false);
     }
   }
 
@@ -132,6 +157,8 @@ public class ListModel<T> implements Iterable<T> {
         focusedIndex = 0;
       }
     }
+    setItemFocused(removed, false);
+    focusItem();
     fireOnRemoved(i, removed);
     if (focusedIndex == -1) {
       fireOnSelectionLost();
@@ -165,7 +192,7 @@ public class ListModel<T> implements Iterable<T> {
   }
 
   public T getFocusedItemOrNull() {
-    if (items.isEmpty()) {
+    if (items.isEmpty() || focusedIndex == -1) {
       return null;
     }
     return getFocusedItem();
@@ -214,6 +241,19 @@ public class ListModel<T> implements Iterable<T> {
     };
   }
 
+  // Focusable.
+  @Override
+  public void setFocused(boolean isFocused) {
+    this.isFocused = isFocused;
+    if (this.isFocused) {
+      focusItem();
+    } else {
+      blurItem();
+    }
+    fireOnFocusChanged();
+  }
+
+  @Override
   public boolean isFocused() {
     return isFocused;
   }
@@ -224,11 +264,6 @@ public class ListModel<T> implements Iterable<T> {
 
   public void focus() {
     setFocused(true);
-  }
-
-  public void setFocused(boolean isFocused) {
-    this.isFocused = isFocused;
-    fireOnFocusChanged();
   }
 
   private void fireOnFocusChanged() {

@@ -1,22 +1,16 @@
 package com.id.app;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.id.data.Data;
-import com.id.data.Data.Session.Builder;
 import com.id.editor.Editor;
 import com.id.editor.Editor.EditorEnvironment;
 import com.id.editor.Minibuffer;
 import com.id.editor.Patterns;
 import com.id.editor.Register;
+import com.id.editor.Stack;
+import com.id.editor.StackList;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.events.ShortcutTree;
@@ -39,7 +33,7 @@ public class Controller implements KeyStrokeHandler {
   private final Repository repository;
   private final HighlightState highlightState;
   private final Register register = new Register();
-  private final ListModel<Editor> stack;
+  private final StackList stackList;
   private final Minibuffer minibuffer;
   private final CommandExecutor commandExecutor;
   private final FinderDriver autocompleteDriver;
@@ -77,7 +71,7 @@ public class Controller implements KeyStrokeHandler {
 
   public Controller(ListModel<Editor> editors, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository, HighlightState highlightState,
-      ListModel<Editor> stack, Minibuffer minibuffer,
+      StackList stackList, Minibuffer minibuffer,
       CommandExecutor commandExecutor, FinderDriver autocompleteDriver,
       FinderDriver fileFinderDriver) {
     this.editors = editors;
@@ -85,7 +79,7 @@ public class Controller implements KeyStrokeHandler {
     this.finder = fuzzyFinder;
     this.repository = repository;
     this.highlightState = highlightState;
-    this.stack = stack;
+    this.stackList = stackList;
     this.minibuffer = minibuffer;
     this.commandExecutor = commandExecutor;
     this.autocompleteDriver = autocompleteDriver;
@@ -107,7 +101,7 @@ public class Controller implements KeyStrokeHandler {
         Controller.this.jumpToLine(lineNumber);
       }
     });
-    stack.setFocusLatest(false);
+    stackList.setFocusLatest(false);
     minibuffer.addListener(new Minibuffer.Listener() {
       @Override
       public void onDone() {
@@ -125,6 +119,7 @@ public class Controller implements KeyStrokeHandler {
       }
     });
     editors.focus();
+    stackList.blur();
     shortcuts.setShortcut(KeyStroke.fromString("J"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -170,7 +165,7 @@ public class Controller implements KeyStrokeHandler {
     shortcuts.setShortcut(KeyStroke.fromString("Q"), new ShortcutTree.Action() {
       @Override
       public void execute() {
-        closeAllSnippets();
+        closeCurrentStack();
       }
     });
     shortcuts.setShortcut(KeyStroke.fromString("t"), new ShortcutTree.Action() {
@@ -195,18 +190,6 @@ public class Controller implements KeyStrokeHandler {
       @Override
       public void execute() {
         importDiffs();
-      }
-    });
-    shortcuts.setShortcut(KeyStroke.fromString("3"), new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        saveState();
-      }
-    });
-    shortcuts.setShortcut(KeyStroke.fromString("4"), new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        loadState();
       }
     });
     shortcuts.setShortcut(KeyStroke.fromString("@"), new ShortcutTree.Action() {
@@ -268,7 +251,7 @@ public class Controller implements KeyStrokeHandler {
     if (editors.isFocused()) {
       return editors.getFocusedItemOrNull();
     } else {
-      return stack.getFocusedItemOrNull();
+      return stackList.getFocusedEditor();
     }
   }
 
@@ -285,10 +268,15 @@ public class Controller implements KeyStrokeHandler {
     }
   }
 
-  private void closeAllSnippets() {
-    closeEditors(stack);
-    focusEditors();
-    updateStackVisibility();
+  private void closeCurrentStack() {
+    if (stackList.isEmpty()) {
+      return;
+    }
+    stackList.removeFocused();
+    if (stackList.isEmpty()) {
+      focusEditors();
+      updateStackVisibility();
+    }
   }
 
   private void openDeltasAsSnippetsFromEditor(Editor editor) {
@@ -310,17 +298,19 @@ public class Controller implements KeyStrokeHandler {
 
   private List<Editor> getSnippetsWithFilename(String filename) {
     List<Editor> result = new ArrayList<Editor>();
-    for (Editor snippet : stack) {
-      if (filename.equals(snippet.getFilename())) {
-        result.add(snippet);
+    for (Stack stack : stackList) {
+      for (Editor snippet : stack) {
+        if (filename.equals(snippet.getFilename())) {
+          result.add(snippet);
+        }
       }
     }
     return result;
   }
 
   private void focusFromSnippet() {
-    if (stack.isFocused()) {
-      Editor snippet = stack.getFocusedItem();
+    if (stackList.isFocused()) {
+      Editor snippet = stackList.getFocusedEditor();
       String filename = snippet.getFilename();
       Editor editor = openFile(filename);
       editor.moveCursorTo(snippet.getRealCursorY(), snippet.getCursorPosition().getX());
@@ -328,72 +318,20 @@ public class Controller implements KeyStrokeHandler {
     }
   }
 
-  private void saveState() {
-    OutputStream outputStream;
-    try {
-      outputStream = new FileOutputStream("state");
-      getSerialized().writeTo(outputStream);
-      System.out.println(getSerialized());
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void loadState() {
-    InputStream inputStream;
-    try {
-      inputStream = new FileInputStream("state");
-      Data.Session session = Data.Session.parseFrom(inputStream);
-      restoreState(session);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void restoreState(Data.Session session) {
-    resetState();
-    for (Data.Editor editorData : session.getEditorsList()) {
-      Editor editor = openFile(editorData.getFilename());
-      editor.moveCursorTo(editorData.getCursorY(), editorData.getCursorX());
-      editor.setTopLineVisible(editorData.getTop());
-    }
-    for (Data.Editor snippetData : session.getStackList()) {
-      Editor editor = openSnippet(snippetData.getFilename(),
-          snippetData.getStart(), snippetData.getEnd());
-      editor.moveCursorTo(snippetData.getCursorY(), snippetData.getCursorX());
-      editor.setTopLineVisible(snippetData.getTop());
-    }
-  }
-
-  private void resetState() {
-    closeEditors(stack);
-    closeEditors(editors);
-  }
-
-  private void closeEditors(ListModel<Editor> toClose) {
-    while (!toClose.isEmpty()) {
-      toClose.removeFocused();
-    }
-  }
-
   private void focusEditors() {
     if (editors.isFocused()) {
       return;
     }
-    stack.blur();
+    stackList.blur();
     editors.focus();
   }
 
   private void focusStack() {
-    if (stack.isFocused() || stack.isEmpty()) {
+    if (stackList.isFocused() || stackList.isEmpty()) {
       return;
     }
     editors.blur();
-    stack.focus();
+    stackList.focus();
   }
 
   public void saveFile() {
@@ -497,8 +435,12 @@ public class Controller implements KeyStrokeHandler {
 
   private void reloadFile(String filename) {
     closeEditorsWithName(editors, filename);
-    closeEditorsWithName(stack, filename);
-    if (stack.isEmpty()) {
+    // TODO(koz): This is terrible - we should handle reloads more gracefully
+    // and bottom up in general.
+    for (Stack stack : stackList) {
+      closeEditorsWithName(stack, filename);
+    }
+    if (stackList.isEmpty()) {
       focusEditors();
       updateStackVisibility();
     }
@@ -521,21 +463,13 @@ public class Controller implements KeyStrokeHandler {
     return editor;
   }
 
-  private Editor openSnippet(String filename, int start, int end) {
-    FileView fileView = loadFileView(filename, start, end);
-    if (fileView == null) {
-      return null;
-    }
-    return addSnippet(fileView);
-  }
-
   private Editor makeEditor(FileView fileView) {
     return new Editor(fileView, highlightState, register, editorEnvironment);
   }
 
   private Editor addSnippet(FileView fileView) {
     Editor editor = makeEditor(fileView);
-    stack.add(editor);
+    stackList.addSnippet(editor);
     updateStackVisibility();
     return editor;
   }
@@ -553,7 +487,10 @@ public class Controller implements KeyStrokeHandler {
 
   public void closeCurrentFile() {
     getFocusedList().removeFocused();
-    if (stack.isEmpty()) {
+    while (!stackList.isEmpty() && stackList.getFocusedItem().isEmpty()) {
+      stackList.removeFocused();
+    }
+    if (stackList.isEmpty()) {
       focusEditors();
       updateStackVisibility();
     }
@@ -575,7 +512,7 @@ public class Controller implements KeyStrokeHandler {
   }
 
   private ListModel<Editor> getFocusedList() {
-    return editors.isFocused() ? editors : stack;
+    return editors.isFocused() ? editors : stackList.getFocusedItem();
   }
 
   private Editor getFocusedEditor() {
@@ -613,19 +550,8 @@ public class Controller implements KeyStrokeHandler {
     }
   }
 
-  public Data.Session getSerialized() {
-    Builder builder = Data.Session.newBuilder();
-    for (Editor editor : editors) {
-      builder.addEditors(editor.getSerialized());
-    }
-    for (Editor editor : stack) {
-      builder.addStack(editor.getSerialized());
-    }
-    return builder.build();
-  }
-
   private void updateStackVisibility() {
-    isStackVisible = !stack.isEmpty();
+    isStackVisible = !stackList.isEmpty();
     for (Listener listener : listeners) {
       listener.onStackVisibilityChanged(isStackVisible);
     }

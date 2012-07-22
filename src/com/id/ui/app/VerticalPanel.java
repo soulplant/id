@@ -5,11 +5,12 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 
 import com.id.ui.Constants;
+import com.id.ui.VerticalListLayout;
 
 @SuppressWarnings("serial")
 public class VerticalPanel extends JPanel {
   public VerticalPanel(int verticalPaddingPx) {
-    setLayout(new StackLayout(verticalPaddingPx));
+    setLayout(new VerticalListLayout(verticalPaddingPx));
     setBackground(Constants.BG_COLOR);
   }
 

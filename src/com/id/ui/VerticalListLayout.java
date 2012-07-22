@@ -1,4 +1,4 @@
-package com.id.ui.app;
+package com.id.ui;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -6,10 +6,10 @@ import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
 
-public class StackLayout implements LayoutManager {
+public class VerticalListLayout implements LayoutManager {
   private final int padding;
 
-  public StackLayout(int padding) {
+  public VerticalListLayout(int padding) {
     this.padding = padding;
   }
 

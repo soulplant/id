@@ -8,7 +8,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import com.id.app.ListModel;
 import com.id.editor.Editor;
 import com.id.editor.Point;
 import com.id.perf.TimeTracker;
@@ -21,8 +20,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
   private final JScrollPane scrollPane;
   private final EditorTitleView titleView;
 
-  public EditorPanel(Editor editor, final ListModel<Editor> editors,
-      boolean showScrollbars) {
+  public EditorPanel(Editor editor, boolean showScrollbars) {
     setLayout(new BorderLayout());
     this.editor = editor;
     textPanel = new TextPanel(editor);
@@ -35,7 +33,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
       JPanel scrollBar = new LinewisePanel();
       panel.add(scrollBar, BorderLayout.LINE_END);
     }
-    titleView = new EditorTitleView(editor, editors);
+    titleView = new EditorTitleView(editor);
     this.add(titleView, BorderLayout.PAGE_START);
     scrollPane = new JScrollPane(panel);
     scrollPane.setBorder(null);

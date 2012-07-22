@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
+import com.id.editor.StackList;
 import com.id.file.Tombstone;
 import com.id.fuzzy.Finder;
 import com.id.fuzzy.FuzzyFinderDriver;
@@ -20,7 +21,7 @@ import com.id.platform.RealFileSystem;
 
 public class EndToEndTest {
   private ListModel<Editor> editors;
-  private ListModel<Editor> stack;
+  private StackList stackList;
   private Repository repository;
   private Finder fuzzyFinder;
   private Controller controller;
@@ -36,7 +37,7 @@ public class EndToEndTest {
     tempDir = createTempDirectory();
     shell = new BashShell(tempDir);
     editors = new ListModel<Editor>();
-    stack = new ListModel<Editor>();
+    stackList = new StackList();
     fileSystem = new RealFileSystem(tempDir);
     repository = new GitRepository(shell);
     com.id.file.File files = new com.id.file.File();
@@ -44,7 +45,7 @@ public class EndToEndTest {
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState, stack,
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState, stackList,
         minibuffer, commandExecutor, null, new FuzzyFinderDriver(files));
     repository.init();
   }

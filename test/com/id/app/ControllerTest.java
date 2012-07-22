@@ -16,6 +16,7 @@ import org.junit.Test;
 import com.id.editor.Editor;
 import com.id.editor.Minibuffer;
 import com.id.editor.Point;
+import com.id.editor.StackList;
 import com.id.events.KeyStroke;
 import com.id.file.File;
 import com.id.file.ModifiedListener;
@@ -37,7 +38,7 @@ public class ControllerTest {
   private Listener fuzzyListener;
   private InMemoryRepository repo;
   private HighlightState highlightState;
-  private ListModel<Editor> stack;
+  private StackList stackList;
   private Minibuffer minibuffer;
   private CommandExecutor commandExecutor;
 
@@ -45,7 +46,7 @@ public class ControllerTest {
   public void setup() {
     File files = new File("a", "b", "src/c.h", "src/c.cc", "src/d.cc");
     editors = new ListModel<Editor>();
-    stack = new ListModel<Editor>();
+    stackList = new StackList();
     fileSystem = new InMemoryFileSystem();
     fuzzyFinder = new Finder(files);
     fuzzyListener = mock(Finder.Listener.class);
@@ -54,7 +55,7 @@ public class ControllerTest {
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();
     controller = new Controller(editors, fileSystem, fuzzyFinder, repo,
-        highlightState, stack, minibuffer, commandExecutor, null,
+        highlightState, stackList, minibuffer, commandExecutor, null,
         new FuzzyFinderDriver(files));
 
     fileSystem.insertFile("a", "aaa");
@@ -223,7 +224,7 @@ public class ControllerTest {
   public void addSnippet() {
     controller.openFile("a");
     typeString("V;");
-    assertEquals(1, stack.size());
+    assertEquals(1, stackList.size());
   }
 
   @Test
@@ -244,13 +245,13 @@ public class ControllerTest {
   public void moveFocusBetweenSnippets() {
     controller.openFile("a");
     typeString("V;V;");
-    assertEquals(2, stack.size());
+    assertEquals(2, stackList.getFocusedItem().size());
     typeString("L");
-    assertEquals(0, stack.getFocusedIndex());
+    assertEquals(0, stackList.getFocusedItem().getFocusedIndex());
     typeString("K");
-    assertEquals(0, stack.getFocusedIndex());
+    assertEquals(0, stackList.getFocusedItem().getFocusedIndex());
     typeString("J");
-    assertEquals(1, stack.getFocusedIndex());
+    assertEquals(1, stackList.getFocusedItem().getFocusedIndex());
   }
 
   @Test
@@ -258,7 +259,7 @@ public class ControllerTest {
     controller.openFile("a");
     typeString("V;Lq");
     assertEquals(1, editors.size());
-    assertEquals(0, stack.size());
+    assertEquals(0, stackList.size());
   }
 
   @Test
@@ -281,7 +282,7 @@ public class ControllerTest {
     createSnippetFromCurrentLine();
     typeString("L");
     createSnippetFromCurrentLine();
-    assertEquals(2, stack.size());
+    assertEquals(2, stackList.getFocusedItem().size());
   }
 
   @Test
@@ -290,7 +291,7 @@ public class ControllerTest {
     createSnippetFromCurrentLine();
     typeString("L");
     createSnippetFromCurrentLine();
-    assertEquals(0, stack.getFocusedIndex());
+    assertEquals(0, stackList.getFocusedIndex());
   }
 
   @Test
@@ -300,7 +301,7 @@ public class ControllerTest {
     createSnippetFromCurrentLine();
     createSnippetFromCurrentLine();
     typeString("Lq");
-    assertEquals(0, stack.getFocusedIndex());
+    assertEquals(0, stackList.getFocusedIndex());
   }
 
   @Test
@@ -319,14 +320,14 @@ public class ControllerTest {
   public void openDeltasAsSnippets() {
     controller.openFile("a");
     typeString("o<ESC>@");
-    assertEquals(1, stack.size());
+    assertEquals(1, stackList.size());
   }
 
   @Test
   public void openDeltasAsSnippetsDoesntCreateDupes() {
     controller.openFile("a");
     typeString("o<ESC>@@");
-    assertEquals(1, stack.size());
+    assertEquals(1, stackList.size());
   }
 
   @Test
@@ -370,9 +371,9 @@ public class ControllerTest {
   public void QClosesAllSnippets() {
     typeString(":e a<CR>ihello<CR>world<ESC>");
     typeString("V;kV;");
-    assertEquals(2, stack.size());
+    assertEquals(1, stackList.size());
     typeString("Q");
-    assertEquals(0, stack.size());
+    assertEquals(0, stackList.size());
   }
 
   @Test
@@ -469,11 +470,11 @@ public class ControllerTest {
 
   private void assertSpotlightFocused() {
     assertTrue(editors.isFocused());
-    assertFalse(stack.isFocused());
+    assertFalse(stackList.isFocused());
   }
 
   private void assertStackFocused() {
-    assertTrue(stack.isFocused());
+    assertTrue(stackList.isFocused());
     assertFalse(editors.isFocused());
   }
 

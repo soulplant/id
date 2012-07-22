@@ -1,16 +1,11 @@
 package com.id.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.junit.Test;
 
 import com.id.platform.InMemoryFileSystem;
 

@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.id.editor.Editor;
+import com.id.editor.EditorList;
 import com.id.editor.Minibuffer;
 import com.id.editor.Point;
 import com.id.editor.StackList;
@@ -32,7 +33,7 @@ import com.id.platform.InMemoryFileSystem;
 
 public class ControllerTest {
   private Controller controller;
-  private ListModel<Editor> editors;
+  private EditorList editors;
   private InMemoryFileSystem fileSystem;
   private Finder fuzzyFinder;
   private Listener fuzzyListener;
@@ -45,7 +46,7 @@ public class ControllerTest {
   @Before
   public void setup() {
     File files = new File("a", "b", "src/c.h", "src/c.cc", "src/d.cc");
-    editors = new ListModel<Editor>();
+    editors = new EditorList();
     stackList = new StackList();
     fileSystem = new InMemoryFileSystem();
     fuzzyFinder = new Finder(files);
@@ -247,6 +248,7 @@ public class ControllerTest {
     typeString("V;V;");
     assertEquals(2, stackList.getFocusedItem().size());
     typeString("L");
+    assertTrue(stackList.isFocused());
     assertEquals(0, stackList.getFocusedItem().getFocusedIndex());
     typeString("K");
     assertEquals(0, stackList.getFocusedItem().getFocusedIndex());

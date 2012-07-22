@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.id.editor.Editor;
 import com.id.editor.Editor.EditorEnvironment;
+import com.id.editor.EditorList;
 import com.id.editor.Minibuffer;
 import com.id.editor.Patterns;
 import com.id.editor.Register;
@@ -26,7 +27,7 @@ import com.id.platform.FileSystem;
 import com.id.util.StringUtils;
 
 public class Controller implements KeyStrokeHandler {
-  private final ListModel<Editor> editors;
+  private final EditorList editorList;
   private final FileSystem fileSystem;
   private final ShortcutTree shortcuts = new ShortcutTree();
   private final Finder finder;
@@ -69,12 +70,12 @@ public class Controller implements KeyStrokeHandler {
   };
   private final FinderDriver fileFinderDriver;
 
-  public Controller(ListModel<Editor> editors, FileSystem fileSystem,
+  public Controller(EditorList editorList, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository, HighlightState highlightState,
       StackList stackList, Minibuffer minibuffer,
       CommandExecutor commandExecutor, FinderDriver autocompleteDriver,
       FinderDriver fileFinderDriver) {
-    this.editors = editors;
+    this.editorList = editorList;
     this.fileSystem = fileSystem;
     this.finder = fuzzyFinder;
     this.repository = repository;
@@ -118,32 +119,8 @@ public class Controller implements KeyStrokeHandler {
         exitMinibuffer();
       }
     });
-    editors.focus();
+    editorList.focus();
     stackList.blur();
-    shortcuts.setShortcut(KeyStroke.fromString("J"), new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        moveFocusDown();
-      }
-    });
-    shortcuts.setShortcut(KeyStroke.fromString("<C-j>"), new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        moveFocusedItemDown();
-      }
-    });
-    shortcuts.setShortcut(KeyStroke.fromString("K"), new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        moveFocusUp();
-      }
-    });
-    shortcuts.setShortcut(KeyStroke.fromString("<C-k>"), new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        moveFocusedItemUp();
-      }
-    });
     shortcuts.setShortcut(KeyStroke.fromString("H"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -248,22 +225,22 @@ public class Controller implements KeyStrokeHandler {
   }
 
   private Editor getCurrentEditor() {
-    if (editors.isFocused()) {
-      return editors.getFocusedItemOrNull();
+    if (editorList.isFocused()) {
+      return editorList.getFocusedItemOrNull();
     } else {
       return stackList.getFocusedEditor();
     }
   }
 
   private void goToTopFileInFileList() {
-    if (editors.isEmpty()) {
+    if (editorList.isEmpty()) {
       return;
     }
-    editors.setFocusedIndex(0);
+    editorList.setFocusedIndex(0);
   }
 
   private void openDeltasAsSnippets() {
-    for (Editor editor : editors) {
+    for (Editor editor : editorList) {
       openDeltasAsSnippetsFromEditor(editor);
     }
   }
@@ -319,18 +296,18 @@ public class Controller implements KeyStrokeHandler {
   }
 
   private void focusEditors() {
-    if (editors.isFocused()) {
+    if (editorList.isFocused()) {
       return;
     }
     stackList.blur();
-    editors.focus();
+    editorList.focus();
   }
 
   private void focusStack() {
     if (stackList.isFocused() || stackList.isEmpty()) {
       return;
     }
-    editors.blur();
+    editorList.blur();
     stackList.focus();
   }
 
@@ -345,22 +322,6 @@ public class Controller implements KeyStrokeHandler {
         openFile(item);
       }
     });
-  }
-
-  private void moveFocusUp() {
-    getFocusedList().moveUp();
-  }
-
-  private void moveFocusDown() {
-    getFocusedList().moveDown();
-  }
-
-  private void moveFocusedItemUp() {
-    getFocusedList().moveFocusedItemUp();
-  }
-
-  private void moveFocusedItemDown() {
-    getFocusedList().moveFocusedItemDown();
   }
 
   public FileView loadFileView(String filename, int start, int end) {
@@ -434,7 +395,7 @@ public class Controller implements KeyStrokeHandler {
   }
 
   private void reloadFile(String filename) {
-    closeEditorsWithName(editors, filename);
+    closeEditorsWithName(editorList, filename);
     // TODO(koz): This is terrible - we should handle reloads more gracefully
     // and bottom up in general.
     for (Stack stack : stackList) {
@@ -459,7 +420,7 @@ public class Controller implements KeyStrokeHandler {
 
   public Editor openFileView(FileView fileView) {
     Editor editor = makeEditor(fileView);
-    editors.insertAfterFocused(editor);
+    editorList.insertAfterFocused(editor);
     return editor;
   }
 
@@ -476,10 +437,10 @@ public class Controller implements KeyStrokeHandler {
 
   private Editor attemptToFocusExistingEditor(String filename) {
     filename = StringUtils.normalizePath(filename);
-    for (int i = 0; i < editors.size(); i++) {
-      if (filename.equals(editors.get(i).getFilename())) {
-        editors.setFocusedIndex(i);
-        return editors.get(i);
+    for (int i = 0; i < editorList.size(); i++) {
+      if (filename.equals(editorList.get(i).getFilename())) {
+        editorList.setFocusedIndex(i);
+        return editorList.get(i);
       }
     }
     return null;
@@ -504,15 +465,21 @@ public class Controller implements KeyStrokeHandler {
     if (isInMinibuffer) {
       return minibuffer.handleKeyStroke(keyStroke);
     }
-    ListModel<Editor> focusedList = getFocusedList();
-    if (!focusedList.isEmpty() && focusedList.getFocusedItem().handleKeyStroke(keyStroke)) {
-      return true;
+    if (editorList.isFocused()) {
+      if (editorList.handleKeyStroke(keyStroke)) {
+        return true;
+      }
+    }
+    if (stackList.isFocused()) {
+      if (stackList.handleKeyStroke(keyStroke)) {
+        return true;
+      }
     }
     return shortcuts.stepAndExecute(keyStroke);
   }
 
   private ListModel<Editor> getFocusedList() {
-    return editors.isFocused() ? editors : stackList.getFocusedItem();
+    return editorList.isFocused() ? editorList : stackList.getFocusedItem();
   }
 
   private Editor getFocusedEditor() {

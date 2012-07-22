@@ -14,6 +14,7 @@ import java.net.URL;
 import javax.swing.SwingUtilities;
 
 import com.id.editor.Editor;
+import com.id.editor.EditorList;
 import com.id.editor.Minibuffer;
 import com.id.editor.Stack;
 import com.id.editor.StackList;
@@ -71,7 +72,7 @@ public class App {
   }
 
   private static void startApp() {
-    final ListModel<Editor> editors = new ListModel<Editor>();
+    final EditorList editorList = new EditorList();
     final StackList stackList = new StackList();
     Minibuffer minibuffer = new Minibuffer();
     CommandExecutor commandExecutor = new CommandExecutor();
@@ -81,14 +82,14 @@ public class App {
     File files = getFilesFile(fileSystem, shell);
     Finder finder = new Finder(files);
     HighlightState highlightState = new HighlightState();
-    final Controller controller = new Controller(editors, fileSystem,
+    final Controller controller = new Controller(editorList, fileSystem,
         finder, repository, highlightState, stackList, minibuffer,
         commandExecutor, null, new FuzzyFinderDriver(files));
 
     SpotlightView<Editor, EditorPanel> spotlightView = new SpotlightView<Editor, EditorPanel>();
-    bindList(editors, new EditorViewFactory(true), spotlightView);
+    bindList(editorList, new EditorViewFactory(true), spotlightView);
 
-    final FileListView fileListView = new FileListView(editors);
+    final FileListView fileListView = new FileListView(editorList);
 
     SpotlightView<Stack, StackView> stackSpotlight = new SpotlightView<Stack, StackView>();
     bindList(stackList, new ViewFactory<Stack, StackView>() {
@@ -106,7 +107,7 @@ public class App {
 
     controller.addListener(panel);
 
-    editors.addListener(fileListView);
+    editorList.addListener(fileListView);
 
     AppFrame fullscreenAppFrame = new AppFrame(panel, true);
     AppFrame normalAppFrame = new AppFrame(panel, false, new Dimension(1024, 768));

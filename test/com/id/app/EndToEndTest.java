@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.id.editor.Editor;
+import com.id.editor.EditorList;
 import com.id.editor.Minibuffer;
 import com.id.editor.StackList;
 import com.id.file.Tombstone;
@@ -20,7 +21,7 @@ import com.id.git.Repository;
 import com.id.platform.RealFileSystem;
 
 public class EndToEndTest {
-  private ListModel<Editor> editors;
+  private EditorList editors;
   private StackList stackList;
   private Repository repository;
   private Finder fuzzyFinder;
@@ -36,7 +37,7 @@ public class EndToEndTest {
   public void setup() throws IOException {
     tempDir = createTempDirectory();
     shell = new BashShell(tempDir);
-    editors = new ListModel<Editor>();
+    editors = new EditorList();
     stackList = new StackList();
     fileSystem = new RealFileSystem(tempDir);
     repository = new GitRepository(shell);

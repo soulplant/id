@@ -226,7 +226,7 @@ public class Controller implements KeyStrokeHandler {
 
   private Editor getCurrentEditor() {
     if (editorList.isFocused()) {
-      return editorList.getFocusedItemOrNull();
+      return editorList.getFocusedItem();
     } else {
       return stackList.getFocusedEditor();
     }

@@ -122,7 +122,7 @@ public class ListModel<T> implements Iterable<T>, Focusable {
   }
 
   private void focusItem() {
-    T focusedItem = getFocusedItemOrNull();
+    T focusedItem = getFocusedItem();
     if (focusedItem != null) {
       setItemFocused(focusedItem, true);
     }
@@ -136,7 +136,7 @@ public class ListModel<T> implements Iterable<T>, Focusable {
   }
 
   private void blurItem() {
-    T focusedItem = getFocusedItemOrNull();
+    T focusedItem = getFocusedItem();
     if (focusedItem != null) {
       setItemFocused(focusedItem, false);
     }
@@ -191,14 +191,10 @@ public class ListModel<T> implements Iterable<T>, Focusable {
     }
   }
 
-  public T getFocusedItemOrNull() {
+  public T getFocusedItem() {
     if (items.isEmpty() || focusedIndex == -1) {
       return null;
     }
-    return getFocusedItem();
-  }
-
-  public T getFocusedItem() {
     return items.get(focusedIndex);
   }
 

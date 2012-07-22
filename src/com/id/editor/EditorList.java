@@ -15,7 +15,7 @@ public class EditorList extends ListModel<Editor> implements KeyStrokeHandler, P
 
   @Override
   public boolean handleKeyStroke(KeyStroke keyStroke) {
-    Editor editor = getFocusedItemOrNull();
+    Editor editor = getFocusedItem();
     if (editor != null && editor.handleKeyStroke(keyStroke)) {
       return true;
     }

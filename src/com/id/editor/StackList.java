@@ -14,11 +14,11 @@ public class StackList extends ListModel<Stack> implements KeyStrokeHandler, Pro
   }
 
   public Editor getFocusedEditor() {
-    Stack focusedStack = getFocusedItemOrNull();
+    Stack focusedStack = getFocusedItem();
     if (focusedStack == null) {
       return null;
     }
-    return focusedStack.getFocusedItemOrNull();
+    return focusedStack.getFocusedItem();
   }
 
   public void addSnippet(Editor editor) {

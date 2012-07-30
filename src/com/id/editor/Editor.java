@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.id.app.HighlightPattern;
 import com.id.app.HighlightState;
-import com.id.data.Data;
 import com.id.editor.Visual.Mode;
 import com.id.events.EditorKeyHandler;
 import com.id.events.KeyStroke;
@@ -1065,16 +1064,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   @Override
   public void onLineChanged(int y, String oldLine, String newLine) {
     // Do nothing.
-  }
-
-  public Data.Editor getSerialized() {
-    Data.Editor result = file.getSerialized();
-    result = Data.Editor.newBuilder(result)
-        .setCursorY(cursor.getY())
-        .setCursorX(cursor.getX())
-        .setTop(view.getTopLineVisible())
-        .build();
-    return result;
   }
 
   public List<Range> getDeltas() {

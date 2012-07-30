@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.id.data.Data;
 import com.id.editor.Point;
 import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
@@ -739,9 +738,5 @@ public class FileView implements File.Listener, ModifiedListener {
       return null;
     }
     return point.offset(-start, 0);
-  }
-
-  public Data.Editor getSerialized() {
-    return Data.Editor.newBuilder().setFilename(getFilename()).setStart(start).setEnd(end).buildPartial();
   }
 }

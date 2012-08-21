@@ -6,19 +6,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.awt.Rectangle;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import com.id.app.HighlightState;
-import com.id.editor.Editor;
 import com.id.editor.Patterns;
-import com.id.editor.Register;
 import com.id.editor.Visual;
 import com.id.events.KeyStroke;
-import com.id.file.File;
-import com.id.file.FileView;
+import com.id.test.EditorTestBase;
 
-public class EditorRendererTest {
+public class EditorRendererTest extends EditorTestBase {
 
   @Test
   public void simple() {
@@ -89,8 +84,8 @@ public class EditorRendererTest {
     editor.setHighlightPattern(Patterns.partWord("a"));
     renderMatrix(new Rectangle(0, 0, 20, 10), 10, 10);
     assertMatrixContents("ab");
-    assertTrue(matrix.isHighlight(0, 0));
-    assertFalse(matrix.isHighlight(0, 1));
+    assertTrue(matrix.get(0, 0).isHighlight);
+    assertFalse(matrix.get(0, 1).isHighlight);
   }
 
   @Test
@@ -99,14 +94,14 @@ public class EditorRendererTest {
     editor.enterSearch();
     editor.handleSearchKeyStroke(KeyStroke.fromChar('a'));
     renderMatrix(new Rectangle(0, 0, 20, 20), 10, 10);
-    assertTrue(matrix.isSearchHighlight(0, 0));
+    assertTrue(matrix.get(0, 0).isSearchHighlight);
   }
 
   @Test
   public void testTrailingWhitespaceIndicator() {
     setFileContents("abc  ");
     renderMatrix(new Rectangle(0, 0, 50, 50), 10, 10);
-    assertTrue(matrix.isWhitespaceIndicator(0, 4));
+    assertTrue(matrix.get(0, 4).isWhitespaceIndicator);
   }
 
   @Test
@@ -117,7 +112,15 @@ public class EditorRendererTest {
     }
     setFileContents(text);
     renderMatrix(new Rectangle(0, 0, 810, 810), 10, 10);
-    assertTrue(matrix.is80CharIndicator(0, EditorRenderer.MAX_LINE_LENGTH - 1));
+    assertTrue(matrix.get(0, EditorRenderer.MAX_LINE_LENGTH - 1).is80CharIndicator);
+  }
+
+  @Test
+  public void testVisualPastEndOfFile() {
+    setFileContents("a");
+    typeString("v$");
+    renderMatrix(new Rectangle(0, 0, 20, 10), 10, 10);
+    assertTrue(matrix.get(0, 1).isVisual);
   }
 
   private void renderMatrix(Rectangle screen, int fontWidthPx, int fontHeightPx) {
@@ -132,23 +135,6 @@ public class EditorRendererTest {
       assertEquals(lines[y], matrix.getLine(y));
     }
   }
-
-
-  private File file;
-  private FileView fileView;
-  private Editor editor;
   private EditorRenderer renderer;
   private Matrix matrix;
-
-  @Before
-  public void init() {
-    setFileContents();
-  }
-
-  private void setFileContents(String... lines) {
-    file = new File(lines);
-    fileView = new FileView(file);
-    editor = new Editor(fileView, new HighlightState(), new Register(),
-        new Editor.EmptyEditorEnvironment());
-  }
 }

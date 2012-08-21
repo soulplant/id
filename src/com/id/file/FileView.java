@@ -143,15 +143,23 @@ public class FileView implements File.Listener, ModifiedListener {
     int endLine = end.getY();
     int startX = start.getX();
     int endX = end.getX();
+    boolean removeTrailingNewline = endX == getLine(endLine).length();
     if (startLine == endLine) {
       removeText(startLine, startX, endX - startX + 1);
-      return;
+    } else {
+      removeText(startLine, startX);
+      removeText(endLine, 0, endX + 1);
+      String tail = getLine(endLine);
+      removeLineRange(startLine + 1, endLine);
+      appendToLine(startLine, tail);
     }
-    removeText(startLine, startX);
-    removeText(endLine, 0, endX + 1);
-    String tail = getLine(endLine);
-    removeLineRange(startLine + 1, endLine);
-    appendToLine(startLine, tail);
+    if (removeTrailingNewline) {
+      if (startLine == getLineCount() - 1) {
+        removeLine(startLine);
+      } else {
+        joinWith(startLine, "");
+      }
+    }
   }
 
   public boolean isEmpty() {
@@ -237,10 +245,6 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public void joinRange(int start, int end) {
-    // Do nothing when at the end of the file.
-    if (start >= getLineCount() - 1) {
-      return;
-    }
     int rangeSize = end - start + 1;
     // When joining ranges bigger than one, we want n - 1 joins.
     int timesToJoin = rangeSize == 1 ? 1 : rangeSize - 1;
@@ -249,9 +253,17 @@ public class FileView implements File.Listener, ModifiedListener {
     }
   }
 
-  private void join(int y) {
+  private void joinWith(int y, String delimiter) {
+    // Do nothing for the last line.
+    if (y == getLineCount() - 1) {
+      return;
+    }
     String nextLine = removeLine(y + 1);
-    changeLine(y, removeTrailingWhitespace(getLine(y)) + " " + removeLeadingWhitespace(nextLine));
+    changeLine(y, removeTrailingWhitespace(getLine(y)) + delimiter + removeLeadingWhitespace(nextLine));
+  }
+
+  private void join(int y) {
+    joinWith(y, " ");
   }
 
   private String removeLeadingWhitespace(String line) {

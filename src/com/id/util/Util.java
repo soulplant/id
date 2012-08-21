@@ -76,4 +76,11 @@ public class Util {
     String[] parts = filename.split("/");
     return parts[parts.length - 1];
   }
+
+  public static String getCappedSubstring(String line, int from, int to) {
+    if (to == line.length() + 1) {
+      return line.substring(from) + "\n";
+    }
+    return line.substring(from, to);
+  }
 }

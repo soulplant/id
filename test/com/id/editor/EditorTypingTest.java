@@ -1017,4 +1017,39 @@ public class EditorTypingTest extends EditorTestBase {
     setFileContents();
     typeString("gf");
   }
+
+  @Test
+  public void visualModeEndOfLine() {
+    setFileContents("abc");
+    typeString("v$");
+    assertCursorPosition(0, 3);
+  }
+
+  @Test
+  public void visualModeDeleteOverLines() {
+    setFileContents("abc", "def");
+    typeString("v$x");
+    assertFileContents("def");
+  }
+
+  @Test
+  public void visualModeDeleteToEndOfLine() {
+    setFileContents("abc", "def");
+    typeString("jvk$x");
+    assertFileContents("abcef");
+  }
+
+  @Test
+  public void visualDeletingEndOfLines() {
+    setFileContents("abc", "def");
+    typeString("vj$x");
+    assertFileContents();
+  }
+
+  @Test
+  public void joinOnLastLine() {
+    setFileContents("abc", "def");
+    typeString("jVJ");
+    assertFileContents("abc", "def");
+  }
 }

@@ -1,12 +1,26 @@
 package com.id.rendering;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 
 import com.id.ui.Constants;
 
 public class Matrix {
-  private final ArrayList<Slug> slugs = new ArrayList<Slug>();
+  public class Entry {
+    public char letter;
+    public boolean isVisual = false;
+    public boolean isHighlight = false;
+    public boolean isSearchHighlight = false;
+    public boolean isWhitespaceIndicator = false;
+    public boolean is80CharIndicator = false;
+//    public boolean isCursor = false;
+//    public boolean isWideCursor = false;
+
+    public Entry(char letter) {
+      this.letter = letter;
+    }
+  }
+
+  private final Entry[][] entries;
   private final int height;
   private final int width;
   private final int charHeightPx;
@@ -15,7 +29,8 @@ public class Matrix {
   private final int charOffset;
   private final int charWidthPx;
 
-  public Matrix(int height, int width, int fontDescentPx, int charHeightPx, int charWidthPx, int lineOffset, int charOffset) {
+  public Matrix(int height, int width, int fontDescentPx, int charHeightPx,
+      int charWidthPx, int lineOffset, int charOffset) {
     this.height = height;
     this.width = width;
     this.fontDescentPx = fontDescentPx;
@@ -23,21 +38,32 @@ public class Matrix {
     this.charWidthPx = charWidthPx;
     this.lineOffset = lineOffset;
     this.charOffset = charOffset;
+    this.entries = new Entry[height][width];
     for (int y = 0; y < height; y++) {
-      slugs.add(new Slug(width));
+      for (int x = 0; x < width; x++) {
+        entries[y][x] = new Entry(' ');
+      }
     }
   }
 
+  private Entry getEntry(int y, int x) {
+    if (entries[y][x] == null) {
+      throw new IllegalStateException("(" + y + ", " + x + ") accessed from "
+          + entries.length + ", " + entries[0].length);
+    }
+    return entries[y][x];
+  }
+
   public boolean isVisual(int y, int x) {
-    return slugs.get(y).isVisual(x);
+    return getEntry(y, x).isVisual;
   }
 
   public char getLetter(int y, int x) {
-    return slugs.get(y).getLetter(x);
+    return getEntry(y, x).letter;
   }
 
   public void setLetter(int y, int x, char letter) {
-    slugs.get(y).setLetter(x, letter);
+    getEntry(y, x).letter = letter;
   }
 
   public int getHeight() {
@@ -49,27 +75,31 @@ public class Matrix {
   }
 
   public String getLine(int y) {
-    return slugs.get(y).getString();
+    StringBuffer buffer = new StringBuffer();
+    for (Entry entry : entries[y]) {
+      buffer.append(entry.letter);
+    }
+    return buffer.toString();
   }
 
   public void render(Graphics g) {
     for (int y = 0; y < height; y++) {
-      Slug slug = slugs.get(y);
-      for (int x = 0; x < slug.getLength(); x++) {
+      for (int x = 0; x < width; x++) {
+        Entry entry = getEntry(y, x);
         int boxY = (lineOffset + y) * charHeightPx;
         int boxX = x * charWidthPx;
-        if (slug.isVisual(x)) {
+        if (entry.isVisual) {
           g.setColor(Constants.VISUAL_COLOR);
           g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
-        } else if (slug.isHighlight(x) || slug.isSearchHighlight(x)) {
+        } else if (entry.isHighlight || entry.isSearchHighlight) {
           g.setColor(Constants.HIGHLIGHT_COLOR);
           g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
         }
-        if (slug.isWhitespaceIndicator(x)) {
+        if (entry.isWhitespaceIndicator) {
           g.setColor(Constants.WHITESPACE_INDICATOR_COLOR);
           g.fillRect(boxX + charWidthPx, boxY, 2, charHeightPx);
         }
-        if (slug.is80CharIndicator(x)) {
+        if (entry.is80CharIndicator) {
           g.setColor(Constants.EIGHTY_CHAR_INDICATOR_COLOR);
           g.fillRect(boxX + charWidthPx, boxY, 2, charHeightPx);
         }
@@ -77,7 +107,7 @@ public class Matrix {
       // NOTE drawString() takes the bottom y coordinate of the rect to draw the text in.
       int textY = (lineOffset + y + 1) * charHeightPx - fontDescentPx;
       g.setColor(Constants.TEXT_COLOR);
-      g.drawString(slug.getString(), charOffset * charWidthPx, textY);
+      g.drawString(getLine(y), charOffset * charWidthPx, textY);
     }
   }
 
@@ -86,9 +116,7 @@ public class Matrix {
     StringBuffer buffer = new StringBuffer();
     for (int y = 0; y < height; y++) {
       buffer.append("[");
-      for (int x = 0; x < width; x++) {
-        buffer.append(slugs.get(y).getLetter(x));
-      }
+      buffer.append(getLine(y));
       buffer.append("]");
     }
     return buffer.toString();
@@ -102,39 +130,7 @@ public class Matrix {
     return charOffset;
   }
 
-  public void setVisual(int y, int x, boolean visual) {
-    slugs.get(y).setVisual(x, visual);
-  }
-
-  public boolean isHighlight(int y, int x) {
-    return slugs.get(y).isHighlight(x);
-  }
-
-  public void setHighlight(int y, int x, boolean highlight) {
-    slugs.get(y).setHighlight(x, highlight);
-  }
-
-  public void setSearchHighlight(int y, int x, boolean searchHighlight) {
-    slugs.get(y).setSearchHighlight(x, searchHighlight);
-  }
-
-  public boolean isSearchHighlight(int y, int x) {
-    return slugs.get(y).isSearchHighlight(x);
-  }
-
-  public void setWhitespaceIndicator(int y, int x, boolean b) {
-    slugs.get(y).setWhitespaceIndicator(x, b);
-  }
-
-  public boolean isWhitespaceIndicator(int y, int x) {
-    return slugs.get(y).isWhitespaceIndicator(x);
-  }
-
-  public void set80CharIndicator(int y, int x, boolean b) {
-    slugs.get(y).set80CharIndicator(x, b);
-  }
-
-  public boolean is80CharIndicator(int y, int x) {
-    return slugs.get(y).is80CharIndicator(x);
+  public Entry get(int y, int x) {
+    return getEntry(y, x);
   }
 }

@@ -215,9 +215,13 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   private void applyCursorConstraints() {
-    int isInNormalMode = isInInsertMode() ? 0 : 1;
     cursor.constrainY(0, file.getLineCount() - 1);
-    cursor.constrainX(0, getCurrentLineLength() - isInNormalMode);
+    cursor.constrainX(0, getEffectiveLineLength());
+  }
+
+  private int getEffectiveLineLength() {
+    int isInNormalMode = isInInsertMode() || isInVisual() ? 0 : 1;
+    return getCurrentLineLength() - isInNormalMode;
   }
 
   public boolean isCursorInBounds() {
@@ -227,9 +231,8 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     if (getCurrentLineLength() == 0) {
       return cursor.getX() == 0;
     }
-    int isInNormalMode = isInInsertMode() ? 0 : 1;
     return cursor.isInRangeY(0, file.getLineCount() - 1) &&
-        cursor.isInRangeX(0, getCurrentLineLength() - isInNormalMode);
+        cursor.isInRangeX(0, getEffectiveLineLength());
   }
 
   private String getCurrentLine() {
@@ -243,9 +246,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   public void escape() {
     if (visual.isOn()) {
       visual.toggleMode(Mode.NONE);
-      return;
-    }
-    if (isInInsertMode()) {
+    } else if (isInInsertMode()) {
       inInsertMode = false;
       lastInsertPoint = cursor.getPoint();
       if (justInsertedAutoIndent && isAllWhitespace(getCurrentLine())) {
@@ -254,8 +255,8 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       justInsertedAutoIndent = false;
       file.breakPatch();
       cursor.moveBy(0, -1);
-      applyCursorConstraints();
     }
+    applyCursorConstraints();
   }
 
   public void insertAtLastInsert() {
@@ -497,7 +498,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void moveCursorToEndOfLine() {
-    int x = Math.max(0, getCurrentLineLength() - (isInInsertMode() ? 0 : 1));
+    int x = Math.max(0, getEffectiveLineLength());
     cursor.moveTo(cursor.getY(), x);
   }
 

@@ -90,11 +90,17 @@ public class Visual {
     int startX = getStartPoint().getX();
     int endX = getEndPoint().getX();
 
+    boolean coversTrailingNewline = false;
+    if (endX == fileView.getLine(endLine).length()) {
+      coversTrailingNewline = true;
+      endX--;
+    }
+
     switch (mode) {
     case CHAR:
       if (startLine == endLine) {
         lines.add(fileView.getLine(startLine).substring(startX, endX + 1));
-        return makeRegister(lines);
+        return makeRegister(lines, coversTrailingNewline);
       }
       for (int y = startLine; y <= endLine; y++) {
         String line = fileView.getLine(y);
@@ -106,16 +112,16 @@ public class Visual {
           lines.add(line);
         }
       }
-      return makeRegister(lines);
+      return makeRegister(lines, coversTrailingNewline);
     case LINE:
-      return makeRegister(fileView.getLineRange(startLine, endLine));
+      return makeRegister(fileView.getLineRange(startLine, endLine), coversTrailingNewline);
     default:
       throw new IllegalStateException();
     }
   }
 
-  private TextFragment makeRegister(List<String> lines) {
-    return new TextFragment(mode, false, lines);
+  private TextFragment makeRegister(List<String> lines, boolean trailingNewline) {
+    return new TextFragment(mode, trailingNewline, lines);
   }
 
   public void removeFrom(FileView file) {

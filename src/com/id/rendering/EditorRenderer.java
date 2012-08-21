@@ -53,25 +53,35 @@ public class EditorRenderer {
     return line.substring(startIndex, endIndex);
   }
 
+  private String paddedString(String line, int x, int length, char padding) {
+    StringBuffer buffer = new StringBuffer();
+    String substring = safeSubstring(line, x, length);
+    buffer.append(substring);
+    for (int i = 0; i < length - substring.length(); i++) {
+      buffer.append(padding);
+    }
+    return buffer.toString();
+  }
+
   private void setLine(int matrixY, int startX, int length, Matrix matrix, int lineY) {
     String line = editor.getLine(lineY);
-    line = safeSubstring(line, startX, length);
+    String substring = paddedString(line, startX, length, ' ');
     if (hasTrailingWhitespace(line)) {
-      matrix.setWhitespaceIndicator(matrixY, line.length() - 1, true);
+      matrix.get(matrixY, line.length() - 1).isWhitespaceIndicator = true;
     }
     if (line.length() > MAX_LINE_LENGTH) {
-      matrix.set80CharIndicator(matrixY, MAX_LINE_LENGTH - 1, true);
+      matrix.get(matrixY, MAX_LINE_LENGTH - 1).is80CharIndicator = true;
     }
-    for (int i = 0; i < Math.min(matrix.getWidth(), line.length()); i++) {
-      matrix.setLetter(matrixY, i, line.charAt(i));
+    for (int i = 0; i < Math.min(matrix.getWidth(), line.length() + 1); i++) {
+      matrix.get(matrixY, i).letter = substring.charAt(i);
       if (editor.isInVisual(lineY, i)) {
-        matrix.setVisual(matrixY, i, true);
+        matrix.get(matrixY, i).isVisual = true;
       }
       if (editor.isHighlight(lineY, i)) {
-        matrix.setHighlight(matrixY, i, true);
+        matrix.get(matrixY, i).isHighlight = true;
       }
       if (editor.isSearchHighlight(lineY, i)) {
-        matrix.setSearchHighlight(matrixY, i, true);
+        matrix.get(matrixY, i).isSearchHighlight = true;
       }
     }
   }

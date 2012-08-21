@@ -42,6 +42,7 @@ import com.id.ui.editor.EditorPanel;
 import com.id.ui.editor.TextPanel;
 
 public class App {
+  public static final StaticSettings settings = StaticSettings.fromFile(".settings");
   public static final Font FONT = loadFont();
 
   public static void main(String[] args) {
@@ -155,7 +156,7 @@ public class App {
     Font font = null;
     try {
       ClassLoader classLoader = App.class.getClassLoader();
-      URL fontUrl = classLoader.getResource("Inconsolata.ttf");
+      URL fontUrl = classLoader.getResource(settings.getFontName());
       InputStream fontInputStream = fontUrl.openStream();
       font = Font.createFont(Font.TRUETYPE_FONT, fontInputStream);
     } catch (FontFormatException e) {
@@ -163,6 +164,6 @@ public class App {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return font.deriveFont(13f);
+    return font.deriveFont(settings.getFontSize());
   }
 }

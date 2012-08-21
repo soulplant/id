@@ -1,6 +1,7 @@
 package com.id.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,6 +11,9 @@ import java.util.List;
 import com.id.platform.FileSystem;
 
 public class Util {
+  public static boolean isFile(String filename) {
+    return new File(filename).isFile();
+  }
   public static List<String> readFile(String filename) {
     try {
       BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));

@@ -10,13 +10,10 @@ import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
 public class FinderPanel extends JPanel implements Finder.Listener {
-  private final Finder finder;
   private final TextPanel textPanel;
   private final ItemListPanel itemList = new ItemListPanel();
-  private Finder.Listener listener;
 
   public FinderPanel(Finder finder) {
-    this.finder = finder;
     textPanel = new TextPanel(finder.getQueryEditor());
     FinderLayout fuzzyFinderLayout = new FinderLayout();
     setLayout(fuzzyFinderLayout);
@@ -33,15 +30,9 @@ public class FinderPanel extends JPanel implements Finder.Listener {
     return result;
   }
 
-  public void setListener(Finder.Listener listener) {
-    this.listener = listener;
-  }
-
   @Override
-  public void onQueryChanged() {
-    List<String> matches = finder.getMatches();
-    itemList.setItems(matches);
-    listener.onQueryChanged();
+  public void onMatchesChanged(List<String> items) {
+    itemList.setItems(items);
   }
 
   @Override
@@ -51,8 +42,6 @@ public class FinderPanel extends JPanel implements Finder.Listener {
 
   @Override
   public void onSetVisible(boolean visible) {
-    onQueryChanged();
     setVisible(visible);
-    listener.onSetVisible(visible);
   }
 }

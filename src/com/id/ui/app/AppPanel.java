@@ -10,12 +10,11 @@ import javax.swing.border.EmptyBorder;
 
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
-import com.id.fuzzy.Finder;
 import com.id.ui.Constants;
 import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
-public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listener {
+public class AppPanel extends JLayeredPane implements KeyListener {
   private final Component spotlightView;
   private final Component fileListView;
   private final Component stackView;
@@ -41,7 +40,6 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
     add(fuzzyFinderPanel, "fuzzyfinder");
     setLayer(fuzzyFinderPanel, JLayeredPane.POPUP_LAYER);
     fuzzyFinderPanel.setVisible(false);
-    fuzzyFinderPanel.setListener(this);
   }
 
   // This is needed so that this Panel doesn't assume that its components don't overlap.
@@ -89,23 +87,6 @@ public class AppPanel extends JLayeredPane implements KeyListener, Finder.Listen
   @Override
   public void keyReleased(KeyEvent e) {
     // Do nothing.
-  }
-
-  // FuzzyFinder.Listener.
-  @Override
-  public void onQueryChanged() {
-    fuzzyFinderPanel.repaint();
-  }
-
-  @Override
-  public void onSelectionChanged(int index) {
-    fuzzyFinderPanel.repaint();
-  }
-
-  @Override
-  public void onSetVisible(boolean visible) {
-    fuzzyFinderPanel.setVisible(visible);
-    invalidate();
   }
 
   private void logEventTranslationInfo(KeyEvent event, KeyStroke keyStroke) {

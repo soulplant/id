@@ -3,11 +3,13 @@ package com.id.app;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -86,12 +88,13 @@ public class ControllerTest {
     verify(fuzzyListener).onSetVisible(true);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void typingGoesToTheFuzzyFinderWhenItsUp() {
     controller.showFileFinder();
     fuzzyFinder.addListener(fuzzyListener);
     typeString("hi");
-    verify(fuzzyListener, times(2)).onQueryChanged();
+    verify(fuzzyListener, times(2)).onMatchesChanged(any(List.class));
   }
 
   @Test

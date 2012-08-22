@@ -7,6 +7,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,9 +34,9 @@ public class FuzzyFinderTest {
   private void setupWithFiles(String... filenames) {
     File file = new File(filenames);
     fuzzyFinder = new Finder(file);
-    fuzzyFinder.setDriver(new FuzzyFinderDriver(file));
-    listener = mock(Finder.Listener.class);
     selectionListener = mock(Finder.SelectionListener.class);
+    fuzzyFinder.runFindAction(new FuzzyFinderDriver(file), selectionListener);
+    listener = mock(Finder.Listener.class);
   }
 
   @Test
@@ -46,11 +48,12 @@ public class FuzzyFinderTest {
     assertEquals(1, fuzzyFinder.getMatches().size());
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void sendsQueryChanged() {
     fuzzyFinder.addListener(listener);
     fuzzyFinder.handleKeyStroke(KeyStroke.fromChar('c'));
-    verify(listener).onQueryChanged();
+    verify(listener).onMatchesChanged(any(List.class));
   }
 
   @Test

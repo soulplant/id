@@ -14,7 +14,7 @@ import com.id.file.File;
 
 public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
   public interface Listener {
-    void onQueryChanged();
+    void onMatchesChanged(List<String> items);
     void onSetVisible(boolean visible);
     void onSelectionChanged(int selectedIndex);
   }
@@ -29,8 +29,9 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
   private final List<Listener> listeners = new ArrayList<Listener>();
   private final ShortcutTree shortcuts = new ShortcutTree();
   private SelectionListener selectionListener;
-  private int cursor = 0;
+  private int cursorIndex = 0;
   private FinderDriver driver = null;
+  private List<String> currentMatches = null;
 
   public Finder(File file) {
     this.file = file;
@@ -66,25 +67,27 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
     this.driver = driver;
     this.selectionListener = listener;
     setVisible(true);
+    updateMatches();
   }
 
-  public void setDriver(FinderDriver driver) {
-    this.driver = driver;
+  private void updateMatches() {
+    currentMatches = getMatches();
+    fireMatchesChanged();
   }
 
   public void moveSelectionUp() {
-    cursor--;
-    if (cursor < 0) {
-      cursor = 0;
+    cursorIndex--;
+    if (cursorIndex < 0) {
+      cursorIndex = 0;
     }
     fireSelectionChanged();
   }
 
   public void moveSelectionDown() {
-    cursor++;
-    int matches = getMatches().size();
-    if (cursor >= matches) {
-      cursor = matches - 1;
+    cursorIndex++;
+    int matches = currentMatches.size();
+    if (cursorIndex >= matches) {
+      cursorIndex = matches - 1;
     }
     fireSelectionChanged();
   }
@@ -94,12 +97,11 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
   }
 
   public void selectCurrentItem() {
-    List<String> matches = getMatches();
-    if (matches.isEmpty() || cursor >= matches.size()) {
+    if (currentMatches.isEmpty() || cursorIndex >= currentMatches.size()) {
       setVisible(false);
       return;
     }
-    fireItemSelected(matches.get(cursor));
+    fireItemSelected(currentMatches.get(cursorIndex));
     clearQuery();
     setVisible(false);
   }
@@ -133,9 +135,9 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
     return minibuffer.handleKeyStroke(keyStroke);
   }
 
-  private void fireQueryChanged() {
+  private void fireMatchesChanged() {
     for (Listener listener : listeners) {
-      listener.onQueryChanged();
+      listener.onMatchesChanged(currentMatches);
     }
   }
 
@@ -151,7 +153,7 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
 
   private void fireSelectionChanged() {
     for (Listener listener : listeners) {
-      listener.onSelectionChanged(cursor);
+      listener.onSelectionChanged(cursorIndex);
     }
   }
 
@@ -170,7 +172,7 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
   // For testing.
   void setQuery(String query) {
     minibuffer.setText(query);
-    fireQueryChanged();
+    updateMatches();
   }
 
   public String getCurrentQuery() {
@@ -193,8 +195,8 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
 
   @Override
   public void onTextChanged() {
-    cursor = 0;
-    fireQueryChanged();
+    cursorIndex = 0;
+    updateMatches();
     fireSelectionChanged();
   }
 
@@ -203,7 +205,7 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
   }
 
   public int getCursorIndex() {
-    return cursor;
+    return cursorIndex;
   }
 
   // TODO(koz): This doesn't really go here, Controller should just have a

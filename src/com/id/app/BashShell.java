@@ -30,8 +30,8 @@ public class BashShell implements Shell {
       while ((line = br.readLine()) != null) {
         result.add(line);
       }
-      System.out.println("Command[" + workingDirectory + "] = " + command);
-      System.out.println("results[" + process.exitValue() + "] = " + result);
+//      System.out.println("Command[" + workingDirectory + "] = " + command);
+//      System.out.println("results[" + process.exitValue() + "] = " + result);
       return result;
     } catch (IOException e) {
       e.printStackTrace();

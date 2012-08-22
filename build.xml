@@ -8,6 +8,7 @@
   <property name="dist"  location="dist"/>
   <path id="build.classpath">
     <pathelement path="lib/protobuf-java-2.3.0.jar"/>
+    <pathelement path="lib/perf4j-0.9.16.jar"/>
   </path>
   <path id="test.classpath">
     <path refid="build.classpath"/>
@@ -29,6 +30,7 @@
     <mkdir dir="${dist}"/>
     <jar destfile="${dist}/id.jar">
       <zipfileset src="lib/protobuf-java-2.3.0.jar" includes="**/*.class"/>
+      <zipfileset src="lib/perf4j-0.9.16.jar" includes="**/*.class"/>
       <fileset dir="${build}"/>
       <fileset dir="resources"/>
       <manifest>

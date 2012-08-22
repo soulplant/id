@@ -1,5 +1,6 @@
 package com.id.rendering;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import com.id.ui.Constants;
@@ -83,18 +84,12 @@ public class Matrix {
   }
 
   public void render(Graphics g) {
+    drawBackground(g);
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         Entry entry = getEntry(y, x);
         int boxY = (lineOffset + y) * charHeightPx;
         int boxX = x * charWidthPx;
-        if (entry.isVisual) {
-          g.setColor(Constants.VISUAL_COLOR);
-          g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
-        } else if (entry.isHighlight || entry.isSearchHighlight) {
-          g.setColor(Constants.HIGHLIGHT_COLOR);
-          g.fillRect(boxX, boxY, charWidthPx, charHeightPx);
-        }
         if (entry.isWhitespaceIndicator) {
           g.setColor(Constants.WHITESPACE_INDICATOR_COLOR);
           g.fillRect(boxX + charWidthPx, boxY, 2, charHeightPx);
@@ -108,6 +103,68 @@ public class Matrix {
       int textY = (lineOffset + y + 1) * charHeightPx - fontDescentPx;
       g.setColor(Constants.TEXT_COLOR);
       g.drawString(getLine(y), charOffset * charWidthPx, textY);
+    }
+  }
+
+  private void drawBackground(Graphics g) {
+    for (int y = 0; y < height; y++) {
+      int boxY = (lineOffset + y) * charHeightPx;
+      int boxX = 0;
+      RectFiller rectFiller = new RectFiller(g, boxX, boxY);
+      for (int x = 0; x < width; x++) {
+        Entry entry = getEntry(y, x);
+        if (entry.isVisual) {
+          rectFiller.nextColor(Constants.VISUAL_COLOR);
+        } else if (entry.isHighlight || entry.isSearchHighlight) {
+          rectFiller.nextColor(Constants.HIGHLIGHT_COLOR);
+        } else {
+          rectFiller.nextColor(null);
+        }
+      }
+      rectFiller.done();
+    }
+  }
+
+  /**
+   * Draws a line of character rects, consolidating adjacent rects into one when
+   * they are the same color.
+   */
+  private class RectFiller {
+    private final int startX;
+    private final int startY;
+    private final Graphics g;
+
+    private Color currentColor = Constants.BG_COLOR;
+    private int rectLengthDrawn = 0;
+    private int currentRectLength = 0;
+
+    public RectFiller(Graphics g, int startX, int startY) {
+      this.g = g;
+      this.startX = startX;
+      this.startY = startY;
+    }
+
+    public void nextColor(Color color) {
+      if (color != currentColor) {
+        drawRect();
+        currentColor = color;
+        rectLengthDrawn += currentRectLength;
+        currentRectLength = 0;
+      }
+      currentRectLength += charWidthPx;
+    }
+
+    public void done() {
+      drawRect();
+    }
+
+    private void drawRect() {
+      if (currentColor == null) {
+        return;
+      }
+      int x = startX + rectLengthDrawn;
+      g.setColor(currentColor);
+      g.fillRect(x, startY, currentRectLength, charHeightPx);
     }
   }
 

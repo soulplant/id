@@ -18,9 +18,7 @@ public class GitRepository implements Repository {
 
   @Override
   public Diff getDiffRelativeTo(String rev) {
-    Diff lines = Diff.fromLines(shell.exec("git diff " + rev));
-    System.out.println(lines);
-    return lines;
+    return Diff.fromLines(shell.exec("git diff " + rev));
   }
 
   @Override

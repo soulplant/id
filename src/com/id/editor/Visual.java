@@ -35,6 +35,9 @@ public class Visual {
   private final Cursor cursor;
   private Mode mode = Mode.NONE;
   private Point anchor;
+  private Point lastCursorPoint;
+  private Point lastAnchor;
+  private Mode lastMode = Mode.NONE;
 
   public Visual(Cursor cursor) {
     this.cursor = cursor;
@@ -42,17 +45,24 @@ public class Visual {
 
   public void toggleMode(Mode mode) {
     if (this.mode == Mode.NONE) {
-      this.mode = mode;
-      reset();
-    } else if (this.mode == mode) {
-      this.mode = Mode.NONE;
+      startVisual(mode);
+    } else if (this.mode == mode || mode == Mode.NONE) {
+      endVisual();
     } else {
       this.mode = mode;
     }
   }
 
-  private void reset() {
-    this.anchor = cursor.getPoint();
+  private void startVisual(Mode mode) {
+    this.mode = mode;
+    this.anchor = getCursorPoint();
+  }
+
+  private void endVisual() {
+    lastMode = this.mode;
+    lastCursorPoint = getCursorPoint();
+    lastAnchor = this.anchor;
+    this.mode = Mode.NONE;
   }
 
   public boolean isOn() {
@@ -60,7 +70,11 @@ public class Visual {
   }
 
   public Point getStartPoint() {
-    return isCursorBeforeAnchor() ? cursor.getPoint() : anchor;
+    return isCursorBeforeAnchor() ? getCursorPoint() : anchor;
+  }
+
+  private Point getCursorPoint() {
+    return cursor.getPoint();
   }
 
   public int getStartY() {
@@ -68,7 +82,7 @@ public class Visual {
   }
 
   public Point getEndPoint() {
-    return isCursorBeforeAnchor() ? anchor : cursor.getPoint();
+    return isCursorBeforeAnchor() ? anchor : getCursorPoint();
   }
 
   public int getEndY() {
@@ -76,7 +90,7 @@ public class Visual {
   }
 
   public boolean isCursorBeforeAnchor() {
-    return cursor.getPoint().before(anchor);
+    return getCursorPoint().before(anchor);
   }
 
   public boolean contains(Point point) {
@@ -143,5 +157,19 @@ public class Visual {
     default:
       throw new UnsupportedOperationException();
     }
+  }
+
+  public Point getLastCursorPoint() {
+    return lastCursorPoint;
+  }
+
+  public Mode getLastMode() {
+    return lastMode;
+  }
+
+  public void reselectLast() {
+    this.mode = lastMode;
+    this.anchor = lastAnchor;
+    cursor.jumpTo(lastCursorPoint.getY(), lastCursorPoint.getX());
   }
 }

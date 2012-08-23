@@ -1117,4 +1117,8 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   public boolean isFocused() {
     return focused;
   }
+
+  public void reselectVisual() {
+    visual.reselectLast();
+  }
 }

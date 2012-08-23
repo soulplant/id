@@ -99,4 +99,33 @@ public class VisualTest {
     assertEquals("abc", register.getLine(0));
     assertEquals("def", register.getLine(1));
   }
+
+  @Test
+  public void remembersLastPositionAndMode() {
+    cursor.moveTo(0, 1);
+    visual.toggleMode(Visual.Mode.LINE);
+    cursor.moveTo(1, 1);
+    visual.toggleMode(Visual.Mode.NONE);
+    cursor.moveTo(10, 1);
+
+    Point point = visual.getLastCursorPoint();
+    assertEquals(1, point.getY());
+    assertEquals(1, point.getX());
+
+    assertEquals(Visual.Mode.LINE, visual.getLastMode());
+  }
+
+  @Test
+  public void canRestoreLastVisual() {
+    cursor.moveTo(0, 1);
+    visual.toggleMode(Visual.Mode.LINE);
+    cursor.moveTo(1, 2);
+    visual.toggleMode(Visual.Mode.NONE);
+    cursor.moveTo(10, 1);
+
+    visual.reselectLast();
+
+    assertEquals(1, cursor.getY());
+    assertEquals(2, cursor.getX());
+  }
 }

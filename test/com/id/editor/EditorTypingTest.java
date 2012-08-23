@@ -1052,4 +1052,18 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("jVJ");
     assertFileContents("abc", "def");
   }
+
+  @Test
+  public void gv() {
+    setFileContents("abc", "def", "ghi");
+    typeString("vj>gv>");
+    assertFileContents("    abc", "    def", "ghi");
+  }
+
+  @Test
+  public void gvRestoresVisualEvenIfInAnotherVisual() {
+    setFileContents("abc", "def");
+    typeString("v<ESC>jvgv");
+    assertTrue(editor.isInVisual(0, 0));
+  }
 }

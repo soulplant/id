@@ -30,4 +30,30 @@ public class EditorList extends ListModel<Editor> implements KeyStrokeHandler, P
     return this;
   }
 
+  public Editor getEditorByName(String filename) {
+    for (Editor editor : this) {
+      if (filename.equals(editor.getFilename())) {
+        return editor;
+      }
+    }
+    return null;
+  }
+
+  private int getIndex(Editor target) {
+    for (int i = 0; i < this.size(); i++) {
+      if (get(i) == target) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  public void setFocusedEditor(Editor editor) {
+    int index = getIndex(editor);
+    if (index == -1) {
+      return;
+    }
+    setFocusedIndex(index);
+  }
+
 }

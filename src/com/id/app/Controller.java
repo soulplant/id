@@ -63,12 +63,14 @@ public class Controller implements KeyStrokeHandler {
     }
   };
   private final FinderDriver fileFinderDriver;
+  private final ViewportTracker viewportTracker;
 
   public Controller(EditorList editorList, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository, HighlightState highlightState,
       final StackList stackList, Minibuffer minibuffer,
       CommandExecutor commandExecutor, FinderDriver autocompleteDriver,
-      FinderDriver fileFinderDriver) {
+      FinderDriver fileFinderDriver, ViewportTracker viewportTracker,
+      FocusManager focusManager) {
     this.editorList = editorList;
     this.fileSystem = fileSystem;
     this.finder = fuzzyFinder;
@@ -79,6 +81,7 @@ public class Controller implements KeyStrokeHandler {
     this.commandExecutor = commandExecutor;
     this.autocompleteDriver = autocompleteDriver;
     this.fileFinderDriver = fileFinderDriver;
+    this.viewportTracker = viewportTracker;
 
     commandExecutor.setEnvironment(new CommandExecutor.Environment() {
       @Override
@@ -428,7 +431,9 @@ public class Controller implements KeyStrokeHandler {
   }
 
   private Editor makeEditor(FileView fileView) {
-    return new Editor(fileView, highlightState, register, editorEnvironment);
+    Editor editor = new Editor(fileView, highlightState, register, editorEnvironment);
+    editor.setViewportTracker(viewportTracker);
+    return editor;
   }
 
   private Editor addSnippet(FileView fileView) {

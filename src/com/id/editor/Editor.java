@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.id.app.HighlightPattern;
 import com.id.app.HighlightState;
+import com.id.app.ViewportTracker;
 import com.id.editor.Visual.Mode;
 import com.id.events.EditorKeyHandler;
 import com.id.events.KeyStroke;
@@ -142,6 +143,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   private Point lastInsertPoint = null;
   private Point autocompleteStart = null;
   private boolean focused = false;
+  private ViewportTracker viewportTracker = null;
 
   public Editor(FileView fileView, HighlightState highlightState,
       Register register, EditorEnvironment editorEnvironment) {
@@ -1120,5 +1122,20 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   public void reselectVisual() {
     visual.reselectLast();
+  }
+
+  public void saveViewport() {
+    if (viewportTracker == null) {
+      return;
+    }
+    if (viewportTracker.isTracking()) {
+      viewportTracker.saveViewport(getFilename(), view.getTopLineVisible(), cursor.getY(), cursor.getX());
+    } else {
+      viewportTracker.restoreViewport();
+    }
+  }
+
+  public void setViewportTracker(ViewportTracker viewportTracker) {
+    this.viewportTracker = viewportTracker;
   }
 }

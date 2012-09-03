@@ -84,9 +84,12 @@ public class App {
     File files = getFilesFile(fileSystem, shell);
     Finder finder = new Finder(files);
     HighlightState highlightState = new HighlightState();
+    FocusManager focusManager = new FocusManager(editorList, stackList);
+    ViewportTracker viewportTracker = new ViewportTracker(focusManager);
+
     final Controller controller = new Controller(editorList, fileSystem,
         finder, repository, highlightState, stackList, minibuffer,
-        commandExecutor, null, new FuzzyFinderDriver(files));
+        commandExecutor, null, new FuzzyFinderDriver(files), viewportTracker, focusManager);
 
     SpotlightView<Editor, EditorPanel> spotlightView = new SpotlightView<Editor, EditorPanel>();
     bindList(editorList, new EditorViewFactory(true), spotlightView);

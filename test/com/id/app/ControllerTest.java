@@ -3,7 +3,7 @@ package com.id.app;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,6 +44,8 @@ public class ControllerTest {
   private StackList stackList;
   private Minibuffer minibuffer;
   private CommandExecutor commandExecutor;
+  private ViewportTracker viewportTracker;
+  private FocusManager focusManager;
 
   @Before
   public void setup() {
@@ -57,9 +59,11 @@ public class ControllerTest {
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();
+    focusManager = new FocusManager(editors, stackList);
+    viewportTracker = new ViewportTracker(focusManager);
     controller = new Controller(editors, fileSystem, fuzzyFinder, repo,
         highlightState, stackList, minibuffer, commandExecutor, null,
-        new FuzzyFinderDriver(files));
+        new FuzzyFinderDriver(files), viewportTracker, focusManager);
 
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");

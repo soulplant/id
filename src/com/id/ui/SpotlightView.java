@@ -10,6 +10,7 @@ import com.id.app.ListModel;
 @SuppressWarnings("serial")
 public class SpotlightView<M, V extends JPanel> extends JPanel implements ViewContainer<M, V> {
   public SpotlightView() {
+    setBackground(Constants.BG_COLOR);
     setLayout(new BorderLayout());
   }
 

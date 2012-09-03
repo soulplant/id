@@ -15,21 +15,14 @@ import com.id.ui.editor.TextPanel;
 
 @SuppressWarnings("serial")
 public class AppPanel extends JLayeredPane implements KeyListener {
-  private final Component spotlightView;
-  private final Component fileListView;
-  private final Component stackView;
   private final KeyStrokeHandler handler;
-  private final FinderPanel fuzzyFinderPanel;
-  private final AppLayout appLayout = new AppLayout();
+  private final AppLayout appLayout;
 
   public AppPanel(Component fileListView, Component spotlightView,
       Component stackView, KeyStrokeHandler handler, FinderPanel fuzzyFinderPanel,
       TextPanel minibufferView) {
-    this.spotlightView = spotlightView;
-    this.fileListView = fileListView;
-    this.stackView = stackView;
     this.handler = handler;
-    this.fuzzyFinderPanel = fuzzyFinderPanel;
+    this.appLayout = new AppLayout();
     setBorder(new EmptyBorder(22, 22, 22, 22));
     setLayout(appLayout);
     setFocusTraversalKeysEnabled(false);

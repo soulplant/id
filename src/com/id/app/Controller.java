@@ -24,7 +24,6 @@ import com.id.fuzzy.SubstringFinderDriver;
 import com.id.git.Diff;
 import com.id.git.Repository;
 import com.id.platform.FileSystem;
-import com.id.util.StringUtils;
 
 public class Controller implements KeyStrokeHandler {
   private final EditorList editorList;
@@ -64,6 +63,7 @@ public class Controller implements KeyStrokeHandler {
   };
   private final FinderDriver fileFinderDriver;
   private final ViewportTracker viewportTracker;
+  private final FocusManager focusManager;
 
   public Controller(EditorList editorList, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository, HighlightState highlightState,
@@ -82,6 +82,7 @@ public class Controller implements KeyStrokeHandler {
     this.autocompleteDriver = autocompleteDriver;
     this.fileFinderDriver = fileFinderDriver;
     this.viewportTracker = viewportTracker;
+    this.focusManager = focusManager;
 
     commandExecutor.setEnvironment(new CommandExecutor.Environment() {
       @Override
@@ -228,23 +229,12 @@ public class Controller implements KeyStrokeHandler {
   }
 
   private void executeMinibufferCommand() {
-    commandExecutor.execute(minibuffer.getText(), getCurrentEditor());
+    commandExecutor.execute(minibuffer.getText(), focusManager.getFocusedEditor());
     exitMinibuffer();
   }
 
-  private Editor getCurrentEditor() {
-    if (editorList.isFocused()) {
-      return editorList.getFocusedItem();
-    } else {
-      return stackList.getFocusedEditor();
-    }
-  }
-
   private void goToTopFileInFileList() {
-    if (editorList.isEmpty()) {
-      return;
-    }
-    editorList.setFocusedIndex(0);
+    focusManager.focusTopFileInFileList();
   }
 
   private void openDeltasAsSnippets() {
@@ -303,23 +293,15 @@ public class Controller implements KeyStrokeHandler {
   }
 
   private void focusEditors() {
-    if (editorList.isFocused()) {
-      return;
-    }
-    stackList.blur();
-    editorList.focus();
+    focusManager.focusEditorList();
   }
 
   private void focusStack() {
-    if (stackList.isFocused() || stackList.isEmpty()) {
-      return;
-    }
-    editorList.blur();
-    stackList.focus();
+    focusManager.focusStackList();
   }
 
   public void saveFile() {
-    getFocusedList().getFocusedItem().save(fileSystem);
+    focusManager.getFocusedEditor().save(fileSystem);
   }
 
   public void showFileFinder() {
@@ -359,7 +341,7 @@ public class Controller implements KeyStrokeHandler {
     if (filename == null) {
       throw new IllegalStateException("Don't pass null filenames.");
     }
-    Editor existingEditor = attemptToFocusExistingEditor(filename);
+    Editor existingEditor = focusManager.focusEditor(filename);
     if (existingEditor != null) {
       return existingEditor;
     }
@@ -374,7 +356,7 @@ public class Controller implements KeyStrokeHandler {
   }
 
   private void openOtherFiles() {
-    String filename = getFocusedEditor().getFilename();
+    String filename = focusManager.getFocusedEditor().getFilename();
     String parentPath = new java.io.File(filename).getParent();
     for (String subdir : fileSystem.getSubdirectories(parentPath)) {
       subdir = new java.io.File(parentPath, subdir).getPath();
@@ -442,25 +424,8 @@ public class Controller implements KeyStrokeHandler {
     return editor;
   }
 
-  private Editor attemptToFocusExistingEditor(String filename) {
-    filename = StringUtils.normalizePath(filename);
-    for (int i = 0; i < editorList.size(); i++) {
-      if (filename.equals(editorList.get(i).getFilename())) {
-        editorList.setFocusedIndex(i);
-        return editorList.get(i);
-      }
-    }
-    return null;
-  }
-
   public void closeCurrentFile() {
-    getFocusedList().removeFocused();
-    while (!stackList.isEmpty() && stackList.getFocusedItem().isEmpty()) {
-      stackList.removeFocused();
-    }
-    if (stackList.isEmpty()) {
-      focusEditors();
-    }
+    focusManager.closeCurrentFile();
   }
 
   @Override
@@ -484,21 +449,8 @@ public class Controller implements KeyStrokeHandler {
     return shortcuts.stepAndExecute(keyStroke);
   }
 
-  private ListModel<Editor> getFocusedList() {
-    return editorList.isFocused() ? editorList : stackList.getFocusedItem();
-  }
-
-  private Editor getFocusedEditor() {
-    ListModel<Editor> focusedList = getFocusedList();
-    if (focusedList.isEmpty()) {
-      return null;
-    }
-    return focusedList.getFocusedItem();
-  }
-
-
   private void jumpToLine(int lineNumber) {
-    getFocusedEditor().jumpToLine(lineNumber);
+    focusManager.getFocusedEditor().jumpToLine(lineNumber);
   }
 
   public void importDiffs() {

@@ -69,7 +69,7 @@ public class EditorRenderer {
     if (hasTrailingWhitespace(line)) {
       matrix.get(matrixY, line.length() - 1).isWhitespaceIndicator = true;
     }
-    if (line.length() > MAX_LINE_LENGTH) {
+    if (line.length() > MAX_LINE_LENGTH && MAX_LINE_LENGTH <= matrix.getWidth()) {
       matrix.get(matrixY, MAX_LINE_LENGTH - 1).is80CharIndicator = true;
     }
     for (int i = 0; i < Math.min(matrix.getWidth(), line.length() + 1); i++) {

@@ -188,6 +188,17 @@ public class Matrix {
   }
 
   public Entry get(int y, int x) {
-    return getEntry(y, x);
+    if (isInBounds(y, x)) {
+      return getEntry(y, x);
+    }
+    // NOTE(koz): Should this throw an exception instead?
+    return new Entry(' ');
+  }
+
+  private boolean isInBounds(int y, int x) {
+    if (entries.length == 0) {
+      return false;
+    }
+    return y >= 0 && y < entries.length && x >= 0 && x < entries[0].length;
   }
 }

@@ -58,6 +58,9 @@ public class HighlightState {
   }
 
   private void addPatternToHistory(HighlightPattern highlightPattern) {
+    if (!highlightPattern.isWholeWordPattern()) {
+      return;
+    }
     for (HighlightPattern pattern : previousPatterns) {
       if (pattern.equals(highlightPattern)) {
         return;

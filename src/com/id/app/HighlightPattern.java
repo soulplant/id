@@ -27,6 +27,10 @@ public class HighlightPattern {
     return pattern;
   }
 
+  public boolean isWholeWordPattern() {
+    return matchType == MatchType.WHOLE_WORD;
+  }
+
   @Override
   public boolean equals(Object other) {
     if (!(other instanceof HighlightPattern)) {

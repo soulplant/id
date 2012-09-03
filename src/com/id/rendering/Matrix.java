@@ -37,7 +37,8 @@ public class Matrix {
     this.fontDescentPx = fontDescentPx;
     this.charHeightPx = charHeightPx;
     this.charWidthPx = charWidthPx;
-    this.lineOffset = lineOffset;
+//    this.lineOffset = lineOffset;
+    this.lineOffset = 0;
     this.charOffset = charOffset;
     this.entries = new Entry[height][width];
     for (int y = 0; y < height; y++) {

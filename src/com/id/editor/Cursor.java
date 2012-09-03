@@ -12,9 +12,14 @@ public class Cursor {
   private Point point;
   private int defaultX;
   private final List<Listener> listeners = new ArrayList<Listener>();
+  private Editor editor;
 
   public Cursor() {
     this.point = new Point(0, 0);
+  }
+
+  public void setEditor(Editor editor) {
+    this.editor = editor;
   }
 
   public Point getPoint() {
@@ -42,8 +47,9 @@ public class Cursor {
 
   public void jumpTo(int y, int x) {
     setPosition(y, x);
+    applyCursorConstraints();
     for (Listener listener : listeners) {
-      listener.onJumped(y, x);
+      listener.onJumped(point.getY(), point.getX());
     }
   }
 
@@ -51,6 +57,7 @@ public class Cursor {
     checkBounds(y, x);
     this.point = new Point(y, x);
     this.defaultX = x;
+    applyCursorConstraints();
   }
 
   private void checkBounds(int y, int x) {
@@ -66,7 +73,16 @@ public class Cursor {
     } else {
       defaultX = point.getX();
     }
+    applyCursorConstraints();
     fireOnMoved(point.getY(), point.getX());
+  }
+
+  public void applyCursorConstraints() {
+    if (editor == null) {
+      return;
+    }
+    constrainY(0, editor.getLineCount() - 1);
+    constrainX(0, editor.getEffectiveLineLength(point.getY()));
   }
 
   public int getY() {

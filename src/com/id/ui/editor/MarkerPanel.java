@@ -21,15 +21,15 @@ public class MarkerPanel extends LinewisePanel {
   public void paint(Graphics g) {
     super.paint(g);
     g.setFont(App.FONT);
-    // TODO Make this only render things in the clip rect.
     int fontHeightPx = getFontHeightPx();
-    int widthPx = getFontWidthPx();
-    int height = editor.getLineCount();
+    int fontWidthPx = getFontWidthPx();
+    int lineCount = editor.getLineCount();
+    int linesToDraw = Math.min(getLinesHigh(), lineCount - getTopLine());
 
-    for (int i = 0; i < height; i++) {
+    for (int i = 0; i < linesToDraw; i++) {
       Color color = g.getColor();
       boolean draw = true;
-      Tombstone.Status status = editor.getStatus(i);
+      Tombstone.Status status = editor.getStatus(i + getTopLine());
       switch (status) {
       case MODIFIED:
         g.setColor(Constants.MARKER_MODIFIED_COLOR);
@@ -42,15 +42,15 @@ public class MarkerPanel extends LinewisePanel {
         break;
       }
       if (draw) {
-        g.fillRect(0, i * fontHeightPx, widthPx, fontHeightPx);
+        g.fillRect(0, i * fontHeightPx, fontWidthPx, fontHeightPx);
       }
       if (!editor.getGrave(i).isEmpty()) {
         g.setColor(Constants.MARKER_REMOVED_COLOR);
-        g.fillRect(0, (i + 1) * fontHeightPx - 5, widthPx, 5);
+        g.fillRect(0, (i + 1) * fontHeightPx - 5, fontWidthPx, 5);
       }
       if (i == 0 && !editor.getGrave(-1).isEmpty()) {
         g.setColor(Color.RED);
-        g.fillRect(0, i * fontHeightPx, widthPx, 5);
+        g.fillRect(0, i * fontHeightPx, fontWidthPx, 5);
       }
       g.setColor(color);
     }

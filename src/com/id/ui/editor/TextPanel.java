@@ -2,6 +2,7 @@ package com.id.ui.editor;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 import com.id.app.App;
@@ -52,12 +53,15 @@ public class TextPanel extends LinewisePanel {
     App.configureFont(g);
 
     final int fontDescentPx = g.getFontMetrics().getDescent();
+    Rectangle rect = new Rectangle(0, getTopLine() * getFontHeightPx(),
+        getLinesWide() * getFontWidthPx(), getLinesHigh() * getFontHeightPx());
 
-    EditorRenderer renderer = new EditorRenderer(editor, g.getClipBounds(), getFontWidthPx(), getFontHeightPx(), fontDescentPx);
+    EditorRenderer renderer = new EditorRenderer(editor, rect,
+        getFontWidthPx(), getFontHeightPx(), fontDescentPx);
     Matrix matrix = renderer.render();
     matrix.render(g);
     Point point = editor.getCursorPosition();
-    int cursorYPx = point.getY() * getFontHeightPx();
+    int cursorYPx = (point.getY() - getTopLine()) * getFontHeightPx();
     int cursorXPx = point.getX() * getFontWidthPx();
     int cursorWidthPx = editor.isInInsertMode() ? 2 : getFontWidthPx();
     int cursorHeightPx = getFontHeightPx();
@@ -66,10 +70,6 @@ public class TextPanel extends LinewisePanel {
     } else {
       g.drawRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
     }
-  }
-
-  public int getTopLineVisible() {
-    return getVisibleRect().y / getFontHeightPx();
   }
 
   public boolean handleKeyPress(KeyEvent e) {

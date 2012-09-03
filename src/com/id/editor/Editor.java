@@ -152,6 +152,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     this.register = register;
     this.environment = editorEnvironment;
     this.cursor = new Cursor();
+    cursor.setEditor(this);
     this.visual = new Visual(this.cursor);
     this.highlightState.addListener(this);
     addFileListener(highlight);
@@ -193,37 +194,23 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   // Keyboard commands.
   public void down() {
     cursor.moveBy(1, 0);
-    applyCursorConstraints();
   }
 
   public void up() {
     cursor.moveBy(-1, 0);
-    applyCursorConstraints();
   }
 
   public void left() {
     cursor.moveBy(0, -1);
-    applyCursorConstraints();
   }
 
   public void right() {
     cursor.moveBy(0, 1);
-    applyCursorConstraints();
   }
 
   public void insert() {
     inInsertMode = true;
     cursor.setDefaultX(cursor.getX());
-  }
-
-  private void applyCursorConstraints() {
-    cursor.constrainY(0, file.getLineCount() - 1);
-    cursor.constrainX(0, getEffectiveLineLength());
-  }
-
-  private int getEffectiveLineLength() {
-    int isInNormalMode = isInInsertMode() || isInVisual() ? 0 : 1;
-    return getCurrentLineLength() - isInNormalMode;
   }
 
   public boolean isCursorInBounds() {
@@ -258,7 +245,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       file.breakPatch();
       cursor.moveBy(0, -1);
     }
-    applyCursorConstraints();
   }
 
   public void insertAtLastInsert() {
@@ -300,7 +286,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       return;
     }
     cursor.moveTo(position.getY(), position.getX());
-    applyCursorConstraints();
   }
 
   public void redo() {
@@ -309,7 +294,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       return;
     }
     cursor.moveTo(position.getY(), position.getX());
-    applyCursorConstraints();
   }
 
   public void addEmptyLine() {
@@ -395,7 +379,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   public void append() {
     insert();
     cursor.moveBy(0, 1);
-    applyCursorConstraints();
   }
 
   public void appendEnd() {
@@ -466,6 +449,15 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     append();
   }
 
+  private int getEffectiveLineLength() {
+    return getEffectiveLineLength(cursor.getY());
+  }
+
+  public int getEffectiveLineLength(int y) {
+    int isInNormalMode = isInInsertMode() || isInVisual() ? 0 : 1;
+    return getLine(y).length() - isInNormalMode;
+  }
+
   public void deleteToEndOfLine() {
     changeToEndOfLine();
     escape();
@@ -478,7 +470,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     file.removeLine(y);
     file.breakPatch();
     cursor.moveTo(y, 0);
-    applyCursorConstraints();
   }
 
   public void deleteDown() {
@@ -492,7 +483,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     register.setContents(new TextFragment(Visual.Mode.LINE, false, removedLines));
     file.breakPatch();
     cursor.moveTo(y, 0);
-    applyCursorConstraints();
   }
 
   private boolean isCursorOnLastLine() {
@@ -554,7 +544,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     if (breakPatch) {
       file.breakPatch();
     }
-    applyCursorConstraints();
   }
 
   private char getCharUnderCursor() {
@@ -612,12 +601,10 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   public void downPage() {
     cursor.moveBy(view.getViewportHeight() - 1, 0);
-    applyCursorConstraints();
   }
 
   public void upPage() {
     cursor.moveBy(-(view.getViewportHeight() - 1), 0);
-    applyCursorConstraints();
   }
 
   public void join() {
@@ -628,7 +615,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     file.joinRange(visual.getStartPoint().getY(), visual.getEndPoint().getY());
     visual.toggleMode(Visual.Mode.NONE);
     file.breakPatch();
-    applyCursorConstraints();
+    cursor.applyCursorConstraints();
   }
 
   public void setHighlightPattern(HighlightPattern pattern) {
@@ -888,7 +875,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     } else {
       file.undoLine(cursor.getY());
     }
-    applyCursorConstraints();
+    cursor.applyCursorConstraints();
     file.breakPatch();
   }
 
@@ -1014,7 +1001,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     } else {
       outdentLine(cursor.getY());
     }
-    applyCursorConstraints();
+    cursor.applyCursorConstraints();
     file.breakPatch();
   }
 
@@ -1060,7 +1047,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   public void onLineRemoved(int y, String line) {
     if (y <= cursor.getY()) {
       cursor.moveBy(-1, 0);
-      applyCursorConstraints();
     }
   }
 
@@ -1087,7 +1073,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   public void jumpToLine(int lineNumber) {
     cursor.jumpTo(lineNumber, 0);
-    applyCursorConstraints();
   }
 
   public void autocompleteStart() {

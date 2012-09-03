@@ -61,15 +61,9 @@ public class App {
   }
 
   private static class EditorViewFactory implements ViewFactory<Editor, EditorPanel> {
-    private final boolean showScrollbars;
-
-    public EditorViewFactory(boolean showScrollbars) {
-      this.showScrollbars = showScrollbars;
-    }
-
     @Override
     public EditorPanel createView(Editor editor) {
-      return new EditorPanel(editor, showScrollbars);
+      return new EditorPanel(editor);
     }
   }
 
@@ -92,7 +86,7 @@ public class App {
         commandExecutor, null, new FuzzyFinderDriver(files), viewportTracker, focusManager);
 
     SpotlightView<Editor, EditorPanel> spotlightView = new SpotlightView<Editor, EditorPanel>();
-    bindList(editorList, new EditorViewFactory(true), spotlightView);
+    bindList(editorList, new EditorViewFactory(), spotlightView);
 
     final FileListView fileListView = new FileListView(editorList);
 
@@ -101,7 +95,7 @@ public class App {
       @Override
       public StackView createView(Stack model) {
         StackView stackView = new StackView();
-        bindList(model, new EditorViewFactory(false), stackView);
+        bindList(model, new EditorViewFactory(), stackView);
         return stackView;
       }
     }, stackSpotlight);

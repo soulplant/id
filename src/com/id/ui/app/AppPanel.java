@@ -42,13 +42,6 @@ public class AppPanel extends JLayeredPane implements KeyListener {
     fuzzyFinderPanel.setVisible(false);
   }
 
-  // This is needed so that this Panel doesn't assume that its components don't overlap.
-  // JComponent
-  @Override
-  public boolean isOptimizedDrawingEnabled() {
-    return false;
-  }
-
   @Override
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
@@ -78,10 +71,7 @@ public class AppPanel extends JLayeredPane implements KeyListener {
 
     // TODO(koz): Don't repaint on every keystroke.
     this.handler.handleKeyStroke(keyStroke);
-    this.spotlightView.repaint();
-    this.fileListView.repaint();
-    this.stackView.repaint();
-    this.fuzzyFinderPanel.repaint();
+    repaint();
   }
 
   @Override

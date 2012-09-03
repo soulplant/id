@@ -65,10 +65,12 @@ public class TextPanel extends LinewisePanel {
     int cursorXPx = point.getX() * getFontWidthPx();
     int cursorWidthPx = editor.isInInsertMode() ? 2 : getFontWidthPx();
     int cursorHeightPx = getFontHeightPx();
-    if (editor.isInInsertMode()) {
-      g.fillRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
-    } else {
-      g.drawRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
+    if (editor.isFocused()) {
+      if (editor.isInInsertMode()) {
+        g.fillRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
+      } else {
+        g.drawRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
+      }
     }
   }
 

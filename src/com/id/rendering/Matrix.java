@@ -26,7 +26,6 @@ public class Matrix {
   private final int width;
   private final int charHeightPx;
   private final int fontDescentPx;
-  private final int lineOffset;
   private final int charOffset;
   private final int charWidthPx;
 
@@ -37,8 +36,6 @@ public class Matrix {
     this.fontDescentPx = fontDescentPx;
     this.charHeightPx = charHeightPx;
     this.charWidthPx = charWidthPx;
-//    this.lineOffset = lineOffset;
-    this.lineOffset = 0;
     this.charOffset = charOffset;
     this.entries = new Entry[height][width];
     for (int y = 0; y < height; y++) {
@@ -89,7 +86,7 @@ public class Matrix {
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         Entry entry = getEntry(y, x);
-        int boxY = (lineOffset + y) * charHeightPx;
+        int boxY = y * charHeightPx;
         int boxX = x * charWidthPx;
         if (entry.isWhitespaceIndicator) {
           g.setColor(Constants.WHITESPACE_INDICATOR_COLOR);
@@ -101,7 +98,7 @@ public class Matrix {
         }
       }
       // NOTE drawString() takes the bottom y coordinate of the rect to draw the text in.
-      int textY = (lineOffset + y + 1) * charHeightPx - fontDescentPx;
+      int textY = (y + 1) * charHeightPx - fontDescentPx;
       g.setColor(Constants.TEXT_COLOR);
       g.drawString(getLine(y), charOffset * charWidthPx, textY);
     }
@@ -109,7 +106,7 @@ public class Matrix {
 
   private void drawBackground(Graphics g) {
     for (int y = 0; y < height; y++) {
-      int boxY = (lineOffset + y) * charHeightPx;
+      int boxY = y * charHeightPx;
       int boxX = 0;
       RectFiller rectFiller = new RectFiller(g, boxX, boxY);
       for (int x = 0; x < width; x++) {
@@ -178,10 +175,6 @@ public class Matrix {
       buffer.append("]");
     }
     return buffer.toString();
-  }
-
-  public int getLineOffset() {
-    return lineOffset;
   }
 
   public int getCharOffset() {

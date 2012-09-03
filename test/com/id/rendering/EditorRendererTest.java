@@ -27,7 +27,6 @@ public class EditorRendererTest extends EditorTestBase {
     setFileContents("abc", "def");
     renderMatrix(new Rectangle(10, 10, 20, 20), 10, 10);
     assertMatrixContents("ef");
-    assertEquals(1, matrix.getLineOffset());
     assertEquals(1, matrix.getCharOffset());
   }
 
@@ -46,19 +45,10 @@ public class EditorRendererTest extends EditorTestBase {
   }
 
   @Test
-  public void skipFirstLine() {
-    setFileContents("abc", "def");
-    renderMatrix(new Rectangle(0, 10, 10, 10), 10, 10);
-    assertMatrixContents("d");
-    assertEquals(1, matrix.getLineOffset());
-  }
-
-  @Test
   public void checkPaintingGlitch() {
     setFileContents("abc", "def", "ghi");
     renderMatrix(new Rectangle(1, 9, 1, 2), 10, 10);
     assertMatrixContents("a", "d");
-    assertEquals(0, matrix.getLineOffset());
     assertEquals(0, matrix.getCharOffset());
   }
 

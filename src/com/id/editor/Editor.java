@@ -382,13 +382,13 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void appendEnd() {
-    cursor.moveTo(cursor.getY(), getCurrentLineLength());
     insert();
+    cursor.moveTo(cursor.getY(), getCurrentLineLength());
   }
 
   public void insertStart() {
-    cursor.moveTo(cursor.getY(), getFirstNonWhitespace(cursor.getY()));
     insert();
+    cursor.moveTo(cursor.getY(), getFirstNonWhitespace(cursor.getY()));
   }
 
   private int getFirstNonWhitespace(int y) {
@@ -912,8 +912,8 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     }
     startPatch();
     file.removeText(cursor.getY(), startX, endX - startX);
-    cursor.moveTo(cursor.getY(), startX);
     insert();
+    cursor.moveTo(cursor.getY(), startX);
   }
 
   public void deleteWord() {

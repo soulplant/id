@@ -81,6 +81,9 @@ public class Cursor {
     if (editor == null) {
       return;
     }
+    if (editor.getLineCount() == 0) {
+      return;
+    }
     constrainY(0, editor.getLineCount() - 1);
     constrainX(0, editor.getEffectiveLineLength(point.getY()));
   }

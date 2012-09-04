@@ -46,6 +46,7 @@ public class ControllerTest {
   private CommandExecutor commandExecutor;
   private ViewportTracker viewportTracker;
   private FocusManager focusManager;
+  private MinibufferSubsystem minibufferSubsystem;
 
   @Before
   public void setup() {
@@ -60,10 +61,11 @@ public class ControllerTest {
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();
     focusManager = new FocusManager(editors, stackList);
+    minibufferSubsystem = new MinibufferSubsystem(minibuffer, commandExecutor, focusManager);
     viewportTracker = new ViewportTracker(focusManager);
     controller = new Controller(editors, fileSystem, fuzzyFinder, repo,
-        highlightState, stackList, minibuffer, commandExecutor, null,
-        new FuzzyFinderDriver(files), viewportTracker, focusManager);
+        highlightState, stackList, minibufferSubsystem, commandExecutor,
+        null, new FuzzyFinderDriver(files), viewportTracker, focusManager);
 
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");

@@ -7,7 +7,6 @@ import java.util.List;
 import com.id.editor.Editor;
 import com.id.editor.Editor.EditorEnvironment;
 import com.id.editor.EditorList;
-import com.id.editor.Minibuffer;
 import com.id.editor.Patterns;
 import com.id.editor.Register;
 import com.id.editor.Stack;
@@ -34,11 +33,8 @@ public class Controller implements KeyStrokeHandler {
   private final HighlightState highlightState;
   private final Register register = new Register();
   private final StackList stackList;
-  private final Minibuffer minibuffer;
-  private final CommandExecutor commandExecutor;
+  private final MinibufferSubsystem minibufferSubsystem;
   private final FinderDriver autocompleteDriver;
-
-  private boolean isInMinibuffer = false;
 
   private final EditorEnvironment editorEnvironment = new EditorEnvironment() {
     @Override
@@ -67,7 +63,7 @@ public class Controller implements KeyStrokeHandler {
 
   public Controller(EditorList editorList, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository, HighlightState highlightState,
-      final StackList stackList, Minibuffer minibuffer,
+      final StackList stackList, MinibufferSubsystem minibufferSubsystem,
       CommandExecutor commandExecutor, FinderDriver autocompleteDriver,
       FinderDriver fileFinderDriver, ViewportTracker viewportTracker,
       FocusManager focusManager) {
@@ -77,13 +73,13 @@ public class Controller implements KeyStrokeHandler {
     this.repository = repository;
     this.highlightState = highlightState;
     this.stackList = stackList;
-    this.minibuffer = minibuffer;
-    this.commandExecutor = commandExecutor;
+    this.minibufferSubsystem = minibufferSubsystem;
     this.autocompleteDriver = autocompleteDriver;
     this.fileFinderDriver = fileFinderDriver;
     this.viewportTracker = viewportTracker;
     this.focusManager = focusManager;
 
+    // TODO(koz): Make this not passed in.
     commandExecutor.setEnvironment(new CommandExecutor.Environment() {
       @Override
       public void openFile(String filename) {
@@ -98,22 +94,6 @@ public class Controller implements KeyStrokeHandler {
       @Override
       public void jumpToLine(int lineNumber) {
         Controller.this.jumpToLine(lineNumber);
-      }
-    });
-    minibuffer.addListener(new Minibuffer.Listener() {
-      @Override
-      public void onDone() {
-        executeMinibufferCommand();
-      }
-
-      @Override
-      public void onTextChanged() {
-        // Do nothing.
-      }
-
-      @Override
-      public void onQuit() {
-        exitMinibuffer();
       }
     });
     editorList.focus();
@@ -178,12 +158,6 @@ public class Controller implements KeyStrokeHandler {
         focusFromSnippet();
       }
     });
-    shortcuts.setShortcut(KeyStroke.fromString(":"), new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        enterMinibuffer();
-      }
-    });
     shortcuts.setShortcut(KeyStroke.fromString("?"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -217,20 +191,6 @@ public class Controller implements KeyStrokeHandler {
         editor.autocompleteFinish(item);
       }
     });
-  }
-
-  private void enterMinibuffer() {
-    isInMinibuffer = true;
-  }
-
-  private void exitMinibuffer() {
-    isInMinibuffer = false;
-    minibuffer.clear();
-  }
-
-  private void executeMinibufferCommand() {
-    commandExecutor.execute(minibuffer.getText(), focusManager.getFocusedEditor());
-    exitMinibuffer();
   }
 
   private void goToTopFileInFileList() {
@@ -433,8 +393,8 @@ public class Controller implements KeyStrokeHandler {
     if (finder.isVisible() && finder.handleKeyStroke(keyStroke)) {
       return true;
     }
-    if (isInMinibuffer) {
-      return minibuffer.handleKeyStroke(keyStroke);
+    if (minibufferSubsystem.handleKeyStroke(keyStroke)) {
+      return true;
     }
     if (editorList.isFocused()) {
       if (editorList.handleKeyStroke(keyStroke)) {

@@ -51,7 +51,7 @@ public class EndToEndTest {
     focusManager = new FocusManager(editors, stackList);
     viewportTracker = new ViewportTracker(focusManager);
     controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState, stackList,
-        minibuffer, commandExecutor, null, new FuzzyFinderDriver(files), viewportTracker, focusManager);
+        minibuffer, null, new FuzzyFinderDriver(files), viewportTracker, focusManager);
     repository.init();
   }
 

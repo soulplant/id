@@ -1,6 +1,5 @@
 package com.id.app;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
@@ -13,34 +12,10 @@ import java.net.URL;
 
 import javax.swing.SwingUtilities;
 
-import com.id.editor.Editor;
-import com.id.editor.EditorList;
-import com.id.editor.Hideable;
-import com.id.editor.Minibuffer;
-import com.id.editor.Register;
-import com.id.editor.Stack;
-import com.id.editor.StackList;
 import com.id.file.File;
-import com.id.file.FileView;
 import com.id.file.FilesRenameInterpreter;
-import com.id.fuzzy.Finder;
-import com.id.fuzzy.FuzzyFinderDriver;
-import com.id.git.GitRepository;
-import com.id.git.Repository;
 import com.id.platform.FileSystem;
 import com.id.platform.RealFileSystem;
-import com.id.ui.ListModelBinder;
-import com.id.ui.SpotlightView;
-import com.id.ui.ViewContainer;
-import com.id.ui.ViewFactory;
-import com.id.ui.app.AppFrame;
-import com.id.ui.app.AppPanel;
-import com.id.ui.app.FileListView;
-import com.id.ui.app.FinderPanel;
-import com.id.ui.app.FullscreenSwapper;
-import com.id.ui.app.StackView;
-import com.id.ui.editor.EditorPanel;
-import com.id.ui.editor.TextPanel;
 
 public class App {
   public static final StaticSettings settings = StaticSettings.fromFile(".settings");
@@ -55,73 +30,14 @@ public class App {
     });
   }
 
-  private static <M, V> void bindList(ListModel<M> list,
-      ViewFactory<M, V> viewFactory, ViewContainer<M, V> viewContainer) {
-    ListModelBinder<M, V> binder = new ListModelBinder<M, V>(list, viewFactory, viewContainer);
-    list.addListener(binder);
-  }
-
-  private static class EditorViewFactory implements ViewFactory<Editor, EditorPanel> {
-    @Override
-    public EditorPanel createView(Editor editor) {
-      return new EditorPanel(editor);
-    }
-  }
-
   private static void startApp() {
-    final EditorList editorList = new EditorList();
-    final StackList stackList = new StackList();
-    Minibuffer minibuffer = new Minibuffer();
-    CommandExecutor commandExecutor = new CommandExecutor();
     FileSystem fileSystem = new RealFileSystem();
     BashShell shell = new BashShell(null);
-    Repository repository = new GitRepository(shell);
-    File files = getFilesFile(fileSystem, shell);
-    Finder finder = new Finder(files);
-    HighlightState highlightState = new HighlightState();
-    FocusManager focusManager = new FocusManager(editorList, stackList);
-    MinibufferSubsystem minibufferSubsystem = new MinibufferSubsystem(
-        minibuffer, commandExecutor, focusManager);
-    ViewportTracker viewportTracker = new ViewportTracker(focusManager);
+    File file = getFilesFile(fileSystem, shell);
+    AppParts appParts = new AppParts(fileSystem, shell, file);
 
-    Register register = new Register();
-    EditorFactory editorFactory = new EditorFactory(highlightState, register, viewportTracker);
-    final Controller controller = new Controller(editorList, fileSystem,
-        finder, repository, highlightState, stackList, minibufferSubsystem,
-        commandExecutor, null, new FuzzyFinderDriver(files), focusManager, editorFactory);
-
-    SpotlightView<Editor, EditorPanel> spotlightView = new SpotlightView<Editor, EditorPanel>();
-    bindList(editorList, new EditorViewFactory(), spotlightView);
-
-    final FileListView fileListView = new FileListView(editorList);
-
-    final SpotlightView<Stack, StackView> stackSpotlight = new SpotlightView<Stack, StackView>();
-    bindList(stackList, new ViewFactory<Stack, StackView>() {
-      @Override
-      public StackView createView(Stack model) {
-        StackView stackView = new StackView();
-        bindList(model, new EditorViewFactory(), stackView);
-        return stackView;
-      }
-    }, stackSpotlight);
-    stackList.addHideableListener(new Hideable.Listener() {
-      @Override
-      public void onHiddenChanged(boolean hidden) {
-        stackSpotlight.setVisible(!hidden);
-      }
-    });
-    TextPanel minibufferView = new TextPanel(minibuffer.getEditor());
-    FinderPanel fuzzyFinderPanel = new FinderPanel(finder);
-    final AppPanel panel = new AppPanel(fileListView, spotlightView, stackSpotlight,
-        controller, fuzzyFinderPanel, minibufferView);
-
-    editorList.addListener(fileListView);
-
-    AppFrame fullscreenAppFrame = new AppFrame(panel, true);
-    AppFrame normalAppFrame = new AppFrame(panel, false, new Dimension(1024, 768));
-
-    new FullscreenSwapper(normalAppFrame, fullscreenAppFrame);
-    controller.openFileView(new FileView(files));
+    appParts.showSwingView();
+    appParts.openFiles();
   }
 
   private static File getFilesFile(final FileSystem fileSystem,

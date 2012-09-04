@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.id.editor.Editor;
-import com.id.editor.Editor.EditorEnvironment;
 import com.id.editor.EditorList;
 import com.id.editor.Patterns;
 import com.id.editor.Stack;
@@ -34,37 +33,16 @@ public class Controller implements KeyStrokeHandler {
   private final MinibufferSubsystem minibufferSubsystem;
   private final FinderDriver autocompleteDriver;
 
-  private final EditorEnvironment editorEnvironment = new EditorEnvironment() {
-    @Override
-    public void openFile(String filename) {
-      Controller.this.openFile(filename);
-    }
-
-    @Override
-    public void addSnippet(FileView fileView) {
-      Controller.this.addSnippet(fileView);
-    }
-
-    @Override
-    public void openFileMatchingPattern(String pattern) {
-      Controller.this.openFileMatchingPattern(pattern);
-    }
-
-    @Override
-    public void autocompleteStart(String query, Editor editor) {
-      Controller.this.autocomplete(query, editor);
-    }
-  };
   private final FinderDriver fileFinderDriver;
   private final FocusManager focusManager;
-  private final EditorFactory editorFactory;
+  private final EditorOpener editorOpener;
 
   public Controller(EditorList editorList, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository, HighlightState highlightState,
       final StackList stackList, MinibufferSubsystem minibufferSubsystem,
       CommandExecutor commandExecutor, FinderDriver autocompleteDriver,
       FinderDriver fileFinderDriver, FocusManager focusManager,
-      EditorFactory editorFactory) {
+      EditorOpener editorOpener) {
     this.editorList = editorList;
     this.fileSystem = fileSystem;
     this.finder = fuzzyFinder;
@@ -75,14 +53,13 @@ public class Controller implements KeyStrokeHandler {
     this.autocompleteDriver = autocompleteDriver;
     this.fileFinderDriver = fileFinderDriver;
     this.focusManager = focusManager;
-    this.editorFactory = editorFactory;
+    this.editorOpener = editorOpener;
 
-    editorFactory.setEditorEnvironment(editorEnvironment);
     // TODO(koz): Make this not passed in.
     commandExecutor.setEnvironment(new CommandExecutor.Environment() {
       @Override
       public void openFile(String filename) {
-        Controller.this.openFile(filename, true);
+        Controller.this.editorOpener.openFile(filename, true);
       }
 
       @Override
@@ -95,8 +72,6 @@ public class Controller implements KeyStrokeHandler {
         Controller.this.jumpToLine(lineNumber);
       }
     });
-    editorList.focus();
-    stackList.blur();
     shortcuts.setShortcut(KeyStroke.fromString("H"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -283,35 +258,8 @@ public class Controller implements KeyStrokeHandler {
     return new FileView(file);
   }
 
-  public Editor openFile(String filename) {
-    return openFile(filename, true);
-  }
-
-  public Editor openFileMatchingPattern(String pattern) {
-    String filename = finder.findFirstFileMatching(pattern);
-    if (filename == null) {
-      return null;
-    }
-    return openFile(filename, true);
-  }
-
-  // TODO(koz): Make this take an enum, rather than a boolean.
-  public Editor openFile(String filename, boolean createNewFile) {
-    if (filename == null) {
-      throw new IllegalStateException("Don't pass null filenames.");
-    }
-    Editor existingEditor = focusManager.focusEditor(filename);
-    if (existingEditor != null) {
-      return existingEditor;
-    }
-    FileView fileView = loadFileView(filename, 0, -1);
-    if (fileView == null && createNewFile) {
-      fileView = new FileView(File.createNewFile(filename));
-    }
-    if (fileView == null) {
-      return null;
-    }
-    return openFileView(fileView);
+  private Editor openFile(String filename) {
+    return editorOpener.openFile(filename);
   }
 
   private void openOtherFiles() {
@@ -324,7 +272,7 @@ public class Controller implements KeyStrokeHandler {
       }
       if (fileSystem.isFile(subdir)) {
         if (isSameButForExtension(subdir, filename)) {
-          openFile(subdir, false);
+          editorOpener.openFile(subdir, false);
         }
       }
     }
@@ -342,6 +290,7 @@ public class Controller implements KeyStrokeHandler {
     return filename.substring(0, i);
   }
 
+  // TODO(koz): Put in EditorOpener.
   private void reloadFile(String filename) {
     closeEditorsWithName(editorList, filename);
     // TODO(koz): This is terrible - we should handle reloads more gracefully
@@ -352,7 +301,7 @@ public class Controller implements KeyStrokeHandler {
     if (stackList.isEmpty()) {
       focusEditors();
     }
-    openFile(filename, false);
+    editorOpener.openFile(filename, false);
   }
 
   private void closeEditorsWithName(ListModel<Editor> editors, String filename) {
@@ -363,18 +312,6 @@ public class Controller implements KeyStrokeHandler {
         i.remove();
       }
     }
-  }
-
-  public Editor openFileView(FileView fileView) {
-    Editor editor = editorFactory.makeEditor(fileView);
-    editorList.insertAfterFocused(editor);
-    return editor;
-  }
-
-  private Editor addSnippet(FileView fileView) {
-    Editor editor = editorFactory.makeEditor(fileView);
-    stackList.addSnippet(editor);
-    return editor;
   }
 
   public void closeCurrentFile() {

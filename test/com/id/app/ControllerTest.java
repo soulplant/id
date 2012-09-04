@@ -36,7 +36,7 @@ import com.id.platform.InMemoryFileSystem;
 
 public class ControllerTest {
   private Controller controller;
-  private EditorList editors;
+  private EditorList editorList;
   private InMemoryFileSystem fileSystem;
   private Finder fuzzyFinder;
   private Listener fuzzyListener;
@@ -50,11 +50,12 @@ public class ControllerTest {
   private MinibufferSubsystem minibufferSubsystem;
   private Register register;
   private EditorFactory editorFactory;
+  private EditorOpener editorOpener;
 
   @Before
   public void setup() {
     File files = new File("a", "b", "src/c.h", "src/c.cc", "src/d.cc");
-    editors = new EditorList();
+    editorList = new EditorList();
     stackList = new StackList();
     fileSystem = new InMemoryFileSystem();
     fuzzyFinder = new Finder(files);
@@ -63,14 +64,17 @@ public class ControllerTest {
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
     commandExecutor = new CommandExecutor();
-    focusManager = new FocusManager(editors, stackList);
+    focusManager = new FocusManager(editorList, stackList);
     minibufferSubsystem = new MinibufferSubsystem(minibuffer, commandExecutor, focusManager);
     viewportTracker = new ViewportTracker(focusManager);
     register = new Register();
     editorFactory = new EditorFactory(highlightState, register, viewportTracker);
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repo,
-        highlightState, stackList, minibufferSubsystem, commandExecutor,
-        null, new FuzzyFinderDriver(files), focusManager, editorFactory);
+    FuzzyFinderDriver fileFinderDriver = new FuzzyFinderDriver(files);
+    Finder finder = new Finder(files);
+    editorOpener = new EditorOpener(editorFactory, focusManager, editorList, stackList, fileSystem, finder);
+    controller = new Controller(editorList, fileSystem, fuzzyFinder, repo,
+        highlightState, stackList, minibufferSubsystem, commandExecutor, null,
+        fileFinderDriver, focusManager, editorOpener);
 
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");
@@ -81,15 +85,15 @@ public class ControllerTest {
 
   @Test
   public void moveBetweenFilesEditingThem() {
-    controller.openFile("a");
-    controller.openFile("b");
-    assertEquals("aaa", editors.get(0).getLine(0));
-    assertEquals("bbb", editors.get(1).getLine(0));
+    editorOpener.openFile("a");
+    editorOpener.openFile("b");
+    assertEquals("aaa", editorList.get(0).getLine(0));
+    assertEquals("bbb", editorList.get(1).getLine(0));
     typeString("SxKx");
     type(KeyStroke.escape());
     typeString("KSzJz");
-    assertEquals("zJz", editors.get(0).getLine(0));
-    assertEquals("xKx", editors.get(1).getLine(0));
+    assertEquals("zJz", editorList.get(0).getLine(0));
+    assertEquals("xKx", editorList.get(1).getLine(0));
   }
 
   @Test
@@ -125,9 +129,9 @@ public class ControllerTest {
   public void selectFromFuzzyFinderOpensFile() {
     typeString("ta<CR>");
     assertFalse(fuzzyFinder.isVisible());
-    assertEquals(1, editors.size());
-    assertEquals(0, editors.getFocusedIndex());
-    assertEquals("a", editors.get(0).getFilename());
+    assertEquals(1, editorList.size());
+    assertEquals(0, editorList.getFocusedIndex());
+    assertEquals("a", editorList.get(0).getFilename());
   }
 
   @Test
@@ -140,10 +144,10 @@ public class ControllerTest {
 
   @Test
   public void closeCurrentFile() {
-    controller.openFile("a");
-    controller.openFile("b");
+    editorOpener.openFile("a");
+    editorOpener.openFile("b");
     controller.closeCurrentFile();
-    assertEquals(1, editors.size());
+    assertEquals(1, editorList.size());
   }
 
   @Test
@@ -157,18 +161,18 @@ public class ControllerTest {
     Diff diff = new Diff(fileDeltas);
     repo.setDiffResult(diff);
     controller.importDiffsRelativeTo("HEAD");
-    assertEquals(Tombstone.Status.NEW, editors.get(0).getStatus(0));
-    assertEquals(2, editors.get(0).getGrave(0).size());
+    assertEquals(Tombstone.Status.NEW, editorList.get(0).getStatus(0));
+    assertEquals(2, editorList.get(0).getGrave(0).size());
   }
 
   @Test
   public void openingNonExistentFileShouldntCrash() {
-    controller.openFile("doesn't exist");
+    editorOpener.openFile("doesn't exist");
   }
 
   @Test
   public void filesGetSavedToTheFileSystem() {
-    Editor editor = controller.openFile("a");
+    Editor editor = editorOpener.openFile("a");
     typeString("SXXX");
     type(KeyStroke.escape());
     assertTrue(editor.isModified());
@@ -189,62 +193,62 @@ public class ControllerTest {
 
   @Test
   public void highlightIsGlobal() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("*");  // Sets highlight to 'aaa'.
-    controller.openFile("b");
+    editorOpener.openFile("b");
     typeString("Saaa");
-    assertEquals("aaa", editors.get(1).getLine(0));
-    assertTrue(editors.get(1).isHighlight(0, 0));
+    assertEquals("aaa", editorList.get(1).getLine(0));
+    assertTrue(editorList.get(1).isHighlight(0, 0));
   }
 
   @Test
   public void openingTheSameFileAgainRefocusesTheSpotlightOntoThatEditor() {
-    controller.openFile("a");
-    controller.openFile("b");
-    controller.openFile("a");
-    assertEquals(0, editors.getFocusedIndex());
+    editorOpener.openFile("a");
+    editorOpener.openFile("b");
+    editorOpener.openFile("a");
+    assertEquals(0, editorList.getFocusedIndex());
   }
 
   @Test
   public void gf() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("Ssrc/c.cc<ESC>gf");
-    assertEquals("src/c.cc", editors.getFocusedItem().getFilename());
+    assertEquals("src/c.cc", editorList.getFocusedItem().getFilename());
   }
 
   @Test
   public void gF() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("Sd<ESC>gF");
-    assertEquals("src/d.cc", editors.getFocusedItem().getFilename());
+    assertEquals("src/d.cc", editorList.getFocusedItem().getFilename());
   }
 
   @Test
   public void gFOperatesOnWordNotFilename() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("Sa.d<ESC>gF");
-    assertEquals("src/d.cc", editors.getFocusedItem().getFilename());
+    assertEquals("src/d.cc", editorList.getFocusedItem().getFilename());
   }
 
   @Test
   public void yankRegisterIsGlobal() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("Vy");
-    Editor b = controller.openFile("b");
+    Editor b = editorOpener.openFile("b");
     typeString("P");
     assertEquals("aaa", b.getLine(0));
   }
 
   @Test
   public void addSnippet() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("V;");
     assertEquals(1, stackList.size());
   }
 
   @Test
   public void typeInSnippet() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("oabc<CR>abc<ESC>");
     assertSpotlightFocused();
     typeString("V;");  // Make a snippet out of the last line.
@@ -252,13 +256,13 @@ public class ControllerTest {
     typeString("L");   // Move focus to stack.
     assertStackFocused();
     typeString("oend");
-    assertEquals(4, editors.get(0).getLineCount());
-    assertEquals("end", editors.get(0).getLine(3));
+    assertEquals(4, editorList.get(0).getLineCount());
+    assertEquals("end", editorList.get(0).getLine(3));
   }
 
   @Test
   public void moveFocusBetweenSnippets() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("V;V;");
     assertEquals(2, stackList.getFocusedItem().size());
     typeString("L");
@@ -272,29 +276,29 @@ public class ControllerTest {
 
   @Test
   public void qClosesSnippetWhenFocused() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("V;Lq");
-    assertEquals(1, editors.size());
+    assertEquals(1, editorList.size());
     assertEquals(0, stackList.size());
   }
 
   @Test
   public void focusMovesBackToEditorWhenFinalSnippetClosed() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("V;Lq");
-    assertTrue(editors.isFocused());
+    assertTrue(editorList.isFocused());
   }
 
   @Test
   public void cantMoveFocusToEmptyStack() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("L");
-    assertTrue(editors.isFocused());
+    assertTrue(editorList.isFocused());
   }
 
   @Test
   public void addSnippetsFromSnippet() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     createSnippetFromCurrentLine();
     typeString("L");
     createSnippetFromCurrentLine();
@@ -303,7 +307,7 @@ public class ControllerTest {
 
   @Test
   public void addingASnippetShouldntFocusTheMostRecentlyAddedOne() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     createSnippetFromCurrentLine();
     typeString("L");
     createSnippetFromCurrentLine();
@@ -312,7 +316,7 @@ public class ControllerTest {
 
   @Test
   public void closingASnippetShouldMoveFocusToTheNextOneDown() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     createSnippetFromCurrentLine();
     createSnippetFromCurrentLine();
     createSnippetFromCurrentLine();
@@ -322,26 +326,26 @@ public class ControllerTest {
 
   @Test
   public void enterInASnippetShouldJumpToThatPointInTheRealFile() {
-    controller.openFile("a");
-    controller.openFile("b");
-    assertEquals(1, editors.getFocusedIndex());
+    editorOpener.openFile("a");
+    editorOpener.openFile("b");
+    assertEquals(1, editorList.getFocusedIndex());
     createSnippetFromCurrentLine();
     typeString("K");
-    assertEquals(0, editors.getFocusedIndex());
+    assertEquals(0, editorList.getFocusedIndex());
     typeString("L<CR>");
-    assertEquals(1, editors.getFocusedIndex());
+    assertEquals(1, editorList.getFocusedIndex());
   }
 
   @Test
   public void openDeltasAsSnippets() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("o<ESC>@");
     assertEquals(1, stackList.size());
   }
 
   @Test
   public void openDeltasAsSnippetsDoesntCreateDupes() {
-    controller.openFile("a");
+    editorOpener.openFile("a");
     typeString("o<ESC>@@");
     assertEquals(1, stackList.size());
   }
@@ -349,38 +353,38 @@ public class ControllerTest {
   @Test
   public void commandsGetExecutedWhenTyped() {
     typeString(":e b<CR>");
-    assertEquals(1, editors.size());
+    assertEquals(1, editorList.size());
   }
 
   @Test
   public void eOpensNewFiles() {
     typeString(":e doesnt-exist<CR>");
-    assertEquals(1, editors.size());
-    assertEquals("doesnt-exist", editors.getFocusedItem().getFilename());
+    assertEquals(1, editorList.size());
+    assertEquals("doesnt-exist", editorList.getFocusedItem().getFilename());
   }
 
   @Test
   public void ctrlKMovesFileUpInFilelist() {
     typeString(":e a<CR>:e b<CR><C-k>");
-    assertEquals(2, editors.size());
-    assertEquals("b", editors.getFocusedItem().getFilename());
-    assertEquals(0, editors.getFocusedIndex());
+    assertEquals(2, editorList.size());
+    assertEquals("b", editorList.getFocusedItem().getFilename());
+    assertEquals(0, editorList.getFocusedIndex());
   }
 
   @Test
   public void ctrlJMovesFileDownInFilelist() {
     typeString(":e a<CR>:e b<CR>K<C-j>");
-    assertEquals(2, editors.size());
-    assertEquals("a", editors.getFocusedItem().getFilename());
-    assertEquals(1, editors.getFocusedIndex());
+    assertEquals(2, editorList.size());
+    assertEquals("a", editorList.getFocusedItem().getFilename());
+    assertEquals(1, editorList.getFocusedIndex());
   }
 
   @Test
   public void BGoesToTopFileInFileList() {
     typeString(":e a<CR>:e b<CR>");
-    assertEquals(1, editors.getFocusedIndex());
+    assertEquals(1, editorList.getFocusedIndex());
     typeString("B");
-    assertEquals(0, editors.getFocusedIndex());
+    assertEquals(0, editorList.getFocusedIndex());
   }
 
   @Test
@@ -403,7 +407,7 @@ public class ControllerTest {
   public void outdentDoesntLeaveCursorPastEndOfLine() {
     typeString(":e a<CR>ia<CR>b<CR>c<CR>d<CR><ESC>");
     typeString(":3<CR>");
-    Point cursor = editors.get(0).getCursorPosition();
+    Point cursor = editorList.get(0).getCursorPosition();
     assertEquals(2, cursor.getY());
   }
 
@@ -411,25 +415,25 @@ public class ControllerTest {
   public void gfOpensFilesThatDontExist() {
     typeString(":e a<CR>");
     typeString("A abc<ESC>gf");
-    assertEquals(2, editors.size());
-    assertEquals("abc", editors.getFocusedItem().getFilename());
+    assertEquals(2, editorList.size());
+    assertEquals("abc", editorList.getFocusedItem().getFilename());
   }
 
   @Test
   public void newFilesStartModified() {
     typeString(":e doesnt-exist<CR>");
-    assertEquals(1, editors.size());
-    assertTrue(editors.getFocusedItem().isModified());
+    assertEquals(1, editorList.size());
+    assertTrue(editorList.getFocusedItem().isModified());
     typeString("w");
-    assertFalse(editors.getFocusedItem().isModified());
+    assertFalse(editorList.getFocusedItem().isModified());
   }
 
   @Test
   public void openingAFilePutsItUnderneathTheCurrentOne() {
     typeString(":e a<CR>:e b<CR>K");
-    assertEquals(0, editors.getFocusedIndex());
+    assertEquals(0, editorList.getFocusedIndex());
     typeString(":e c<CR>");
-    assertEquals(1, editors.getFocusedIndex());
+    assertEquals(1, editorList.getFocusedIndex());
   }
 
   @Test
@@ -448,10 +452,10 @@ public class ControllerTest {
     typeString(":e doesnt-exist<CR>");
     typeString("ia b b c<ESC>*hh*");
     // 'b' should be highlighted, so there should be two matches.
-    assertEquals(2, editors.get(0).getHighlightMatchCount());
+    assertEquals(2, editorList.get(0).getHighlightMatchCount());
     typeString("?<DOWN><CR>");
     // 'c' should be highlighted, so there should be one match.
-    assertEquals(1, editors.get(0).getHighlightMatchCount());
+    assertEquals(1, editorList.get(0).getHighlightMatchCount());
   }
 
   @Test
@@ -463,17 +467,17 @@ public class ControllerTest {
   @Test
   public void ctrl6OpensOtherFilesWithDifferentExtensions() {
     typeString(":e src/c.h<CR><C-6>");
-    assertEquals(2, editors.size());
+    assertEquals(2, editorList.size());
   }
 
   @Test
   public void reloadCurrentFile() {
     typeString(":e src/c.h<CR>");
-    String startContents = editors.getFocusedItem().getLine(0);
+    String startContents = editorList.getFocusedItem().getLine(0);
     typeString("Stest<ESC>");
-    assertEquals("test", editors.getFocusedItem().getLine(0));
+    assertEquals("test", editorList.getFocusedItem().getLine(0));
     typeString(":e<CR>");
-    String endContents = editors.getFocusedItem().getLine(0);
+    String endContents = editorList.getFocusedItem().getLine(0);
     assertEquals(startContents, endContents);
   }
 
@@ -489,13 +493,13 @@ public class ControllerTest {
   }
 
   private void assertSpotlightFocused() {
-    assertTrue(editors.isFocused());
+    assertTrue(editorList.isFocused());
     assertFalse(stackList.isFocused());
   }
 
   private void assertStackFocused() {
     assertTrue(stackList.isFocused());
-    assertFalse(editors.isFocused());
+    assertFalse(editorList.isFocused());
   }
 
   private void type(KeyStroke keyStroke) {

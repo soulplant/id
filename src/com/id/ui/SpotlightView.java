@@ -6,9 +6,10 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import com.id.app.ListModel;
+import com.id.editor.Hideable;
 
 @SuppressWarnings("serial")
-public class SpotlightView<M, V extends JPanel> extends JPanel implements ViewContainer<M, V> {
+public class SpotlightView<M, V extends JPanel> extends JPanel implements ViewContainer<M, V>, Hideable.Listener {
   public SpotlightView() {
     setBackground(Constants.BG_COLOR);
     setLayout(new BorderLayout());
@@ -22,5 +23,10 @@ public class SpotlightView<M, V extends JPanel> extends JPanel implements ViewCo
       return;
     }
     add(viewMap.get(models.getFocusedItem()));
+  }
+
+  @Override
+  public void onHiddenChanged(boolean hidden) {
+    setVisible(!hidden);
   }
 }

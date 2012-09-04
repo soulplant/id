@@ -35,10 +35,9 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public interface EditorEnvironment {
-    void openFile(String filename);
+    Editor openFile(String filename);
     void openFileMatchingPattern(String pattern);
     void addSnippet(FileView fileView);
-    void autocompleteStart(String query, Editor editor);
   }
 
   public enum FindMode {
@@ -102,8 +101,8 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
   public static class EmptyEditorEnvironment implements EditorEnvironment {
     @Override
-    public void openFile(String filename) {
-      // Do nothing.
+    public Editor openFile(String filename) {
+      return null;
     }
 
     @Override
@@ -113,11 +112,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
 
     @Override
     public void openFileMatchingPattern(String pattern) {
-      // Do nothing.
-    }
-
-    @Override
-    public void autocompleteStart(String query, Editor editor) {
       // Do nothing.
     }
   }
@@ -1081,7 +1075,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     }
     int x = file.findWordStart(cursor.getY(), cursor.getX());
     autocompleteStart = new Point(cursor.getY(), x);
-    environment.autocompleteStart(file.getWordAt(cursor.getY(), cursor.getX() - 1), this);
+//    environment.autocompleteStart(file.getWordAt(cursor.getY(), cursor.getX() - 1), this);
   }
 
   public void autocompleteFinish(String item) {

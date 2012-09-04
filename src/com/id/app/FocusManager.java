@@ -12,6 +12,9 @@ public class FocusManager {
   public FocusManager(EditorList editorList, StackList stackList) {
     this.editorList = editorList;
     this.stackList = stackList;
+
+    editorList.focus();
+    stackList.blur();
   }
 
   public Editor focusEditor(String filename, int linesFromTop) {

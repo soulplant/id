@@ -1,7 +1,6 @@
 package com.id.app;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.id.editor.Editor;
@@ -55,23 +54,6 @@ public class Controller implements KeyStrokeHandler {
     this.focusManager = focusManager;
     this.editorOpener = editorOpener;
 
-    // TODO(koz): Make this not passed in.
-    commandExecutor.setEnvironment(new CommandExecutor.Environment() {
-      @Override
-      public void openFile(String filename) {
-        Controller.this.editorOpener.openFile(filename, true);
-      }
-
-      @Override
-      public void reloadFile(String filename) {
-        Controller.this.reloadFile(filename);
-      }
-
-      @Override
-      public void jumpToLine(int lineNumber) {
-        Controller.this.jumpToLine(lineNumber);
-      }
-    });
     shortcuts.setShortcut(KeyStroke.fromString("H"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -290,30 +272,6 @@ public class Controller implements KeyStrokeHandler {
     return filename.substring(0, i);
   }
 
-  // TODO(koz): Put in EditorOpener.
-  private void reloadFile(String filename) {
-    closeEditorsWithName(editorList, filename);
-    // TODO(koz): This is terrible - we should handle reloads more gracefully
-    // and bottom up in general.
-    for (Stack stack : stackList) {
-      closeEditorsWithName(stack, filename);
-    }
-    if (stackList.isEmpty()) {
-      focusEditors();
-    }
-    editorOpener.openFile(filename, false);
-  }
-
-  private void closeEditorsWithName(ListModel<Editor> editors, String filename) {
-    Iterator<Editor> i = editors.iterator();
-    while (i.hasNext()) {
-      Editor editor = i.next();
-      if (filename.equals(editor.getFilename())) {
-        i.remove();
-      }
-    }
-  }
-
   public void closeCurrentFile() {
     focusManager.closeCurrentFile();
   }
@@ -337,10 +295,6 @@ public class Controller implements KeyStrokeHandler {
       }
     }
     return shortcuts.stepAndExecute(keyStroke);
-  }
-
-  private void jumpToLine(int lineNumber) {
-    focusManager.getFocusedEditor().jumpToLine(lineNumber);
   }
 
   public void importDiffs() {

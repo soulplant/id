@@ -1,8 +1,11 @@
 package com.id.app;
 
+import java.util.Iterator;
+
 import com.id.editor.Editor;
 import com.id.editor.Editor.EditorEnvironment;
 import com.id.editor.EditorList;
+import com.id.editor.Stack;
 import com.id.editor.StackList;
 import com.id.file.File;
 import com.id.file.FileView;
@@ -84,5 +87,28 @@ public class EditorOpener implements EditorEnvironment {
   public void addSnippet(FileView fileView) {
     Editor editor = editorFactory.makeEditor(fileView);
     stackList.addSnippet(editor);
+  }
+
+  public void reloadFile(String filename) {
+    closeEditorsWithName(editorList, filename);
+    // TODO(koz): This is terrible - we should handle reloads more gracefully
+    // and bottom up in general.
+    for (Stack stack : stackList) {
+      closeEditorsWithName(stack, filename);
+    }
+    if (stackList.isEmpty()) {
+      focusManager.focusEditorList();
+    }
+    openFile(filename, false);
+  }
+
+  private void closeEditorsWithName(ListModel<Editor> editors, String filename) {
+    Iterator<Editor> i = editors.iterator();
+    while (i.hasNext()) {
+      Editor editor = i.next();
+      if (filename.equals(editor.getFilename())) {
+        i.remove();
+      }
+    }
   }
 }

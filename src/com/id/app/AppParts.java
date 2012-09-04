@@ -43,19 +43,20 @@ public class AppParts {
     editorList = new EditorList();
     stackList = new StackList();
     minibuffer = new Minibuffer();
-    CommandExecutor commandExecutor = new CommandExecutor();
     Repository repository = new GitRepository(shell);
     finder = new Finder(files);
     HighlightState highlightState = new HighlightState();
     FocusManager focusManager = new FocusManager(editorList, stackList);
-    MinibufferSubsystem minibufferSubsystem = new MinibufferSubsystem(
-        minibuffer, commandExecutor, focusManager);
     ViewportTracker viewportTracker = new ViewportTracker(focusManager);
 
     Register register = new Register();
     EditorFactory editorFactory = new EditorFactory(highlightState, register, viewportTracker);
     editorOpener = new EditorOpener(editorFactory, focusManager,
         editorList, stackList, fileSystem, finder);
+
+    CommandExecutor commandExecutor = new CommandExecutor(editorOpener, focusManager);
+    MinibufferSubsystem minibufferSubsystem = new MinibufferSubsystem(
+        minibuffer, commandExecutor, focusManager);
     controller = new Controller(editorList, fileSystem,
         finder, repository, highlightState, stackList, minibufferSubsystem,
         commandExecutor, null, new FuzzyFinderDriver(files), focusManager, editorOpener);

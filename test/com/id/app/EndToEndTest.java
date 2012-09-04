@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.id.editor.Editor;
 import com.id.editor.EditorList;
 import com.id.editor.Minibuffer;
+import com.id.editor.Register;
 import com.id.editor.StackList;
 import com.id.file.Tombstone;
 import com.id.fuzzy.Finder;
@@ -35,6 +36,8 @@ public class EndToEndTest {
   private ViewportTracker viewportTracker;
   private FocusManager focusManager;
   private MinibufferSubsystem minibufferSubsystem;
+  private EditorFactory editorFactory;
+  private Register register;
 
   @Before
   public void setup() throws IOException {
@@ -53,9 +56,11 @@ public class EndToEndTest {
     viewportTracker = new ViewportTracker(focusManager);
     minibufferSubsystem = new MinibufferSubsystem(minibuffer, commandExecutor,
         focusManager);
+    register = new Register();
+    editorFactory = new EditorFactory(highlightState, register, viewportTracker);
     controller = new Controller(editors, fileSystem, fuzzyFinder, repository,
         highlightState, stackList, minibufferSubsystem, commandExecutor, null,
-        new FuzzyFinderDriver(files), viewportTracker, focusManager);
+        new FuzzyFinderDriver(files), focusManager, editorFactory);
     repository.init();
   }
 

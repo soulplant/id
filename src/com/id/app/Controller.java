@@ -8,7 +8,6 @@ import com.id.editor.Editor;
 import com.id.editor.Editor.EditorEnvironment;
 import com.id.editor.EditorList;
 import com.id.editor.Patterns;
-import com.id.editor.Register;
 import com.id.editor.Stack;
 import com.id.editor.StackList;
 import com.id.events.KeyStroke;
@@ -31,7 +30,6 @@ public class Controller implements KeyStrokeHandler {
   private final Finder finder;
   private final Repository repository;
   private final HighlightState highlightState;
-  private final Register register = new Register();
   private final StackList stackList;
   private final MinibufferSubsystem minibufferSubsystem;
   private final FinderDriver autocompleteDriver;
@@ -58,15 +56,15 @@ public class Controller implements KeyStrokeHandler {
     }
   };
   private final FinderDriver fileFinderDriver;
-  private final ViewportTracker viewportTracker;
   private final FocusManager focusManager;
+  private final EditorFactory editorFactory;
 
   public Controller(EditorList editorList, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository, HighlightState highlightState,
       final StackList stackList, MinibufferSubsystem minibufferSubsystem,
       CommandExecutor commandExecutor, FinderDriver autocompleteDriver,
-      FinderDriver fileFinderDriver, ViewportTracker viewportTracker,
-      FocusManager focusManager) {
+      FinderDriver fileFinderDriver, FocusManager focusManager,
+      EditorFactory editorFactory) {
     this.editorList = editorList;
     this.fileSystem = fileSystem;
     this.finder = fuzzyFinder;
@@ -76,9 +74,10 @@ public class Controller implements KeyStrokeHandler {
     this.minibufferSubsystem = minibufferSubsystem;
     this.autocompleteDriver = autocompleteDriver;
     this.fileFinderDriver = fileFinderDriver;
-    this.viewportTracker = viewportTracker;
     this.focusManager = focusManager;
+    this.editorFactory = editorFactory;
 
+    editorFactory.setEditorEnvironment(editorEnvironment);
     // TODO(koz): Make this not passed in.
     commandExecutor.setEnvironment(new CommandExecutor.Environment() {
       @Override
@@ -367,19 +366,13 @@ public class Controller implements KeyStrokeHandler {
   }
 
   public Editor openFileView(FileView fileView) {
-    Editor editor = makeEditor(fileView);
+    Editor editor = editorFactory.makeEditor(fileView);
     editorList.insertAfterFocused(editor);
     return editor;
   }
 
-  private Editor makeEditor(FileView fileView) {
-    Editor editor = new Editor(fileView, highlightState, register, editorEnvironment);
-    editor.setViewportTracker(viewportTracker);
-    return editor;
-  }
-
   private Editor addSnippet(FileView fileView) {
-    Editor editor = makeEditor(fileView);
+    Editor editor = editorFactory.makeEditor(fileView);
     stackList.addSnippet(editor);
     return editor;
   }

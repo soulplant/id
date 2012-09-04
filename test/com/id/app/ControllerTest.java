@@ -19,6 +19,7 @@ import com.id.editor.Editor;
 import com.id.editor.EditorList;
 import com.id.editor.Minibuffer;
 import com.id.editor.Point;
+import com.id.editor.Register;
 import com.id.editor.StackList;
 import com.id.events.KeyStroke;
 import com.id.file.File;
@@ -47,6 +48,8 @@ public class ControllerTest {
   private ViewportTracker viewportTracker;
   private FocusManager focusManager;
   private MinibufferSubsystem minibufferSubsystem;
+  private Register register;
+  private EditorFactory editorFactory;
 
   @Before
   public void setup() {
@@ -63,9 +66,11 @@ public class ControllerTest {
     focusManager = new FocusManager(editors, stackList);
     minibufferSubsystem = new MinibufferSubsystem(minibuffer, commandExecutor, focusManager);
     viewportTracker = new ViewportTracker(focusManager);
+    register = new Register();
+    editorFactory = new EditorFactory(highlightState, register, viewportTracker);
     controller = new Controller(editors, fileSystem, fuzzyFinder, repo,
         highlightState, stackList, minibufferSubsystem, commandExecutor,
-        null, new FuzzyFinderDriver(files), viewportTracker, focusManager);
+        null, new FuzzyFinderDriver(files), focusManager, editorFactory);
 
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");

@@ -17,6 +17,7 @@ import com.id.editor.Editor;
 import com.id.editor.EditorList;
 import com.id.editor.Hideable;
 import com.id.editor.Minibuffer;
+import com.id.editor.Register;
 import com.id.editor.Stack;
 import com.id.editor.StackList;
 import com.id.file.File;
@@ -83,10 +84,11 @@ public class App {
         minibuffer, commandExecutor, focusManager);
     ViewportTracker viewportTracker = new ViewportTracker(focusManager);
 
+    Register register = new Register();
+    EditorFactory editorFactory = new EditorFactory(highlightState, register, viewportTracker);
     final Controller controller = new Controller(editorList, fileSystem,
         finder, repository, highlightState, stackList, minibufferSubsystem,
-        commandExecutor, null, new FuzzyFinderDriver(files), viewportTracker,
-        focusManager);
+        commandExecutor, null, new FuzzyFinderDriver(files), focusManager, editorFactory);
 
     SpotlightView<Editor, EditorPanel> spotlightView = new SpotlightView<Editor, EditorPanel>();
     bindList(editorList, new EditorViewFactory(), spotlightView);

@@ -34,6 +34,7 @@ public class EndToEndTest {
   private CommandExecutor commandExecutor;
   private ViewportTracker viewportTracker;
   private FocusManager focusManager;
+  private MinibufferSubsystem minibufferSubsystem;
 
   @Before
   public void setup() throws IOException {
@@ -50,8 +51,11 @@ public class EndToEndTest {
     commandExecutor = new CommandExecutor();
     focusManager = new FocusManager(editors, stackList);
     viewportTracker = new ViewportTracker(focusManager);
-    controller = new Controller(editors, fileSystem, fuzzyFinder, repository, highlightState, stackList,
-        minibuffer, null, new FuzzyFinderDriver(files), viewportTracker, focusManager);
+    minibufferSubsystem = new MinibufferSubsystem(minibuffer, commandExecutor,
+        focusManager);
+    controller = new Controller(editors, fileSystem, fuzzyFinder, repository,
+        highlightState, stackList, minibufferSubsystem, commandExecutor, null,
+        new FuzzyFinderDriver(files), viewportTracker, focusManager);
     repository.init();
   }
 

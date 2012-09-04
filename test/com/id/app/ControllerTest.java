@@ -64,7 +64,6 @@ public class ControllerTest {
     highlightState = new HighlightState();
     minibuffer = new Minibuffer();
     focusManager = new FocusManager(editorList, stackList);
-    minibufferSubsystem = new MinibufferSubsystem(minibuffer, commandExecutor, focusManager);
     viewportTracker = new ViewportTracker(focusManager);
     register = new Register();
     editorFactory = new EditorFactory(highlightState, register, viewportTracker);
@@ -72,6 +71,7 @@ public class ControllerTest {
     Finder finder = new Finder(files);
     editorOpener = new EditorOpener(editorFactory, focusManager, editorList, stackList, fileSystem, finder);
     commandExecutor = new CommandExecutor(editorOpener, focusManager);
+    minibufferSubsystem = new MinibufferSubsystem(minibuffer, commandExecutor, focusManager);
     controller = new Controller(editorList, fileSystem, fuzzyFinder, repo,
         highlightState, stackList, minibufferSubsystem, commandExecutor, null,
         fileFinderDriver, focusManager, editorOpener);

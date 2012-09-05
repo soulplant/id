@@ -13,6 +13,7 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
   private final Editor editor;
   private final EditorTitleView titleView;
   private final MarkerPanel markerPanel;
+  private boolean scrollingEnabled = true;
 
   public EditorPanel(Editor editor) {
     setLayout(new BorderLayout());
@@ -37,6 +38,9 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
   // EditorView.
   @Override
   public void moveViewportToIncludePoint(Point point) {
+    if (!scrollingEnabled) {
+      return;
+    }
     if (!isVisible(point)) {
       if (point.getY() <= textPanel.getTopLine()) {
         setTopLine(point.getY());
@@ -52,6 +56,9 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
 
   @Override
   public void recenterScreenOnPoint(Point point) {
+    if (!scrollingEnabled) {
+      return;
+    }
     int topLine = point.getY() - textPanel.getLinesHigh() / 2;
     topLine = Math.max(0, topLine);
     topLine = Math.min(topLine, editor.getLineCount() - 1);
@@ -81,5 +88,9 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
   @Override
   public void setTopLineVisible(int topLine) {
     setTopLine(topLine);
+  }
+
+  public void setScrollingEnabled(boolean scrollingEnabled) {
+    this.scrollingEnabled = scrollingEnabled;
   }
 }

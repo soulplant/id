@@ -29,7 +29,8 @@ public class MarkerPanel extends LinewisePanel {
     for (int i = 0; i < linesToDraw; i++) {
       Color color = g.getColor();
       boolean draw = true;
-      Tombstone.Status status = editor.getStatus(i + getTopLine());
+      int lineY = i + getTopLine();
+      Tombstone.Status status = editor.getStatus(lineY);
       switch (status) {
       case MODIFIED:
         g.setColor(Constants.MARKER_MODIFIED_COLOR);
@@ -44,7 +45,7 @@ public class MarkerPanel extends LinewisePanel {
       if (draw) {
         g.fillRect(0, i * fontHeightPx, fontWidthPx, fontHeightPx);
       }
-      if (!editor.getGrave(i).isEmpty()) {
+      if (!editor.getGrave(lineY).isEmpty()) {
         g.setColor(Constants.MARKER_REMOVED_COLOR);
         g.fillRect(0, (i + 1) * fontHeightPx - 5, fontWidthPx, 5);
       }

@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.id.editor.Editor;
 import com.id.editor.EditorList;
+import com.id.events.KeyStroke;
 import com.id.file.Tombstone;
 import com.id.git.GitRepository;
 import com.id.platform.RealFileSystem;
@@ -50,7 +51,7 @@ public class EndToEndTest {
     repository.commitAll(null);
     fileSystem.save("a", "1", "2", "3", "4", "5", "6", "7", "a1");
 
-    controller.importDiffs();
+    typeString("1<CR>");  // Import diffs to the last commit.
     Editor editor = editorList.get(0);
     assertEquals("a", editor.getFilename());
     assertEquals(2, editor.getGrave(7).size());
@@ -63,7 +64,7 @@ public class EndToEndTest {
     repository.commitAll(null);
     fileSystem.save("a", "a1", "a4");
 
-    controller.importDiffs();
+    typeString("1<CR>");
     Editor editor = editorList.get(0);
     assertEquals("a", editor.getFilename());
     assertEquals(2, editor.getGrave(0).size());
@@ -86,4 +87,9 @@ public class EndToEndTest {
     Runtime.getRuntime().exec(string, null, tempDir);
   }
 
+  private void typeString(String chars) {
+    for (KeyStroke keyStroke : KeyStroke.fromString(chars)) {
+      controller.handleKeyStroke(keyStroke);
+    }
+  }
 }

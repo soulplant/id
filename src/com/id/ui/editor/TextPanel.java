@@ -3,13 +3,10 @@ package com.id.ui.editor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
 
 import com.id.app.App;
 import com.id.editor.Editor;
 import com.id.editor.Point;
-import com.id.events.EditorKeyHandler;
-import com.id.events.KeyStroke;
 import com.id.file.File;
 import com.id.rendering.EditorRenderer;
 import com.id.rendering.Matrix;
@@ -18,7 +15,6 @@ import com.id.ui.app.LinewisePanel;
 @SuppressWarnings("serial")
 public class TextPanel extends LinewisePanel {
   private final Editor editor;
-  private final EditorKeyHandler handler = new EditorKeyHandler();
 
   public TextPanel(Editor editor) {
     this.editor = editor;
@@ -72,9 +68,5 @@ public class TextPanel extends LinewisePanel {
         g.drawRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
       }
     }
-  }
-
-  public boolean handleKeyPress(KeyEvent e) {
-    return handler.handleKeyPress(KeyStroke.fromKeyEvent(e), editor);
   }
 }

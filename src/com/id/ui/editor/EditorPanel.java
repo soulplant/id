@@ -1,7 +1,6 @@
 package com.id.ui.editor;
 
 import java.awt.BorderLayout;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
@@ -29,10 +28,6 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
     this.add(titleView, BorderLayout.PAGE_START);
     this.add(panel, BorderLayout.CENTER);
     editor.setView(this);
-  }
-
-  public boolean handleKeyPress(KeyEvent e) {
-    return textPanel.handleKeyPress(e);
   }
 
   public Editor getEditor() {

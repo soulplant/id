@@ -239,6 +239,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       file.breakPatch();
       cursor.moveBy(0, -1);
     }
+    cursor.applyCursorConstraints();
   }
 
   public void insertAtLastInsert() {

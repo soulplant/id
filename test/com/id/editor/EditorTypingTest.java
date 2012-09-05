@@ -1066,4 +1066,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("v<ESC>jvgv");
     assertTrue(editor.isInVisual(0, 0));
   }
+
+  @Test
+  public void exitingVisualCharModeAfterEndOfLine() {
+    setFileContents("a");
+    typeString("v$<ESC>");
+    assertCursorPosition(0, 0);
+  }
 }

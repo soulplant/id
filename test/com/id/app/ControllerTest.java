@@ -488,6 +488,12 @@ public class ControllerTest {
     assertEquals(2, stackList.size());
   }
 
+  @Test
+  public void insertModeCapturesEverything() {
+    typeString(":e temp<CR>ihello:world");
+    assertEquals("hello:world", editorList.getFocusedItem().getLine(0));
+  }
+
   private void createSnippetFromCurrentLine() {
     typeString("V;");
   }

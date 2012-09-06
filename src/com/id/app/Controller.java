@@ -38,7 +38,7 @@ public class Controller implements KeyStrokeHandler {
 
   public Controller(EditorList editorList, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository, HighlightState highlightState,
-      final StackList stackList, MinibufferSubsystem minibufferSubsystem,
+      final StackList stackList, final MinibufferSubsystem minibufferSubsystem,
       CommandExecutor commandExecutor, FinderDriver autocompleteDriver,
       FinderDriver fileFinderDriver, FocusManager focusManager,
       EditorOpener editorOpener) {
@@ -136,6 +136,12 @@ public class Controller implements KeyStrokeHandler {
       @Override
       public void execute() {
         stackList.focusNextStack();
+      }
+    });
+    shortcuts.setShortcut(KeyStroke.fromString(":"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        minibufferSubsystem.activateMinibuffer();
       }
     });
   }

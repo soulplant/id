@@ -20,21 +20,11 @@ public class MinibufferSubsystem implements Minibuffer.Listener, KeyStrokeHandle
     this.focusManager = focusManager;
 
     minibuffer.addListener(this);
-
-    shortcuts.setShortcut(KeyStroke.fromString(":"), new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        activateMinibuffer();
-      }
-    });
   }
 
   @Override
   public boolean handleKeyStroke(KeyStroke keyStroke) {
-    if (isActive) {
-      return minibuffer.handleKeyStroke(keyStroke);
-    }
-    return shortcuts.stepAndExecute(keyStroke);
+    return isActive && minibuffer.handleKeyStroke(keyStroke);
   }
 
   // Minibuffer.Listener.
@@ -53,7 +43,7 @@ public class MinibufferSubsystem implements Minibuffer.Listener, KeyStrokeHandle
     deactivateMinibuffer();
   }
 
-  private void activateMinibuffer() {
+  public void activateMinibuffer() {
     isActive = true;
   }
 

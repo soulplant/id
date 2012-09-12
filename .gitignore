@@ -4,3 +4,5 @@ dist/
 gen/
 *.swp
 .files
+TEST-*.txt
+.settings/

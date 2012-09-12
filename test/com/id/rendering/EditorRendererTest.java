@@ -4,14 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.awt.Rectangle;
-
-import org.junit.Test;
-
 import com.id.editor.Patterns;
 import com.id.editor.Visual;
 import com.id.events.KeyStroke;
 import com.id.test.EditorTestBase;
+
+import org.junit.Test;
+
+import java.awt.Rectangle;
 
 public class EditorRendererTest extends EditorTestBase {
 
@@ -75,8 +75,8 @@ public class EditorRendererTest extends EditorTestBase {
     editor.setHighlightPattern(Patterns.partWord("a"));
     renderMatrix(new Rectangle(0, 0, 20, 10), 10, 10);
     assertMatrixContents("ab");
-    assertTrue(matrix.get(0, 0).isHighlight);
-    assertFalse(matrix.get(0, 1).isHighlight);
+    assertTrue(matrix.getDecoration(0, 0).isHighlight);
+    assertFalse(matrix.getDecoration(0, 1).isHighlight);
   }
 
   @Test
@@ -85,14 +85,14 @@ public class EditorRendererTest extends EditorTestBase {
     editor.enterSearch();
     editor.handleSearchKeyStroke(KeyStroke.fromChar('a'));
     renderMatrix(new Rectangle(0, 0, 20, 20), 10, 10);
-    assertTrue(matrix.get(0, 0).isSearchHighlight);
+    assertTrue(matrix.getDecoration(0, 0).isSearchHighlight);
   }
 
   @Test
   public void testTrailingWhitespaceIndicator() {
     setFileContents("abc  ");
     renderMatrix(new Rectangle(0, 0, 50, 50), 10, 10);
-    assertTrue(matrix.get(0, 4).isWhitespaceIndicator);
+    assertTrue(matrix.getDecoration(0, 4).isWhitespaceIndicator);
   }
 
   @Test
@@ -103,7 +103,7 @@ public class EditorRendererTest extends EditorTestBase {
     }
     setFileContents(text);
     renderMatrix(new Rectangle(0, 0, 810, 810), 10, 10);
-    assertTrue(matrix.get(0, EditorRenderer.MAX_LINE_LENGTH - 1).is80CharIndicator);
+    assertTrue(matrix.getDecoration(0, EditorRenderer.MAX_LINE_LENGTH - 1).is80CharIndicator);
   }
 
   @Test
@@ -111,7 +111,7 @@ public class EditorRendererTest extends EditorTestBase {
     setFileContents("a");
     typeString("v$");
     renderMatrix(new Rectangle(0, 0, 20, 10), 10, 10);
-    assertTrue(matrix.get(0, 1).isVisual);
+    assertTrue(matrix.getDecoration(0, 1).isVisual);
   }
 
   private void renderMatrix(Rectangle editorRectPx, int fontWidthPx,

@@ -1,13 +1,19 @@
 package com.id.rendering;
 
+import com.id.ui.Constants;
+
 import java.awt.Color;
 import java.awt.Graphics;
 
-import com.id.ui.Constants;
-
+/**
+ * The matrix of items, known as entries, to be rendered on the screen. It is
+ * typically not the full file, just the lines currently displayed, i.e. view of
+ * the current portion of the file. An entry is a letter with some additional
+ * decorations, e.g. highlighted, etc.
+ *
+ */
 public class Matrix {
-  public class Entry {
-    public char letter;
+  public class Decoration {
     public boolean isVisual = false;
     public boolean isHighlight = false;
     public boolean isSearchHighlight = false;
@@ -15,13 +21,12 @@ public class Matrix {
     public boolean is80CharIndicator = false;
 //    public boolean isCursor = false;
 //    public boolean isWideCursor = false;
-
-    public Entry(char letter) {
-      this.letter = letter;
-    }
   }
 
-  private final Entry[][] entries;
+  /** Decorations keyed by [row][column]. */
+  private final Decoration[][] decorations;
+  /** Lines keyed by row, each containing as any characters as the column count. */
+  private final String[] lines;
   private final int height;
   private final int width;
   private final int charHeightPx;
@@ -39,32 +44,50 @@ public class Matrix {
     this.charWidthPx = charWidthPx;
     this.lineOffset = lineOffset;
     this.charOffset = charOffset;
-    this.entries = new Entry[height][width];
+    this.decorations = new Decoration[height][width];
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
-        entries[y][x] = new Entry(' ');
+        decorations[y][x] = new Decoration();
       }
+    }
+    this.lines = new String[height];
+    StringBuilder builder = new StringBuilder();
+    for (int x = 0; x < width; x++) {
+      builder.append(" ");
+    }
+    String emptyLine = builder.toString();
+    for (int y = 0; y < height; y++) {
+      lines[y] = emptyLine;
     }
   }
 
-  private Entry getEntry(int y, int x) {
-    if (entries[y][x] == null) {
-      throw new IllegalStateException("(" + y + ", " + x + ") accessed from "
-          + entries.length + ", " + entries[0].length);
+  public Decoration getDecoration(int y, int x) {
+    if (!isDecorationInBounds(y, x)) {
+      throw new IllegalArgumentException("Decoration not in bounds: [" + y + "," + x + "]");
     }
-    return entries[y][x];
+    if (decorations[y][x] == null) {
+      throw new IllegalStateException("(" + y + ", " + x + ") accessed from "
+          + decorations.length + ", " + decorations[0].length);
+    }
+    return decorations[y][x];
+  }
+
+  public String getLine(int y) {
+    if (!(y >= 0 && y < lines.length)) {
+      throw new IllegalArgumentException("Line not in bounds: " + y);
+    }
+    if (lines[y] == null) {
+      throw new IllegalStateException("Row " + y + " not initialised.");
+    }
+    return lines[y];
   }
 
   public boolean isVisual(int y, int x) {
-    return getEntry(y, x).isVisual;
+    return getDecoration(y, x).isVisual;
   }
 
-  public char getLetter(int y, int x) {
-    return getEntry(y, x).letter;
-  }
-
-  public void setLetter(int y, int x, char letter) {
-    getEntry(y, x).letter = letter;
+  public void setLine(int y, String line) {
+    lines[y] = line;
   }
 
   public int getHeight() {
@@ -75,26 +98,18 @@ public class Matrix {
     return width;
   }
 
-  public String getLine(int y) {
-    StringBuffer buffer = new StringBuffer();
-    for (Entry entry : entries[y]) {
-      buffer.append(entry.letter);
-    }
-    return buffer.toString();
-  }
-
   public void render(Graphics g) {
     drawBackground(g);
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
-        Entry entry = getEntry(y, x);
+        Decoration decoration = getDecoration(y, x);
         int boxY = (lineOffset + y) * charHeightPx;
         int boxX = x * charWidthPx;
-        if (entry.isWhitespaceIndicator) {
+        if (decoration.isWhitespaceIndicator) {
           g.setColor(Constants.WHITESPACE_INDICATOR_COLOR);
           g.fillRect(boxX + charWidthPx, boxY, 2, charHeightPx);
         }
-        if (entry.is80CharIndicator) {
+        if (decoration.is80CharIndicator) {
           g.setColor(Constants.EIGHTY_CHAR_INDICATOR_COLOR);
           g.fillRect(boxX + charWidthPx, boxY, 2, charHeightPx);
         }
@@ -112,10 +127,10 @@ public class Matrix {
       int boxX = 0;
       RectFiller rectFiller = new RectFiller(g, boxX, boxY);
       for (int x = 0; x < width; x++) {
-        Entry entry = getEntry(y, x);
-        if (entry.isVisual) {
+        Decoration decoration = getDecoration(y, x);
+        if (decoration.isVisual) {
           rectFiller.nextColor(Constants.VISUAL_COLOR);
-        } else if (entry.isHighlight || entry.isSearchHighlight) {
+        } else if (decoration.isHighlight || decoration.isSearchHighlight) {
           rectFiller.nextColor(Constants.HIGHLIGHT_COLOR);
         } else {
           rectFiller.nextColor(null);
@@ -187,18 +202,10 @@ public class Matrix {
     return charOffset;
   }
 
-  public Entry get(int y, int x) {
-    if (isInBounds(y, x)) {
-      return getEntry(y, x);
-    }
-    // NOTE(koz): Should this throw an exception instead?
-    return new Entry(' ');
-  }
-
-  private boolean isInBounds(int y, int x) {
-    if (entries.length == 0) {
+  private boolean isDecorationInBounds(int y, int x) {
+    if (decorations.length == 0) {
       return false;
     }
-    return y >= 0 && y < entries.length && x >= 0 && x < entries[0].length;
+    return y >= 0 && y < decorations.length && x >= 0 && x < decorations[0].length;
   }
 }

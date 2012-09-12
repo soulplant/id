@@ -1,8 +1,8 @@
 package com.id.rendering;
 
-import java.awt.Rectangle;
-
 import com.id.editor.Editor;
+
+import java.awt.Rectangle;
 
 public class EditorRenderer {
   public static final int MAX_LINE_LENGTH = 80;
@@ -69,21 +69,21 @@ public class EditorRenderer {
     String line = editor.getLine(lineY);
     String substring = paddedString(line, startX, length, ' ');
     if (hasTrailingWhitespace(line)) {
-      matrix.get(matrixY, line.length() - 1).isWhitespaceIndicator = true;
+      matrix.getDecoration(matrixY, line.length() - 1).isWhitespaceIndicator = true;
     }
     if (line.length() > MAX_LINE_LENGTH && MAX_LINE_LENGTH <= matrix.getWidth()) {
-      matrix.get(matrixY, MAX_LINE_LENGTH - 1).is80CharIndicator = true;
+      matrix.getDecoration(matrixY, MAX_LINE_LENGTH - 1).is80CharIndicator = true;
     }
+    matrix.setLine(matrixY, substring);
     for (int i = 0; i < Math.min(matrix.getWidth(), line.length() + 1); i++) {
-      matrix.get(matrixY, i).letter = substring.charAt(i);
       if (editor.isInVisual(lineY, i)) {
-        matrix.get(matrixY, i).isVisual = true;
+        matrix.getDecoration(matrixY, i).isVisual = true;
       }
       if (editor.isHighlight(lineY, i)) {
-        matrix.get(matrixY, i).isHighlight = true;
+        matrix.getDecoration(matrixY, i).isHighlight = true;
       }
       if (editor.isSearchHighlight(lineY, i)) {
-        matrix.get(matrixY, i).isSearchHighlight = true;
+        matrix.getDecoration(matrixY, i).isSearchHighlight = true;
       }
     }
   }

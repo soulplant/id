@@ -27,6 +27,7 @@ public class EditorRendererTest extends EditorTestBase {
     setFileContents("abc", "def");
     renderMatrix(new Rectangle(10, 10, 20, 20), 10, 10);
     assertMatrixContents("ef");
+    assertEquals(1, matrix.getLineOffset());
     assertEquals(1, matrix.getCharOffset());
   }
 
@@ -113,8 +114,10 @@ public class EditorRendererTest extends EditorTestBase {
     assertTrue(matrix.get(0, 1).isVisual);
   }
 
-  private void renderMatrix(Rectangle screen, int fontWidthPx, int fontHeightPx) {
-    renderer = new EditorRenderer(editor, screen, fontWidthPx, fontHeightPx, 0);
+  private void renderMatrix(Rectangle editorRectPx, int fontWidthPx,
+      int fontHeightPx) {
+    renderer = new EditorRenderer(editor, editorRectPx, fontWidthPx,
+        fontHeightPx, 0);
     matrix = renderer.render();
   }
 

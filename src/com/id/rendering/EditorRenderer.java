@@ -34,6 +34,8 @@ public class EditorRenderer {
 
   private Matrix matrix(int startY, int startX, int linesToDraw, int charsToDraw) {
     int height = Math.min(linesToDraw, editor.getLineCount() - startY);
+    // TODO(koz): Track down why we need this.
+    height = Math.max(0, height);  // Don't allow negative height.
     int width = charsToDraw;
     Matrix matrix = new Matrix(height, width, fontDescentPx, fontHeightPx, fontWidthPx, startY, startX);
     for (int i = 0; i < height; i++) {

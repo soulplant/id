@@ -1,33 +1,43 @@
 package com.id.ui.editor;
 
 import java.awt.BorderLayout;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.id.editor.Editor;
 import com.id.editor.Point;
+import com.id.ui.app.LinewisePanel;
 
 @SuppressWarnings("serial")
 public class EditorPanel extends JPanel implements Editor.EditorView {
   private final TextPanel textPanel;
   private final Editor editor;
+  private final JScrollPane scrollPane;
   private final EditorTitleView titleView;
-  private final MarkerPanel markerPanel;
-  private boolean scrollingEnabled = true;
 
-  public EditorPanel(Editor editor) {
+  public EditorPanel(Editor editor, boolean showScrollbars) {
     setLayout(new BorderLayout());
     this.editor = editor;
     textPanel = new TextPanel(editor);
-    markerPanel = new MarkerPanel(editor);
-
     JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
-    panel.add(markerPanel, BorderLayout.LINE_START);
+    panel.add(new MarkerPanel(editor), BorderLayout.LINE_START);
     panel.add(textPanel, BorderLayout.CENTER);
+    if (showScrollbars) {
+      // TODO(koz): Implement an actual scrollbar in terms of the scrollPane.
+      JPanel scrollBar = new LinewisePanel();
+      panel.add(scrollBar, BorderLayout.LINE_END);
+    }
     titleView = new EditorTitleView(editor);
     this.add(titleView, BorderLayout.PAGE_START);
-    this.add(panel, BorderLayout.CENTER);
+    scrollPane = new JScrollPane(panel);
+    scrollPane.setBorder(null);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.add(scrollPane, BorderLayout.CENTER);
     editor.setView(this);
   }
 
@@ -38,59 +48,48 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
   // EditorView.
   @Override
   public void moveViewportToIncludePoint(Point point) {
-    if (!scrollingEnabled) {
-      return;
-    }
-    if (!isVisible(point)) {
-      if (point.getY() <= textPanel.getTopLine()) {
-        setTopLine(point.getY());
-      } else {
-        setBottomLine(point.getY());
-      }
-    }
-  }
-
-  private void setBottomLine(int y) {
-    setTopLine(y - textPanel.getLinesHigh() + 1);
+    textPanel.scrollRectToVisible(cursorPointToRect(point));
   }
 
   @Override
   public void recenterScreenOnPoint(Point point) {
-    if (!scrollingEnabled) {
-      return;
-    }
-    int topLine = point.getY() - textPanel.getLinesHigh() / 2;
-    topLine = Math.max(0, topLine);
-    topLine = Math.min(topLine, editor.getLineCount() - 1);
-    setTopLine(topLine);
-  }
+    int fontWidthPx = textPanel.getFontWidthPx();
+    int fontHeightPx = textPanel.getFontHeightPx();
+    int viewportHeight = textPanel.getVisibleRect().height;
+    int padding = (viewportHeight - fontHeightPx) / 2;
 
-  private void setTopLine(int topLine) {
-    textPanel.setTopLine(topLine);
-    markerPanel.setTopLine(topLine);
+    Rectangle rect = new Rectangle(point.getX() * fontWidthPx,
+        point.getY() * fontHeightPx - padding, fontWidthPx, viewportHeight);
+    textPanel.scrollRectToVisible(rect);
   }
 
   @Override
   public int getViewportHeight() {
-    return textPanel.getLinesHigh();
+    return getHeight() / textPanel.getFontHeightPx();
   }
 
   @Override
   public boolean isVisible(Point point) {
-    return textPanel.isPointVisible(point);
+    return textPanel.getVisibleRect().contains(
+        point.getX() * textPanel.getFontWidthPx(),
+        point.getY() * textPanel.getFontHeightPx());
   }
 
   @Override
   public int getTopLineVisible() {
-    return textPanel.getTopLine();
+    return textPanel.getTopLineVisible();
   }
 
   @Override
   public void setTopLineVisible(int topLine) {
-    setTopLine(topLine);
+    // TODO(koz): Implement this properly.
+    recenterScreenOnPoint(new Point(topLine, 0));
   }
 
-  public void setScrollingEnabled(boolean scrollingEnabled) {
-    this.scrollingEnabled = scrollingEnabled;
+  private Rectangle cursorPointToRect(Point point) {
+    int fontWidthPx = textPanel.getFontWidthPx();
+    int fontHeightPx = textPanel.getFontHeightPx();
+    return new Rectangle(point.getX() * fontWidthPx, point.getY() * fontHeightPx, fontWidthPx,
+        fontHeightPx);
   }
 }

@@ -2,7 +2,6 @@ package com.id.ui.editor;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 
 import com.id.app.App;
 import com.id.editor.Editor;
@@ -39,7 +38,7 @@ public class TextPanel extends LinewisePanel {
 
   private void updateSize() {
     setPreferredSize(new Dimension(
-        getFontWidthPx() + 1, getFontHeightPx() * editor.getLineCount() + 1));
+        getFontWidthPx(), getFontHeightPx() * editor.getLineCount()));
     invalidate();
   }
 
@@ -49,18 +48,15 @@ public class TextPanel extends LinewisePanel {
     App.configureFont(g);
 
     final int fontDescentPx = g.getFontMetrics().getDescent();
-    Rectangle rect = new Rectangle(0, getTopLine() * getFontHeightPx(),
-        getLinesWide() * getFontWidthPx(), getLinesHigh() * getFontHeightPx());
-
-    EditorRenderer renderer = new EditorRenderer(editor, rect,
+    EditorRenderer renderer = new EditorRenderer(editor, g.getClipBounds(),
         getFontWidthPx(), getFontHeightPx(), fontDescentPx);
     Matrix matrix = renderer.render();
     matrix.render(g);
     Point point = editor.getCursorPosition();
-    int cursorYPx = (point.getY() - getTopLine()) * getFontHeightPx();
+    int cursorYPx = point.getY() * getFontHeightPx();
     int cursorXPx = point.getX() * getFontWidthPx();
     int cursorWidthPx = editor.isInInsertMode() ? 2 : getFontWidthPx();
-    int cursorHeightPx = getFontHeightPx();
+    int cursorHeightPx = getFontHeightPx() - 1;
     if (editor.isFocused()) {
       if (editor.isInInsertMode()) {
         g.fillRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
@@ -68,5 +64,9 @@ public class TextPanel extends LinewisePanel {
         g.drawRect(cursorXPx, cursorYPx, cursorWidthPx, cursorHeightPx);
       }
     }
+  }
+
+  public int getTopLineVisible() {
+    return getVisibleRect().y / getFontHeightPx();
   }
 }

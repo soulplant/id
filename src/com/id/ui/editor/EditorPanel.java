@@ -2,7 +2,6 @@ package com.id.ui.editor;
 
 import java.awt.BorderLayout;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

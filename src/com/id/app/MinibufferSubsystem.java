@@ -3,15 +3,12 @@ package com.id.app;
 import com.id.editor.Minibuffer;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
-import com.id.events.ShortcutTree;
 
 public class MinibufferSubsystem implements Minibuffer.Listener, KeyStrokeHandler {
   private boolean isActive = false;
   private final Minibuffer minibuffer;
   private final CommandExecutor commandExecutor;
   private final FocusManager focusManager;
-
-  private final ShortcutTree shortcuts = new ShortcutTree();
 
   public MinibufferSubsystem(Minibuffer minibuffer,
       CommandExecutor commandExecutor, FocusManager focusManager) {

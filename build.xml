@@ -21,7 +21,6 @@
     <javac destdir="${build}" debug="on" includeAntRuntime="false">
       <compilerarg value="-Xlint"/>
       <src path="${src}"/>
-      <src path="gen"/>
       <classpath refid="build.classpath"/>
     </javac>
   </target>
@@ -44,7 +43,6 @@
     <javac destdir="${build}" debug="on" includeAntRuntime="false">
       <compilerarg value="-Xlint"/>
       <src path="${test}"/>
-      <src path="gen"/>
       <classpath refid="test.classpath"/>
     </javac>
     <junit printsummary="yes">
@@ -65,7 +63,6 @@
     <javac destdir="${build}" debug="on" includeAntRuntime="false" classpathref="build.classpath">
       <src path="${src}"/>
       <src path="${test}"/>
-      <src path="gen"/>
       <include name="${file}"/>
     </javac>
   </target>

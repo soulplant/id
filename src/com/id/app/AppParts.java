@@ -63,9 +63,15 @@ public class AppParts {
   }
 
   private static class EditorViewFactory implements ViewFactory<Editor, EditorPanel> {
+    private final boolean selfScrolling;
+
+    public EditorViewFactory(boolean selfScrolling) {
+      this.selfScrolling = selfScrolling;
+    }
+
     @Override
     public EditorPanel createView(Editor editor) {
-      EditorPanel editorPanel = new EditorPanel(editor, false);
+      EditorPanel editorPanel = new EditorPanel(editor, selfScrolling);
       return editorPanel;
     }
   }
@@ -83,7 +89,7 @@ public class AppParts {
 
   public void showSwingView() {
     SpotlightView<Editor, EditorPanel> spotlightView = new SpotlightView<Editor, EditorPanel>();
-    bindList(editorList, new EditorViewFactory(), spotlightView);
+    bindList(editorList, new EditorViewFactory(true), spotlightView);
 
     final FileListView fileListView = new FileListView(editorList);
 
@@ -92,7 +98,7 @@ public class AppParts {
       @Override
       public StackView createView(Stack model) {
         StackView stackView = new StackView();
-        bindList(model, new EditorViewFactory(), stackView);
+        bindList(model, new EditorViewFactory(false), stackView);
         return stackView;
       }
     }, stackSpotlight);

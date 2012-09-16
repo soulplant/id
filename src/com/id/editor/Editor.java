@@ -1093,6 +1093,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   @Override
   public void setFocused(boolean selected) {
     this.focused = selected;
+    view.moveViewportToIncludePoint(cursor.getPoint());
   }
 
   @Override

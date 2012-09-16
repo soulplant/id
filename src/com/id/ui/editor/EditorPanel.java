@@ -1,23 +1,24 @@
 package com.id.ui.editor;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 
 import com.id.editor.Editor;
 import com.id.editor.Point;
-import com.id.ui.app.LinewisePanel;
 
 @SuppressWarnings("serial")
 public class EditorPanel extends JPanel implements Editor.EditorView {
   private final TextPanel textPanel;
   private final Editor editor;
-  private final JScrollPane scrollPane;
   private final EditorTitleView titleView;
 
-  public EditorPanel(Editor editor, boolean showScrollbars) {
+  public EditorPanel(Editor editor, boolean selfScrolling) {
     setLayout(new BorderLayout());
     this.editor = editor;
     textPanel = new TextPanel(editor);
@@ -25,18 +26,17 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
     panel.setLayout(new BorderLayout());
     panel.add(new MarkerPanel(editor), BorderLayout.LINE_START);
     panel.add(textPanel, BorderLayout.CENTER);
-    if (showScrollbars) {
-      // TODO(koz): Implement an actual scrollbar in terms of the scrollPane.
-      JPanel scrollBar = new LinewisePanel();
-      panel.add(scrollBar, BorderLayout.LINE_END);
+    if (selfScrolling) {
+      JScrollPane scrollPane = new JScrollPane(panel);
+      scrollPane.setBorder(null);
+      scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+      scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      add(scrollPane, BorderLayout.CENTER);
+    } else {
+      add(panel, BorderLayout.CENTER);
     }
     titleView = new EditorTitleView(editor);
-    this.add(titleView, BorderLayout.PAGE_START);
-    scrollPane = new JScrollPane(panel);
-    scrollPane.setBorder(null);
-    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    this.add(scrollPane, BorderLayout.CENTER);
+    add(titleView, BorderLayout.PAGE_START);
     editor.setView(this);
   }
 
@@ -50,21 +50,71 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
     textPanel.scrollRectToVisible(cursorPointToRect(point));
   }
 
+  /**
+   * @param component
+   * @return height in pixels of the visible rect of the viewport that contains
+   *         {@code component}.
+   */
+  private int getViewportHeightPx(Component component) {
+    return getViewport(component).getVisibleRect().height;
+  }
+
   @Override
   public void recenterScreenOnPoint(Point point) {
-    int fontWidthPx = textPanel.getFontWidthPx();
     int fontHeightPx = textPanel.getFontHeightPx();
-    int viewportHeight = textPanel.getVisibleRect().height;
-    int padding = (viewportHeight - fontHeightPx) / 2;
+    int cursorY = point.getY() * fontHeightPx;
 
-    Rectangle rect = new Rectangle(point.getX() * fontWidthPx,
-        point.getY() * fontHeightPx - padding, fontWidthPx, viewportHeight);
-    textPanel.scrollRectToVisible(rect);
+    scrollToCenterPointInside(textPanel, cursorY);
+    invalidate();
+  }
+
+  /**
+   * @return the closest ancestor JViewport to {@code component}, or
+   *         {@code null}.
+   */
+  private JViewport getViewport(Component component) {
+    Container parent = component.getParent();
+    while (true) {
+      if (parent instanceof JViewport) {
+        return (JViewport) parent;
+      }
+      parent = parent.getParent();
+    }
+  }
+
+  /**
+   * Scrolls so that {@code y} (which is an offset in {@code component}
+   * coordinates) is centered in the screen.
+   */
+  private void scrollToCenterPointInside(Component component, int y) {
+    Container parent = component.getParent();
+    int yOffset = component.getBounds().y;
+    while (true) {
+      if (parent == null) {
+        return;
+      }
+      if (parent instanceof JViewport) {
+        JViewport viewport = (JViewport) parent;
+        int viewHeight = viewport.getVisibleRect().height;
+        int scrollY = (yOffset + y) - viewHeight / 2;
+        scrollY = Math.max(0, scrollY);
+        viewport.setViewPosition(new java.awt.Point(0, scrollY));
+        return;
+      } else {
+        Container grandParent = parent.getParent();
+        if (grandParent instanceof JViewport) {
+          parent = grandParent;
+          continue;
+        }
+        yOffset += parent.getBounds().y;
+      }
+      parent = parent.getParent();
+    }
   }
 
   @Override
   public int getViewportHeight() {
-    return getHeight() / textPanel.getFontHeightPx();
+    return getViewportHeightPx(textPanel) / textPanel.getFontHeightPx();
   }
 
   @Override

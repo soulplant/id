@@ -1,5 +1,7 @@
 package com.id.ui.app;
 
+import java.awt.FontMetrics;
+
 import javax.swing.JPanel;
 
 import com.id.app.App;
@@ -11,10 +13,13 @@ public class LinewisePanel extends JPanel {
   private final int fontWidthPx;
   private final int fontHeightPx;
   private int topLine = 0;
+  private final int fontDescentPx;
 
   public LinewisePanel() {
-    fontHeightPx = getFontMetrics(App.FONT).getHeight();
-    fontWidthPx = getFontMetrics(App.FONT).getWidths()['a'];
+    FontMetrics fontMetrics = getFontMetrics(App.FONT);
+    fontHeightPx = fontMetrics.getHeight();
+    fontWidthPx = fontMetrics.getWidths()['a'];
+    fontDescentPx = fontMetrics.getDescent();
     setBackground(Constants.BG_COLOR);
   }
 
@@ -24,6 +29,10 @@ public class LinewisePanel extends JPanel {
 
   public int getFontHeightPx() {
     return fontHeightPx;
+  }
+
+  public int getFontDescentPx() {
+    return fontDescentPx;
   }
 
   public int getLinesWide() {

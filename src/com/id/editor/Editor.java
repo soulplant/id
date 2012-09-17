@@ -126,14 +126,15 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   private final EditorKeyHandler keyHandler;
   private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();
   private final List<ModifiedListener> fileModifiedListeners = new ArrayList<ModifiedListener>();
+  private final HighlightState highlightState;
+  private final Register register;
+
   private FindMode findMode = FindMode.NONE;
   private char lastFindLetter = 0;
   private FindMode lastFindMode = FindMode.NONE;
   private Search currentSearch = null;
   private Highlight highlight = new EmptyHighlight();
-  private final HighlightState highlightState;
   private boolean justInsertedAutoIndent = false;
-  private final Register register;
   private Point lastInsertPoint = null;
   private Point autocompleteStart = null;
   private boolean focused = false;

@@ -88,14 +88,14 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
    * coordinates) is centered in the screen.
    */
   private void scrollToCenterPointInside(Component component, int y) {
-    JViewport vp = getViewport(component);
+    JViewport viewport = getViewport(component);
     // Translate the point (0, y) into the scrolled panel's coordinates (instead
     // of being relative to its direct container's coordinates).
     int offsetY = SwingUtilities.convertPoint(component,
-        new java.awt.Point(0, y), vp.getView()).y;
-    int scrollY = offsetY - vp.getExtentSize().height / 2;
+        new java.awt.Point(0, y), viewport.getView()).y;
+    int scrollY = offsetY - viewport.getExtentSize().height / 2;
     scrollY = Math.max(0, scrollY);
-    vp.setViewPosition(new java.awt.Point(0, scrollY));
+    viewport.setViewPosition(new java.awt.Point(0, scrollY));
   }
 
   @Override

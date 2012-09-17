@@ -281,6 +281,12 @@ public class EditorKeyHandler {
         editor.deleteDown();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("dk"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.deleteUp();
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("C"), new ShortcutTree.Action() {
       @Override
       public void execute() {

@@ -178,10 +178,18 @@ public class FileView implements File.Listener, ModifiedListener {
     return file.getGrave(start + y);
   }
 
+  /**
+   * Removes lines between line numbers from and to, which can be in ascending
+   * or descending order.
+   *
+   * @return the lines removed in the order they appeared in the file.
+   */
   public List<String> removeLineRange(int from, int to) {
+    int firstLine = Math.min(from, to);
+    int lastLine = Math.max(from, to);
     List<String> result = new ArrayList<String>();
-    for (int i = 0; i < to - from + 1; i++) {
-      result.add(removeLine(from));
+    for (int i = 0; i < lastLine - firstLine + 1; i++) {
+      result.add(removeLine(firstLine));
     }
     return result;
   }

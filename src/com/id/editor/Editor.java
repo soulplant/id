@@ -689,29 +689,38 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void deleteLine() {
-    register.setContents(new TextFragment(Visual.Mode.LINE, false, getCurrentLine()));
-    startPatch();
-    int y = cursor.getY();
-    file.removeLine(y);
-    file.breakPatch();
-    cursor.moveTo(y, 0);
+    deleteAdjacentLines(0);
   }
 
   public void deleteDown() {
-    if (isCursorOnLastLine()) {
-      deleteLine();
-      return;
-    }
-    startPatch();
-    int y = cursor.getY();
-    List<String> removedLines = file.removeLineRange(y, y + 1);
-    register.setContents(new TextFragment(Visual.Mode.LINE, false, removedLines));
-    file.breakPatch();
-    cursor.moveTo(y, 0);
+    deleteAdjacentLines(1);
   }
 
-  private boolean isCursorOnLastLine() {
-    return cursor.getY() == file.getLineCount() - 1;
+  public void deleteUp() {
+    deleteAdjacentLines(-1);
+  }
+
+  /**
+   * Deletes a range of lines from the current line to X lines from the current
+   * line, inclusive.
+   *
+   * @param delta can be positive or negative.
+   */
+  private void deleteAdjacentLines(int delta) {
+    int y = cursor.getY();
+    int upToLine = clampY(y + delta);
+    startPatch();
+    List<String> removedLines = file.removeLineRange(y, upToLine);
+    register.setContents(new TextFragment(Visual.Mode.LINE, false, removedLines));
+    file.breakPatch();
+    // The cursor is placed on the line following the deleted lines, having
+    // the effect that deleting up moves the cursor up.
+    int moveBackToLine = clampY(Math.min(upToLine, y));
+    cursor.moveTo(moveBackToLine, 0);
+  }
+
+  private int clampY(int line) {
+    return Math.max(0, Math.min(file.getLineCount() - 1, line));
   }
 
   public void moveCursorToEndOfLine() {

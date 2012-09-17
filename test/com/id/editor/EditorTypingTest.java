@@ -929,11 +929,30 @@ public class EditorTypingTest extends EditorTestBase {
 
   @Test
   public void dj() {
+    setFileContents("abc", "def", "ghi", "jkl");
+    typeString("jdj");
+    assertFileContents("abc", "jkl");
+    assertCursorPosition(1, 0);
+  }
+
+  @Test
+  public void dk() {
+    setFileContents("abc", "def", "ghi", "jkl");
+    typeString("jjdk");
+    assertFileContents("abc", "jkl");
+    assertCursorPosition(1, 0);
     setFileContents("abc", "def", "ghi");
-    typeString("dj");
-    assertFileContents("ghi");
-    typeString("u");
-    assertFileContents("abc", "def", "ghi");
+  }
+
+  @Test
+  public void deleteBeyondLineLimits() {
+    setFileContents("abc", "def", "ghi", "jkl");
+    typeString("dk");
+    assertFileContents("def", "ghi", "jkl");
+    assertCursorPosition(0, 0);
+    typeString("Gdj");
+    assertFileContents("def", "ghi");
+    assertCursorPosition(1, 0);
   }
 
   @Test

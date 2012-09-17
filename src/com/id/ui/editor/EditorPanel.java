@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 
 import com.id.editor.Editor;
 import com.id.editor.Point;
@@ -87,29 +88,14 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
    * coordinates) is centered in the screen.
    */
   private void scrollToCenterPointInside(Component component, int y) {
-    Container parent = component.getParent();
-    int yOffset = component.getBounds().y;
-    while (true) {
-      if (parent == null) {
-        return;
-      }
-      if (parent instanceof JViewport) {
-        JViewport viewport = (JViewport) parent;
-        int viewHeight = viewport.getVisibleRect().height;
-        int scrollY = (yOffset + y) - viewHeight / 2;
-        scrollY = Math.max(0, scrollY);
-        viewport.setViewPosition(new java.awt.Point(0, scrollY));
-        return;
-      } else {
-        Container grandParent = parent.getParent();
-        if (grandParent instanceof JViewport) {
-          parent = grandParent;
-          continue;
-        }
-        yOffset += parent.getBounds().y;
-      }
-      parent = parent.getParent();
-    }
+    JViewport vp = getViewport(component);
+    // Translate the point (0, y) into the scrolled panel's coordinates (instead
+    // of being relative to its direct container's coordinates).
+    int offsetY = SwingUtilities.convertPoint(component,
+        new java.awt.Point(0, y), vp.getView()).y;
+    int scrollY = offsetY - vp.getExtentSize().height / 2;
+    scrollY = Math.max(0, scrollY);
+    vp.setViewPosition(new java.awt.Point(0, scrollY));
   }
 
   @Override

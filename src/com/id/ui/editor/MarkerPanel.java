@@ -20,6 +20,9 @@ public class MarkerPanel extends LinewisePanel {
   @Override
   public void paint(Graphics g) {
     super.paint(g);
+    if (editor.isInExpandoDiffMode()) {
+      return;
+    }
     App.configureFont(g);
     int fontHeightPx = getFontHeightPx();
     int fontWidthPx = getFontWidthPx();

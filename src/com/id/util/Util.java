@@ -14,6 +14,7 @@ public class Util {
   public static boolean isFile(String filename) {
     return new File(filename).isFile();
   }
+
   public static List<String> readFile(String filename) {
     try {
       BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));

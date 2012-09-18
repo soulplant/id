@@ -93,7 +93,10 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
     // of being relative to its direct container's coordinates).
     int offsetY = SwingUtilities.convertPoint(component,
         new java.awt.Point(0, y), viewport.getView()).y;
-    int scrollY = offsetY - viewport.getExtentSize().height / 2;
+    int viewportHeight = viewport.getExtentSize().height;
+    int viewHeight = viewport.getView().getHeight();
+    int scrollY = offsetY - viewportHeight / 2;
+    scrollY = Math.min(scrollY, viewHeight - viewportHeight);
     scrollY = Math.max(0, scrollY);
     viewport.setViewPosition(new java.awt.Point(0, scrollY));
   }

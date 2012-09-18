@@ -80,6 +80,10 @@ public class Grave {
     return new ArrayList<Tombstone>(tombstones);
   }
 
+  public Tombstone get(int i) {
+    return tombstones.get(i);
+  }
+
   public int size() {
     return tombstones.size();
   }

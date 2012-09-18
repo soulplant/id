@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import com.id.app.App;
 import com.id.editor.Editor;
 import com.id.editor.Point;
-import com.id.file.File;
 import com.id.ui.Constants;
 import com.id.ui.app.LinewisePanel;
 
@@ -17,20 +16,11 @@ public class TextPanel extends LinewisePanel {
 
   public TextPanel(Editor editor) {
     this.editor = editor;
-    editor.addFileListener(new File.Listener() {
+    editor.addListener(new Editor.Listener() {
       @Override
-      public void onLineInserted(int y, String line) {
+      public void onSizeChanged() {
         updateSize();
-      }
-
-      @Override
-      public void onLineRemoved(int y, String line) {
-        updateSize();
-      }
-
-      @Override
-      public void onLineChanged(int y, String oldLine, String newLine) {
-        repaint();
+        invalidate();
       }
     });
     updateSize();
@@ -38,8 +28,7 @@ public class TextPanel extends LinewisePanel {
 
   private void updateSize() {
     setPreferredSize(new Dimension(
-        getFontWidthPx(), getFontHeightPx() * editor.getLineCount()));
-    invalidate();
+        getFontWidthPx(), getFontHeightPx() * editor.getLineCountForMode()));
   }
 
   @Override
@@ -47,40 +36,66 @@ public class TextPanel extends LinewisePanel {
     super.paint(g);
     App.configureFont(g);
 
-    int heightLeft = g.getClipBounds().height;
+    int clipHeight = g.getClipBounds().height;
     int startY = g.getClipBounds().y / getFontHeightPx();
-    int linesToRender = (heightLeft + getFontHeightPx() - 1) / getFontHeightPx();
-    int maxLine = Math.min(linesToRender + startY, editor.getLineCount());
+    int linesToRender =
+        (clipHeight + getFontHeightPx() - 1) / getFontHeightPx();
+    int maxLine =
+        Math.min(linesToRender + startY, editor.getLineCountForMode());
+    Editor.Iterator it = editor.getIterator(startY);
 
-    for (int i = startY; i < maxLine; i++) {
-      // Draw background.
-      int y = i * getFontHeightPx();
-      RectFiller rectFiller = new RectFiller(g, 0, y,
-          getFontWidthPx(), getFontHeightPx());
-      String line = editor.getLine(i);
-      for (int j = 0; j < line.length(); j++) {
-        rectFiller.nextColor(getBgColor(i, j));
-      }
-      rectFiller.done();
+    for (int offset = 0; offset < maxLine && !it.done(); offset++, it.next()) {
+      int y = (startY + offset) * getFontHeightPx();
+      String line = it.getLine();
 
-      // Draw text.
-      g.setColor(Color.BLACK);
-      g.drawString(editor.getLine(i), 0,
-          y + getFontHeightPx() - getFontDescentPx());
+      if (!it.isInGrave()) {
+        // Draw expando-diff background.
+        if (editor.isInExpandoDiffMode()) {
+          Color color = null;
+          switch (editor.getStatus(it.getY())) {
+          case NEW:
+            color = Constants.MARKER_ADDED_COLOR;
+            break;
+          case MODIFIED:
+            color = Constants.MARKER_MODIFIED_COLOR;
+            break;
+          }
+          if (color != null) {
+            g.setColor(color);
+            g.fillRect(0, y, 80 * getFontWidthPx(), getFontHeightPx());
+          }
+        }
+        // Draw background.
+        RectFiller rectFiller = new RectFiller(g, 0, y,
+            getFontWidthPx(), getFontHeightPx());
+        for (int j = 0; j < line.length(); j++) {
+          rectFiller.nextColor(getBgColor(it.getY(), j));
+        }
+        rectFiller.done();
 
-      // Draw decorations.
-      if (hasTrailingWhitespace(line)) {
-        g.setColor(Constants.WHITESPACE_INDICATOR_COLOR);
-        g.fillRect(line.length() * getFontWidthPx(), y, 2, getFontHeightPx());
-      }
-      if (line.length() > 80) {
-        g.setColor(Constants.EIGHTY_CHAR_INDICATOR_COLOR);
-        g.fillRect(80 * getFontWidthPx(), y, 2, getFontHeightPx());
+        // Draw text.
+        g.setColor(Constants.TEXT_COLOR);
+        g.drawString(line, 0, y + getFontHeightPx() - getFontDescentPx());
+
+        // Draw decorations.
+        if (hasTrailingWhitespace(line)) {
+          g.setColor(Constants.WHITESPACE_INDICATOR_COLOR);
+          g.fillRect(line.length() * getFontWidthPx(), y, 2, getFontHeightPx());
+        }
+        if (line.length() > 80) {
+          g.setColor(Constants.EIGHTY_CHAR_INDICATOR_COLOR);
+          g.fillRect(80 * getFontWidthPx(), y, 2, getFontHeightPx());
+        }
+      } else {
+        g.setColor(Constants.MARKER_REMOVED_COLOR);
+        g.fillRect(0, y, getWidth() - 1, getFontHeightPx());
+        g.setColor(Constants.TEXT_COLOR);
+        g.drawString(it.getOriginal(), 0, y + getFontHeightPx() - getFontDescentPx());
       }
     }
 
     // Draw cursor.
-    Point point = editor.getCursorPosition();
+    Point point = it.getCursorPosition();
     int cursorYPx = point.getY() * getFontHeightPx();
     int cursorXPx = point.getX() * getFontWidthPx();
     int cursorWidthPx = editor.isInInsertMode() ? 2 : getFontWidthPx();
@@ -111,7 +126,7 @@ public class TextPanel extends LinewisePanel {
     if (editor.isInVisual(y, x)) {
       return Constants.VISUAL_COLOR;
     }
-    return Constants.BG_COLOR;
+    return null;
   }
 
   public int getTopLineVisible() {
@@ -127,7 +142,7 @@ public class TextPanel extends LinewisePanel {
     private final int startY;
     private final Graphics g;
 
-    private Color currentColor = Constants.BG_COLOR;
+    private Color currentColor = null;
     private int rectLengthDrawn = 0;
     private int currentRectLength = 0;
     private final int charWidthPx;

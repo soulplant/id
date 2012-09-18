@@ -399,6 +399,13 @@ public class EditorKeyHandler {
         editor.saveViewport();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("5"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.toggleExpandoDiffMode();
+      }
+    });
 
     visualTree.setShortcut(KeyStroke.fromString("y"),
         new ShortcutTree.Action() {

@@ -255,4 +255,28 @@ public class EditorTest extends EditorTestBase {
     fileView.removeLine(0);
     assertCursorPosition(0, 0);
   }
+
+  @Test
+  public void physicalLineIterator() {
+    setFileContents("abcd", "defg", "hijk");
+    typeString("jdd");
+    Editor.Iterator it = editor.getPhysicalLineIterator();
+    assertFalse(it.isInGrave());
+    assertEquals("abcd", it.getLine());
+    assertTrue(it.next());
+    assertTrue(it.isInGrave());
+    assertEquals("defg", it.getLine());
+    assertTrue(it.next());
+    assertFalse(it.isInGrave());
+    assertEquals("hijk", it.getLine());
+    assertFalse(it.next());
+  }
+
+  @Test
+  public void physicalLineIteratorFromPhysicalLine() {
+    setFileContents("abcd", "defg", "hijk");
+    typeString("jdd");
+    Editor.Iterator it = editor.getPhysicalLineIterator(2);
+    assertEquals("hijk", it.getLine());
+  }
 }

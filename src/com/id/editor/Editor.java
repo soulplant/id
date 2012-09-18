@@ -12,7 +12,6 @@ import com.id.events.EditorKeyHandler;
 import com.id.events.KeyStroke;
 import com.id.events.KeyStrokeHandler;
 import com.id.file.File;
-import com.id.file.File.Listener;
 import com.id.file.FileView;
 import com.id.file.Grave;
 import com.id.file.ModifiedListener;
@@ -24,6 +23,161 @@ import com.id.platform.FileSystem;
 public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.Listener, Focusable {
   private static final int TAB_SIZE = 2;
   private static final int DELTA_PADDING = 2;
+
+  public interface Listener {
+    void onSizeChanged();
+  }
+
+  public interface Iterator {
+    int getY();
+    boolean isInGrave();
+    String getLine();
+    String getOriginal();
+    boolean next();
+    boolean done();
+    int getLineCount();
+    Point getCursorPosition();
+  }
+
+  public class LogicalLineIterator implements Iterator {
+    private int y;
+
+    public LogicalLineIterator() {
+      this(0);
+    }
+
+    public LogicalLineIterator(int y) {
+      this.y = y;
+    }
+
+    @Override
+    public int getY() {
+      return y;
+    }
+
+    @Override
+    public boolean isInGrave() {
+      return false;
+    }
+
+    @Override
+    public String getLine() {
+      return Editor.this.getLine(y);
+    }
+
+    @Override
+    public String getOriginal() {
+      return getLine();
+    }
+
+    @Override
+    public boolean next() {
+      y++;
+      return !done();
+    }
+
+    @Override
+    public boolean done() {
+      return y >= getLineCount();
+    }
+
+    @Override
+    public int getLineCount() {
+      return Editor.this.getLineCount();
+    }
+
+    @Override
+    public Point getCursorPosition() {
+      return Editor.this.getCursorPosition();
+    }
+
+    @Override
+    public String toString() {
+      return "[" + y + "]";
+    }
+  }
+
+  /**
+   * The "physical" refers to things that appear on the screen, even though they
+   * are not logically there. Eg, the cursor will skip over them. Physical lines
+   * include lines in graves.
+   */
+  public class PhysicalLineIterator implements Iterator {
+    private int y = 0;
+    private int graveY = -1;
+
+    public PhysicalLineIterator() {
+    }
+
+    @Override
+    public int getLineCount() {
+      return getPhysicalLineCount();
+    }
+
+    @Override
+    public int getY() {
+      return y;
+    }
+
+    @Override
+    public boolean isInGrave() {
+      return graveY != -1;
+    }
+
+    @Override
+    public String getLine() {
+      if (!isInGrave()) {
+        return Editor.this.getLine(y);
+      } else {
+        return getGrave(y).get(graveY).getCurrent();
+      }
+    }
+
+    @Override
+    public String getOriginal() {
+      if (!isInGrave()) {
+        return Editor.this.getLine(y);
+      } else {
+        return getGrave(y).get(graveY).getOriginal();
+      }
+    }
+
+    @Override
+    public boolean next() {
+      if (done()) {
+        throw new IllegalStateException();
+      }
+      if (!isInGrave()) {
+        if (getGrave(y).isEmpty()) {
+          y++;
+        } else {
+          graveY = 0;
+        }
+      } else {
+        graveY++;
+        if (graveY >= getGrave(y).size()) {
+          graveY = -1;
+          y++;
+        }
+      }
+      return !done();
+    }
+
+    @Override
+    public boolean done() {
+      return y >= Editor.this.getLineCount();
+    }
+
+    @Override
+    public String toString() {
+      return getClass().getName() + "[" + y + ", " + graveY + "]";
+    }
+
+    @Override
+    public Point getCursorPosition() {
+      return Editor.this.getPhysicalCursorPosition();
+    }
+  }
 
   public interface EditorView {
     void moveViewportToIncludePoint(Point point);
@@ -124,6 +278,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   private final EditorEnvironment environment;
 
   private final EditorKeyHandler keyHandler;
+  private final List<Listener> listeners = new ArrayList<Listener>();
   private final List<File.Listener> fileListeners = new ArrayList<File.Listener>();
   private final List<ModifiedListener> fileModifiedListeners = new ArrayList<ModifiedListener>();
   private final HighlightState highlightState;
@@ -138,6 +293,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   private Point lastInsertPoint = null;
   private Point autocompleteStart = null;
   private boolean focused = false;
+  private boolean expandoDiff = false;
   private ViewportTracker viewportTracker = null;
 
   public Editor(FileView fileView, HighlightState highlightState,
@@ -156,7 +312,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     cursor.addListner(new Cursor.Listener() {
       @Override
       public void onMoved(int y, int x) {
-        view.moveViewportToIncludePoint(new Point(y, x));
+        view.moveViewportToIncludePoint(new Point(getPhysicalLine(y), x));
       }
 
       @Override
@@ -178,8 +334,81 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     return file.getLineCount();
   }
 
+  public Iterator getPhysicalLineIterator() {
+    return new PhysicalLineIterator();
+  }
+
+  public Iterator getPhysicalLineIterator(int physicalY) {
+    PhysicalLineIterator it = new PhysicalLineIterator();
+    for (int i = 0; i < physicalY; i++) {
+      it.next();
+    }
+    return it;
+  }
+
+  public Iterator getLogicalLineIterator() {
+    return new LogicalLineIterator();
+  }
+
+  public Iterator getLogicalLineIterator(int y) {
+    return new LogicalLineIterator(y);
+  }
+
+  public int getPhysicalLine(int logicalY) {
+    int result = 0;
+    for (int y = 0; y < logicalY; y++) {
+      result += getGrave(y).size();
+      result++;
+    }
+    return result;
+  }
+
+  public int getPhysicalLineCount() {
+    int result = 0;
+    for (int y = 0; y < getLineCount(); y++) {
+      result += getGrave(y).size();
+      result++;
+    }
+    return result;
+  }
+
+  public int getLineCountForMode() {
+    if (isInExpandoDiffMode()) {
+      return getPhysicalLineCount();
+    }
+    return getLineCount();
+  }
+
   public Point getCursorPosition() {
     return cursor.getPoint();
+  }
+
+  public Point getPhysicalCursorPosition() {
+    return new Point(getPhysicalLine(cursor.getY()), cursor.getX());
+  }
+
+  public Iterator getIterator(int physicalY) {
+    return expandoDiff ? getPhysicalLineIterator(physicalY) :
+                         getLogicalLineIterator(physicalY);
+  }
+
+  public void setExpandoDiff(boolean enabled) {
+    this.expandoDiff = enabled;
+    fireSizeChanged();
+  }
+
+  public boolean isInExpandoDiffMode() {
+    return expandoDiff;
+  }
+
+  public void toggleExpandoDiffMode() {
+    setExpandoDiff(!expandoDiff);
+  }
+
+  private void fireSizeChanged() {
+    for (Listener listener : listeners) {
+      listener.onSizeChanged();
+    }
   }
 
   public int getRealCursorY() {
@@ -576,14 +805,18 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     justInsertedAutoIndent = true;
   }
 
-  public void addFileListener(Listener listener) {
+  public void addFileListener(File.Listener listener) {
     fileListeners.add(listener);
     file.addListener(listener);
   }
 
-  private void removeFileListener(Listener listener) {
+  private void removeFileListener(File.Listener listener) {
     fileListeners.remove(listener);
     file.removeListener(listener);
+  }
+
+  public void addListener(Listener listener) {
+    listeners.add(listener);
   }
 
   public void addFileModifiedListener(ModifiedListener listener) {
@@ -1037,6 +1270,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     if (y <= cursor.getY()) {
       cursor.moveBy(1, 0);
     }
+    fireSizeChanged();
   }
 
   @Override
@@ -1044,6 +1278,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
     if (y <= cursor.getY()) {
       cursor.moveBy(-1, 0);
     }
+    fireSizeChanged();
   }
 
   @Override
@@ -1094,7 +1329,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   @Override
   public void setFocused(boolean selected) {
     this.focused = selected;
-    view.moveViewportToIncludePoint(cursor.getPoint());
+    view.moveViewportToIncludePoint(getPhysicalCursorPosition());
   }
 
   @Override

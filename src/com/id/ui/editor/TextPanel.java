@@ -59,6 +59,9 @@ public class TextPanel extends LinewisePanel {
           case MODIFIED:
             color = Constants.MARKER_MODIFIED_COLOR;
             break;
+          case NORMAL:
+            color = null;
+            break;
           }
           if (color != null) {
             g.setColor(color);
@@ -88,7 +91,7 @@ public class TextPanel extends LinewisePanel {
         }
       } else {
         g.setColor(Constants.MARKER_REMOVED_COLOR);
-        g.fillRect(0, y, getWidth() - 1, getFontHeightPx());
+        g.fillRect(0, y, 80 * getFontWidthPx(), getFontHeightPx());
         g.setColor(Constants.TEXT_COLOR);
         g.drawString(it.getOriginal(), 0, y + getFontHeightPx() - getFontDescentPx());
       }

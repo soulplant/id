@@ -20,6 +20,7 @@ import com.id.editor.EditorList;
 import com.id.editor.Minibuffer;
 import com.id.editor.Point;
 import com.id.editor.Register;
+import com.id.editor.SharedEditorSettings;
 import com.id.editor.StackList;
 import com.id.events.KeyStroke;
 import com.id.file.File;
@@ -51,6 +52,7 @@ public class ControllerTest {
   private Register register;
   private EditorFactory editorFactory;
   private EditorOpener editorOpener;
+  private SharedEditorSettings editorSettings;
 
   @Before
   public void setup() {
@@ -66,15 +68,19 @@ public class ControllerTest {
     focusManager = new FocusManager(editorList, stackList);
     viewportTracker = new ViewportTracker(focusManager);
     register = new Register();
-    editorFactory = new EditorFactory(highlightState, register, viewportTracker);
+    editorSettings = new SharedEditorSettings();
+    editorFactory = new EditorFactory(highlightState, register, viewportTracker,
+        editorSettings);
     FuzzyFinderDriver fileFinderDriver = new FuzzyFinderDriver(files);
     Finder finder = new Finder(files);
-    editorOpener = new EditorOpener(editorFactory, focusManager, editorList, stackList, fileSystem, finder);
+    editorOpener = new EditorOpener(editorFactory, focusManager, editorList,
+        stackList, fileSystem, finder);
     commandExecutor = new CommandExecutor(editorOpener, focusManager);
-    minibufferSubsystem = new MinibufferSubsystem(minibuffer, commandExecutor, focusManager);
+    minibufferSubsystem = new MinibufferSubsystem(minibuffer, commandExecutor,
+        focusManager);
     controller = new Controller(editorList, fileSystem, fuzzyFinder, repo,
         highlightState, stackList, minibufferSubsystem, commandExecutor, null,
-        fileFinderDriver, focusManager, editorOpener);
+        fileFinderDriver, focusManager, editorOpener, editorSettings);
 
     fileSystem.insertFile("a", "aaa");
     fileSystem.insertFile("b", "bbb");
@@ -486,6 +492,12 @@ public class ControllerTest {
     typeString(":e a<CR>");
     typeString("V;]V;");
     assertEquals(2, stackList.size());
+  }
+
+  @Test
+  public void expandoDiffMode() {
+    typeString(":e a<CR>5");
+    assertTrue(editorList.getFocusedItem().isInExpandoDiffMode());
   }
 
   @Test

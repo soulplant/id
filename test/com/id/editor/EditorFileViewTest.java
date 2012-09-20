@@ -67,6 +67,6 @@ public class EditorFileViewTest {
     file = new File(lines);
     fileView = new FileView(file, start, end);
     editor = new Editor(fileView, new HighlightState(), new Register(),
-        new Editor.EmptyEditorEnvironment());
+        new Editor.EmptyEditorEnvironment(), new SharedEditorSettings());
   }
 }

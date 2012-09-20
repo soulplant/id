@@ -6,6 +6,7 @@ import java.util.List;
 import com.id.editor.Editor;
 import com.id.editor.EditorList;
 import com.id.editor.Patterns;
+import com.id.editor.SharedEditorSettings;
 import com.id.editor.Stack;
 import com.id.editor.StackList;
 import com.id.events.KeyStroke;
@@ -35,13 +36,14 @@ public class Controller implements KeyStrokeHandler {
   private final FinderDriver fileFinderDriver;
   private final FocusManager focusManager;
   private final EditorOpener editorOpener;
+  private final SharedEditorSettings editorSettings;
 
   public Controller(EditorList editorList, FileSystem fileSystem,
       Finder fuzzyFinder, Repository repository, HighlightState highlightState,
       final StackList stackList, final MinibufferSubsystem minibufferSubsystem,
       CommandExecutor commandExecutor, FinderDriver autocompleteDriver,
       FinderDriver fileFinderDriver, FocusManager focusManager,
-      EditorOpener editorOpener) {
+      EditorOpener editorOpener, SharedEditorSettings editorSettings) {
     this.editorList = editorList;
     this.fileSystem = fileSystem;
     this.finder = fuzzyFinder;
@@ -53,6 +55,7 @@ public class Controller implements KeyStrokeHandler {
     this.fileFinderDriver = fileFinderDriver;
     this.focusManager = focusManager;
     this.editorOpener = editorOpener;
+    this.editorSettings = editorSettings;
 
     shortcuts.setShortcut(KeyStroke.fromString("H"), new ShortcutTree.Action() {
       @Override
@@ -120,6 +123,13 @@ public class Controller implements KeyStrokeHandler {
         selectPreviousHighlight();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("5"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        toggleExpandoDiffMode();
+      }
+    });
     shortcuts.setShortcut(KeyStroke.fromString("<C-6>"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -173,6 +183,10 @@ public class Controller implements KeyStrokeHandler {
     if (stackList.isEmpty()) {
       focusEditors();
     }
+  }
+
+  private void toggleExpandoDiffMode() {
+    editorSettings.setExpandoDiffMode(!editorSettings.isInExpandoDiffMode());
   }
 
   private void openDeltasAsSnippetsFromEditor(Editor editor) {

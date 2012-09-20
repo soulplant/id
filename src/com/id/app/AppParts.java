@@ -7,6 +7,7 @@ import com.id.editor.EditorList;
 import com.id.editor.Hideable;
 import com.id.editor.Minibuffer;
 import com.id.editor.Register;
+import com.id.editor.SharedEditorSettings;
 import com.id.editor.Stack;
 import com.id.editor.StackList;
 import com.id.file.File;
@@ -50,7 +51,9 @@ public class AppParts {
     ViewportTracker viewportTracker = new ViewportTracker(focusManager);
 
     Register register = new Register();
-    EditorFactory editorFactory = new EditorFactory(highlightState, register, viewportTracker);
+    SharedEditorSettings editorSettings = new SharedEditorSettings();
+    EditorFactory editorFactory = new EditorFactory(highlightState, register,
+        viewportTracker, editorSettings);
     editorOpener = new EditorOpener(editorFactory, focusManager,
         editorList, stackList, fileSystem, finder);
 
@@ -59,7 +62,8 @@ public class AppParts {
         minibuffer, commandExecutor, focusManager);
     controller = new Controller(editorList, fileSystem,
         finder, repository, highlightState, stackList, minibufferSubsystem,
-        commandExecutor, null, new FuzzyFinderDriver(files), focusManager, editorOpener);
+        commandExecutor, null, new FuzzyFinderDriver(files), focusManager,
+        editorOpener, editorSettings);
   }
 
   private static class EditorViewFactory implements ViewFactory<Editor, EditorPanel> {

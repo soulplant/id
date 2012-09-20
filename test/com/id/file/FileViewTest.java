@@ -13,6 +13,7 @@ import com.id.app.HighlightState;
 import com.id.editor.Editor;
 import com.id.editor.Point;
 import com.id.editor.Register;
+import com.id.editor.SharedEditorSettings;
 import com.id.events.EditorKeyHandler;
 import com.id.file.File.Listener;
 import com.id.test.EditorTestBase;
@@ -238,7 +239,7 @@ public class FileViewTest extends EditorTestBase {
     file = new File(lines);
     fileView = new FileView(file, start, end);
     editor = new Editor(fileView, new HighlightState(), new Register(),
-        new Editor.EmptyEditorEnvironment());
+        new Editor.EmptyEditorEnvironment(), new SharedEditorSettings());
     listener = mock(File.Listener.class);
     handler = new EditorKeyHandler();
   }

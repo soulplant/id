@@ -1092,12 +1092,4 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("v$<ESC>");
     assertCursorPosition(0, 0);
   }
-
-  @Test
-  public void toggleExpandoDiffMode() {
-    setFileContents("a");
-    assertFalse(editor.isInExpandoDiffMode());
-    typeString("5");
-    assertTrue(editor.isInExpandoDiffMode());
-  }
 }

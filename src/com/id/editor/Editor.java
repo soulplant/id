@@ -20,7 +20,8 @@ import com.id.file.Tombstone.Status;
 import com.id.git.FileDelta;
 import com.id.platform.FileSystem;
 
-public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.Listener, Focusable {
+public class Editor implements KeyStrokeHandler, HighlightState.Listener,
+    File.Listener, Focusable, SharedEditorSettings.Listener {
   private static final int TAB_SIZE = 2;
   private static final int DELTA_PADDING = 2;
 
@@ -283,6 +284,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   private final List<ModifiedListener> fileModifiedListeners = new ArrayList<ModifiedListener>();
   private final HighlightState highlightState;
   private final Register register;
+  private final SharedEditorSettings settings;
 
   private FindMode findMode = FindMode.NONE;
   private char lastFindLetter = 0;
@@ -297,11 +299,13 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   private ViewportTracker viewportTracker = null;
 
   public Editor(FileView fileView, HighlightState highlightState,
-      Register register, EditorEnvironment editorEnvironment) {
+      Register register, EditorEnvironment editorEnvironment,
+      SharedEditorSettings settings) {
     this.file = fileView;
     this.highlightState = highlightState;
     this.register = register;
     this.environment = editorEnvironment;
+    this.settings = settings;
     this.cursor = new Cursor();
     cursor.setEditor(this);
     this.visual = new Visual(this.cursor);
@@ -324,6 +328,15 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
       }
     });
     keyHandler = new EditorKeyHandler();
+    settings.addListener(this);
+
+    // Conform to the editor settings.
+    onSettingsChanged();
+  }
+
+  @Override
+  public void onSettingsChanged() {
+    setExpandoDiff(settings.isInExpandoDiffMode());
   }
 
   public String getLine(int y) {
@@ -393,7 +406,10 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener, File.L
   }
 
   public void setExpandoDiff(boolean enabled) {
-    this.expandoDiff = enabled;
+    if (expandoDiff == enabled) {
+      return;
+    }
+    expandoDiff = enabled;
     fireSizeChanged();
   }
 

@@ -17,7 +17,7 @@ public class StackView extends JPanel implements ViewContainer<Editor, EditorPan
   private final VerticalListView<Editor, EditorPanel> panel;
 
   public StackView() {
-    panel = new VerticalListView<Editor, EditorPanel>();
+    panel = new VerticalListView<Editor, EditorPanel>(2000);
     JScrollPane scrollPane = new JScrollPane(panel);
 
     setLayout(new BorderLayout());

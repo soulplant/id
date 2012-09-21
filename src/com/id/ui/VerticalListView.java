@@ -10,8 +10,8 @@ import com.id.app.ListModel;
 public class VerticalListView<M, V extends JPanel> extends JPanel implements ViewContainer<M, V> {
   private final static int SNIPPET_PADDING_PX = 12;
 
-  public VerticalListView() {
-    setLayout(new VerticalListLayout(SNIPPET_PADDING_PX));
+  public VerticalListView(int bottomPadding) {
+    setLayout(new VerticalListLayout(SNIPPET_PADDING_PX, bottomPadding));
     setBackground(Constants.BG_COLOR);
   }
 

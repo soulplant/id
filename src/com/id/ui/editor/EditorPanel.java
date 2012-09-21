@@ -3,6 +3,7 @@ package com.id.ui.editor;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 
 import javax.swing.JPanel;
@@ -12,6 +13,7 @@ import javax.swing.SwingUtilities;
 
 import com.id.editor.Editor;
 import com.id.editor.Point;
+import com.id.ui.Constants;
 
 @SuppressWarnings("serial")
 public class EditorPanel extends JPanel implements Editor.EditorView {
@@ -28,6 +30,12 @@ public class EditorPanel extends JPanel implements Editor.EditorView {
     panel.add(new MarkerPanel(editor), BorderLayout.LINE_START);
     panel.add(textPanel, BorderLayout.CENTER);
     if (selfScrolling) {
+      // Add padding at the bottom so we can scroll beyond the end of the
+      // text.
+      JPanel bottomPadding = new JPanel();
+      bottomPadding.setBackground(Constants.BG_COLOR);
+      bottomPadding.setPreferredSize(new Dimension(0, 2000));
+      panel.add(bottomPadding, BorderLayout.PAGE_END);
       JScrollPane scrollPane = new JScrollPane(panel);
       scrollPane.setBorder(null);
       scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);

@@ -10,7 +10,7 @@ import com.id.ui.VerticalListLayout;
 @SuppressWarnings("serial")
 public class VerticalPanel extends JPanel {
   public VerticalPanel(int verticalPaddingPx) {
-    setLayout(new VerticalListLayout(verticalPaddingPx));
+    setLayout(new VerticalListLayout(verticalPaddingPx, 0));
     setBackground(Constants.BG_COLOR);
   }
 

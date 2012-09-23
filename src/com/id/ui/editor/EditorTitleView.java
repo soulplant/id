@@ -40,12 +40,7 @@ public class EditorTitleView extends LinewisePanel {
   }
 
   private String getTitle() {
-    String prefix = "";
-    if (editor.isDogEared()) {
-      prefix = editor.isModified() ? "o" : ".";
-    } else {
-      prefix = editor.isModified() ? "*" : "";
-    }
+    String prefix = editor.isModified() ? "*" : "";
     return prefix + " " + editor.getFilename();
   }
 }

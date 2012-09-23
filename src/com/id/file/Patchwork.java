@@ -12,7 +12,6 @@ public class Patchwork implements File.Listener {
   private Patch currentPatch = null;
   private int savedAtDepth = 0;
   private ModifiedListener listener;
-  private final Set<Integer> dogEars = new HashSet<Integer>();
 
   public Patchwork() {}
 
@@ -47,26 +46,12 @@ public class Patchwork implements File.Listener {
   }
 
   private void clearFuturePatches() {
-    removeDogEarsBeyondCurrent();
     if (pastPatches.size() < savedAtDepth) {
       // We've lost the point we came from (modified the file from a point
       // earlier than when it was last saved at).
       savedAtDepth = -1;
     }
     futurePatches.clear();
-  }
-
-  private void removeDogEarsBeyondCurrent() {
-    int currentPatchDepth = pastPatches.size();
-    Set<Integer> toRemove = new HashSet<Integer>();
-    for (int i : dogEars) {
-      if (i > currentPatchDepth) {
-        toRemove.add(i);
-      }
-    }
-    for (int i : toRemove) {
-      dogEars.remove(i);
-    }
   }
 
   public boolean inPatch() {
@@ -78,19 +63,6 @@ public class Patchwork implements File.Listener {
     stateChanged();
   }
 
-  public void dogEar() {
-    dogEars.add(pastPatches.size());
-    stateChanged();
-  }
-
-  public void clearDogEar() {
-    dogEars.remove(pastPatches.size());
-    stateChanged();
-  }
-
-  public boolean isDogEared() {
-    return !isInMiddleOfPatch() && dogEars.contains(pastPatches.size());
-  }
 
   public boolean isModified() {
     return isInMiddleOfPatch() || !isAtSavedDepth();

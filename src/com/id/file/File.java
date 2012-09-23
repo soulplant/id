@@ -145,10 +145,6 @@ public class File {
     return patchwork.isModified();
   }
 
-  public boolean isDogEared() {
-    return patchwork.isDogEared();
-  }
-
   public Point undo() {
     return patchwork.undo(this);
   }
@@ -255,12 +251,6 @@ public class File {
       patchwork.onSaved();
       if (saveAction != null) {
         saveAction.onSave(this);
-      }
-    } else {
-      if (patchwork.isDogEared()) {
-        patchwork.clearDogEar();
-      } else {
-        patchwork.dogEar();
       }
     }
   }

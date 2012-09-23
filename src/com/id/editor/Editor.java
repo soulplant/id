@@ -1025,10 +1025,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
     return file.isModified();
   }
 
-  public boolean isDogEared() {
-    return file.isDogEared();
-  }
-
   public boolean isMarkersClear() {
     return file.isMarkersClear();
   }

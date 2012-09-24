@@ -122,6 +122,11 @@ public class FileView implements File.Listener, ModifiedListener {
     return removeText(y, x, getLine(y).length());
   }
 
+  /**
+   * Removes text on line 'y' from 'x' onwards inclusive for 'length' characters
+   * long. If the span of characters to be deleted exceeds the line ending, then
+   * it will delete up to the end of the line.
+   */
   public String removeText(int y, int x, int length) {
     String line = getLine(y);
     if (x >= line.length()) {
@@ -160,6 +165,13 @@ public class FileView implements File.Listener, ModifiedListener {
         joinWith(startLine, "");
       }
     }
+  }
+
+  public void removeTextExclusive(Point start, Point end) {
+    // NOTE: It is ok to provide points that are one off the line bounds
+    Point nextToStart = start.offset(0, 1);
+    Point previousToEnd = end.offset(0, -1);
+    removeText(nextToStart, previousToEnd);
   }
 
   public boolean isEmpty() {
@@ -564,27 +576,40 @@ public class FileView implements File.Listener, ModifiedListener {
   }
 
   public Point findNext(int y, int x, char push, char pop) {
-    return findChar(new ForwardFileCharIterator(y, x), push, pop);
+    return findChar(new ForwardFileCharIterator(y, x), push, pop, 0);
   }
 
-  public Point findChar(FileCharIterator it, char push, char pop) {
-    int depth = 0;
+  public Point findNext(int y, int x, char push, char pop, int initialDepth) {
+    return findChar(new ForwardFileCharIterator(y, x), push, pop, initialDepth);
+  }
+
+  public Point findPrevious(int y, int x, char push, char pop) {
+    return findChar(new ReverseFileCharIterator(y, x), push, pop, 0);
+  }
+
+  public Point findPrevious(int y, int x, char push, char pop, int initialDepth) {
+    return findChar(new ReverseFileCharIterator(y, x), push, pop, initialDepth);
+  }
+
+  public Point findChar(FileCharIterator it, char push, char pop, int initialDepth) {
+    int depth = initialDepth;
     while (it.hasNext()) {
       char c = it.next();
-      if (c == push) {
-        depth++;
-      } else if (c == pop) {
+      // Check for pop first because if push and pop are equal, they both
+      // represent pop.
+      if (c == pop) {
         depth--;
         if (depth == 0) {
           return it.getPoint();
         }
+        if (depth < 0) {
+          throw new IllegalStateException("Negative depth");
+        }
+      } else if (c == push) {
+        depth++;
       }
     }
     return null;
-  }
-
-  public Point findPrevious(int y, int x, char push, char pop) {
-    return findChar(new ReverseFileCharIterator(y, x), push, pop);
   }
 
   public interface FileCharIterator {
@@ -687,7 +712,6 @@ public class FileView implements File.Listener, ModifiedListener {
       return -1;
     }
   }
-
 
   public FileView makeView(int startY, int endY) {
     return file.makeView(start + startY, start + endY);

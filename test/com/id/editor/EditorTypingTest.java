@@ -877,6 +877,101 @@ public class EditorTypingTest extends EditorTestBase {
   }
 
   @Test
+  public void ciParentheses() {
+    setFileContents("abc", "(def)", "ghi");
+    typeString("ci(");
+    assertFileContents("abc", "(def)", "ghi");
+    typeString("jlci(xyz");
+    assertFileContents("abc", "(xyz)", "ghi");
+  }
+
+  @Test
+  public void ciParenthesesDoubleOuter() {
+    setFileContents("((abc))");
+    typeString("ci(xyz");
+    assertFileContents("(xyz)");
+  }
+
+  @Test
+  public void ciParenthesesDoubleInner() {
+    setFileContents("((abc))");
+    typeString("lci(xyz");
+    assertFileContents("((xyz))");
+  }
+
+  @Test
+  public void ciParenthesesMultiline() {
+    setFileContents("abc(", "def", ")ghi");
+    typeString("jci(xyz");
+    assertFileContents("abc(xyz)ghi");
+  }
+
+  @Test
+  public void ciParenthesesPushPop() {
+    setFileContents("abc(", "d(e)f", ")ghi");
+    typeString("jci(xyz");
+    assertFileContents("abc(xyz)ghi");
+  }
+
+  @Test
+  public void ciParenthesesPushPopBothWays() {
+    setFileContents("abc(", "(d)e(f)", ")ghi");
+    typeString("jfeci(xyz");
+    assertFileContents("abc(xyz)ghi");
+  }
+
+  @Test
+  public void ciParenthesesUneven() {
+    setFileContents("abc(", "(d)e(f)", "ghi");
+    typeString("jfeci(");
+    assertFileContents("abc(", "(d)e(f)", "ghi");
+  }
+
+  @Test
+  public void ciSingleQuotes() {
+    setFileContents("abc", "'def'", "ghi");
+    typeString("ci'");
+    assertFileContents("abc", "'def'", "ghi");
+    typeString("jlci'xyz");
+    assertFileContents("abc", "'xyz'", "ghi");
+  }
+
+  @Test
+  public void ciSingleQuotesDoubleOuter() {
+    setFileContents("''abc''");
+    typeString("ci'xyz");
+    assertFileContents("'xyz'abc''");
+  }
+
+  @Test
+  public void ciSingleQuotesMatchForward() {
+    setFileContents("''abc''");
+    typeString("lci'xyz");
+    assertFileContents("''xyz''");
+  }
+
+  @Test
+  public void ciSingleQuotesMatchBackward() {
+    setFileContents("''abc''");
+    typeString("$ci'xyz");
+    assertFileContents("''abc'xyz'");
+  }
+
+  @Test
+  public void ciSingleQuotesMultiline() {
+    setFileContents("abc'", "def", "'ghi");
+    typeString("jci'xyz");
+    assertFileContents("abc'xyz'ghi");
+  }
+
+  @Test
+  public void ciSingleQuotesNoPushPop() {
+    setFileContents("abc'", "d'e'f", "'ghi");
+    typeString("jci'xyz");
+    assertFileContents("abc'xyz'e'f", "'ghi");
+  }
+
+  @Test
   public void wipeShouldWipeWholeFile() {
     setFileContents("a", "b");
     typeString("xjxW");

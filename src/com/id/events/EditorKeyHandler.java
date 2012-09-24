@@ -257,6 +257,66 @@ public class EditorKeyHandler {
         editor.changeWordUnderCursor();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("ci("), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeContentBetween('(', ')');
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("ci)"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeContentBetween('(', ')');
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("ci["), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeContentBetween('[', ']');
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("ci]"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeContentBetween('[', ']');
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("ci\\<"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeContentBetween('<', '>');
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("ci\\>"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeContentBetween('<', '>');
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("ci{"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeContentBetween('{', '}');
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("ci}"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeContentBetween('{', '}');
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("ci'"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeContentBetween('\'');
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("ci\""), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.changeContentBetween('"');
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("c$"), new ShortcutTree.Action() {
       @Override
       public void execute() {

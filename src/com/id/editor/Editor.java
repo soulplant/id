@@ -1166,6 +1166,89 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
     cursor.moveTo(cursor.getY(), startX);
   }
 
+  /**
+   * Removes the content between matching left and right bounding characters,
+   * exclusive of the characters, and inserts the cursor at the deleted content.
+   * Works also if the cursor is on one of the bounding characters.
+   *
+   * NOTE: Different behaviour to vim when the left or right bounding characters
+   * are the last or first character of the line, respectively. In vim, the
+   * lines won't be joined, whereas this method will join the lines.
+   *
+   * Example 1: <code>
+   * ab(c
+   * def)g
+   * </code>
+   *
+   * ci( performed on the c will join the lines in vim and also this editor.
+   *
+   * Example 2: <code>
+   * ab(
+   * def)g
+   * </code>
+   *
+   * ci( performed on the d won't join the lines in vim but will in this editor.
+   *
+   */
+  public void changeContentBetween(char left, char right) {
+    String line = getLine(cursor.getY());
+    char c = line.charAt(cursor.getX());
+    // If we're already on a bounding character then don't go past it.
+    int findPreviousInitialDepth = c == right ? 0 : 1;
+    int findNextInitialDepth = c == left ? 0 : 1;
+
+    Point leftBound = file.findPrevious(cursor.getY(), cursor.getX(), right, left,
+        findPreviousInitialDepth);
+    Point rightBound = file.findNext(cursor.getY(), cursor.getX(), left, right,
+        findNextInitialDepth);
+    if (leftBound == null || rightBound == null) {
+      return;
+    }
+    startPatch();
+    file.removeTextExclusive(leftBound, rightBound);
+    cursor.moveTo(leftBound);
+    append();
+  }
+
+  /**
+   * Same as changeContentBetween(char, char) except for the same left and right
+   * bounding character. Try to find the matching character forward first, then
+   * try backwards.
+   *
+   * NOTE: Different behaviour to vim (tested with quotes), which searches
+   * backwards first then forwards, and if there are an odd number of bounding
+   * characters on the line, then the last one won't match anything. Also, vim
+   * does not search across lines.
+   */
+  public void changeContentBetween(char bounding) {
+    String line = getLine(cursor.getY());
+    char c = line.charAt(cursor.getX());
+    Point leftBound;
+    Point rightBound;
+    if (c != bounding) {
+      // If we're not on a bounding character then simply search around.
+      leftBound = file.findPrevious(cursor.getY(), cursor.getX(), bounding, bounding, 1);
+      rightBound = file.findNext(cursor.getY(), cursor.getX(), bounding, bounding, 1);
+    } else {
+      // Otherwise try to find the matching character forward and if it fails,
+      // then try to find the matching character backwards.
+      leftBound = file.findPrevious(cursor.getY(), cursor.getX(), bounding, bounding, 1);
+      rightBound = file.findNext(cursor.getY(), cursor.getX(), bounding, bounding, 2);
+      if (rightBound == null) {
+        leftBound = file.findPrevious(cursor.getY(), cursor.getX(), bounding, bounding, 2);
+        rightBound = file.findNext(cursor.getY(), cursor.getX(), bounding, bounding, 1);
+      }
+    }
+
+    if (leftBound == null || rightBound == null) {
+      return;
+    }
+    startPatch();
+    file.removeTextExclusive(leftBound, rightBound);
+    cursor.moveTo(leftBound);
+    append();
+  }
+
   public void deleteWord() {
     int x = file.findNextWordBreak(cursor.getY(), cursor.getX());
     if (x == -1) {

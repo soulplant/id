@@ -1,7 +1,5 @@
 package com.id.file;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Stack;
 
 import com.id.editor.Point;

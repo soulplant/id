@@ -1,7 +1,5 @@
 package com.id.ui.app;
 
-import java.awt.Dimension;
-
 import javax.swing.JPanel;
 
 import com.id.ui.Constants;

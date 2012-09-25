@@ -260,7 +260,8 @@ public class EditorTest extends EditorTestBase {
   public void physicalLineIterator() {
     setFileContents("abcd", "defg", "hijk");
     typeString("jdd");
-    Editor.Iterator it = editor.getPhysicalLineIterator();
+    editor.setExpandoDiff(true);
+    Editor.Iterator it = editor.getIterator(0);
     assertFalse(it.isInGrave());
     assertEquals("abcd", it.getLine());
     assertTrue(it.next());
@@ -276,7 +277,8 @@ public class EditorTest extends EditorTestBase {
   public void physicalLineIteratorFromPhysicalLine() {
     setFileContents("abcd", "defg", "hijk");
     typeString("jdd");
-    Editor.Iterator it = editor.getPhysicalLineIterator(2);
+    editor.setExpandoDiff(true);
+    Editor.Iterator it = editor.getIterator(2);
     assertEquals("hijk", it.getLine());
   }
 }

@@ -90,6 +90,10 @@ public class TextPanel extends LinewisePanel {
           g.fillRect(80 * getFontWidthPx(), y, 2, getFontHeightPx());
         }
       } else {
+        if (!editor.isInExpandoDiffMode()) {
+          throw new IllegalStateException(
+              "We only draw deleted lines in expando-diff mode.");
+        }
         g.setColor(Constants.MARKER_REMOVED_COLOR);
         g.fillRect(0, y, 80 * getFontWidthPx(), getFontHeightPx());
         g.setColor(Constants.TEXT_COLOR);

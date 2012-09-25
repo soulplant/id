@@ -347,11 +347,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
     return file.getLineCount();
   }
 
-  public Iterator getPhysicalLineIterator() {
-    return new PhysicalLineIterator();
-  }
-
-  public Iterator getPhysicalLineIterator(int physicalY) {
+  private Iterator getPhysicalLineIterator(int physicalY) {
     PhysicalLineIterator it = new PhysicalLineIterator();
     for (int i = 0; i < physicalY; i++) {
       it.next();
@@ -359,15 +355,11 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
     return it;
   }
 
-  public Iterator getLogicalLineIterator() {
-    return new LogicalLineIterator();
-  }
-
-  public Iterator getLogicalLineIterator(int y) {
+  private Iterator getLogicalLineIterator(int y) {
     return new LogicalLineIterator(y);
   }
 
-  public int getPhysicalLine(int logicalY) {
+  private int getPhysicalLine(int logicalY) {
     int result = 0;
     for (int y = 0; y < logicalY; y++) {
       result += getGrave(y).size();
@@ -376,7 +368,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
     return result;
   }
 
-  public int getPhysicalLineCount() {
+  private int getPhysicalLineCount() {
     int result = 0;
     for (int y = 0; y < getLineCount(); y++) {
       result += getGrave(y).size();

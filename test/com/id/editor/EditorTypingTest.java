@@ -1187,4 +1187,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("v$<ESC>");
     assertCursorPosition(0, 0);
   }
+
+  @Test
+  public void percentAfterEOLInVisualShouldWork() {
+    setFileContents("a {", "  blah", "}");
+    typeString("v$%");
+    assertCursorPosition(2, 0);
+  }
 }

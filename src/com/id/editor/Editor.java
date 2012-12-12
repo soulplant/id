@@ -1256,7 +1256,12 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
   }
 
   public void findMatchingLetter() {
-    Point point = file.findMatchingLetter(cursor.getY(), cursor.getX());
+    int x = cursor.getX();
+    // In visual mode it's possible to be past the end of the line, so adjust.
+    if (isInVisual()) {
+      x = Math.min(x, getCurrentLineLength() - 1);
+    }
+    Point point = file.findMatchingLetter(cursor.getY(), x);
     if (point == null) {
       return;
     }

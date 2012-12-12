@@ -76,7 +76,7 @@ public class Search implements KeyStrokeHandler, Minibuffer.Listener {
   }
 
   @Override
-  public void onDone() {
+  public void onTextEntered() {
     listener.onSearchCompleted();
   }
 

@@ -26,7 +26,7 @@ public class MinibufferSubsystem implements Minibuffer.Listener, KeyStrokeHandle
 
   // Minibuffer.Listener.
   @Override
-  public void onDone() {
+  public void onTextEntered() {
     executeMinibufferCommand();
   }
 

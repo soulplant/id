@@ -13,7 +13,7 @@ import com.id.file.FileView;
 
 public class Minibuffer implements KeyStrokeHandler, File.Listener {
   public interface Listener {
-    void onDone();
+    void onTextEntered();
     void onTextChanged();
     void onQuit();
   }
@@ -46,7 +46,7 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
   }
 
   private void enter() {
-    fireDone();
+    fireTextEntered();
   }
 
   private void escape() {
@@ -90,9 +90,9 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
     }
   }
 
-  private void fireDone() {
+  private void fireTextEntered() {
     for (Listener listener : listeners) {
-      listener.onDone();
+      listener.onTextEntered();
     }
   }
 

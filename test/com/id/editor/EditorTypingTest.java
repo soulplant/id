@@ -1202,4 +1202,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("$x");
     assertCursorPosition(0, 1);
   }
+
+  @Test
+  public void backspaceInNormalModeDoesNothing() {
+    setFileContents("abc");
+    typeString("$<BS>");
+    assertFileContents("abc");
+  }
 }

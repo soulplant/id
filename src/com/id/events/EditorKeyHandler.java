@@ -155,12 +155,6 @@ public class EditorKeyHandler {
         editor.moveCursorToStartOfLine();
       }
     });
-    normalTree.setShortcut(Arrays.asList(KeyStroke.backspace()), new ShortcutTree.Action() {
-      @Override
-      public void execute() {
-        editor.backspace();
-      }
-    });
     normalTree.setShortcut(KeyStroke.fromString("\\\\"), new ShortcutTree.Action() {
       @Override
       public void execute() {
@@ -530,9 +524,17 @@ public class EditorKeyHandler {
         editor.outdent();
       }
     });
+    insertTree.setShortcut(KeyStroke.fromString("<BS>"),
+        new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        editor.backspace();
+      }
+    });
   }
 
   public boolean handleKeyPress(KeyStroke event, Editor editor) {
+    this.editor = editor;
     if (editor.isInInsertMode()) {
       if (insertTree.stepAndExecute(event)) {
         return true;
@@ -569,7 +571,6 @@ public class EditorKeyHandler {
       return true;
     }
 
-    this.editor = editor;
     if (editor.isInVisual() && visualTree.stepAndExecute(event)) {
       return true;
     }

@@ -31,7 +31,7 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
         new Editor.EmptyEditorEnvironment(), new SharedEditorSettings());
     editor.insert();
     editor.addFileListener(this);
-    shortcuts.setShortcut(Arrays.asList(KeyStroke.escape()), new ShortcutTree.Action() {
+    shortcuts.setShortcut(KeyStroke.fromString("<ESC>"), new ShortcutTree.Action() {
       @Override
       public void execute() {
         escape();

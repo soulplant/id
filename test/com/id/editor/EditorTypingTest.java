@@ -1194,4 +1194,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("v$%");
     assertCursorPosition(2, 0);
   }
+
+  @Test
+  public void xAtEOLPutsCursorInCorrectPosition() {
+    setFileContents("abc");
+    typeString("$x");
+    assertCursorPosition(0, 1);
+  }
 }

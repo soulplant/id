@@ -782,6 +782,7 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
     } else {
       register.setContents(new TextFragment(Visual.Mode.CHAR, false, "" + getCharUnderCursor()));
       file.removeText(cursor.getY(), cursor.getX(), 1);
+      cursor.applyCursorConstraints();
     }
     if (breakPatch) {
       file.breakPatch();

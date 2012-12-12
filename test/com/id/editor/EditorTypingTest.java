@@ -506,6 +506,7 @@ public class EditorTypingTest extends EditorTestBase {
   public void searchShouldModifyTheHighlight() {
     setFileContents("abc", "def", "def");
     typeString("/def<CR>");
+    assertTrue(editor.isHighlight(1, 0));
     assertTrue(editor.isHighlight(2, 0));
   }
 

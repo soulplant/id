@@ -1086,6 +1086,16 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
       public void onSearchCancelled() {
         exitSearch();
       }
+
+      @Override
+      public void onSearchSoftExited() {
+        exitSearch();
+      }
+
+      @Override
+      public void onRecenter() {
+        recenter();
+      }
     });
   }
 

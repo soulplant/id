@@ -60,7 +60,7 @@ public class KeyStroke {
   }
 
   private final char letter;
-  private final int modifiers;
+  public final int modifiers;
   private final int code;
 
   public KeyStroke(char letter, int code, int modifiers) {
@@ -124,7 +124,8 @@ public class KeyStroke {
   public boolean equals(Object obj) {
     if (obj instanceof KeyStroke) {
       KeyStroke other = (KeyStroke) obj;
-      return letter == other.letter && modifiers == other.modifiers && code == other.code;
+      return letter == other.letter && modifiers == other.modifiers &&
+          code == other.code;
     }
     return false;
   }
@@ -138,7 +139,7 @@ public class KeyStroke {
     return new KeyStroke(letter, code, modifiers | KeyEvent.SHIFT_MASK);
   }
 
-  private KeyStroke withControl() {
+  KeyStroke withControl() {
     return new KeyStroke(letter, code, modifiers | KeyEvent.CTRL_MASK);
   }
 

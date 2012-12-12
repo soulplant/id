@@ -184,7 +184,7 @@ public class Finder implements KeyStrokeHandler, Minibuffer.Listener {
   }
 
   @Override
-  public void onDone() {
+  public void onTextEntered(boolean controlPressed) {
     setVisible(false);
   }
 

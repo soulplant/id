@@ -13,7 +13,7 @@ import com.id.file.FileView;
 
 public class Minibuffer implements KeyStrokeHandler, File.Listener {
   public interface Listener {
-    void onTextEntered();
+    void onTextEntered(boolean controlPressed);
     void onTextChanged();
     void onQuit();
   }
@@ -37,16 +37,22 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
         escape();
       }
     });
-    shortcuts.setShortcut(Arrays.asList(KeyStroke.enter()), new ShortcutTree.Action() {
+    shortcuts.setShortcut(KeyStroke.fromString("<CR>"), new ShortcutTree.Action() {
       @Override
       public void execute() {
-        enter();
+        enter(false);
+      }
+    });
+    shortcuts.setShortcut(KeyStroke.fromString("<C-CR>"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        enter(true);
       }
     });
   }
 
-  private void enter() {
-    fireTextEntered();
+  private void enter(boolean controlPressed) {
+    fireTextEntered(controlPressed);
   }
 
   private void escape() {
@@ -90,9 +96,9 @@ public class Minibuffer implements KeyStrokeHandler, File.Listener {
     }
   }
 
-  private void fireTextEntered() {
+  private void fireTextEntered(boolean controlPressed) {
     for (Listener listener : listeners) {
-      listener.onTextEntered();
+      listener.onTextEntered(controlPressed);
     }
   }
 

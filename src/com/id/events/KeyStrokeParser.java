@@ -68,11 +68,31 @@ public class KeyStrokeParser {
     this.endIndex = endIndex;
   }
 
+  private KeyStroke modify(KeyStroke keyStroke, boolean control,
+                           boolean shift) {
+    if (control) {
+      keyStroke = keyStroke.withControl();
+    }
+    if (shift) {
+      keyStroke = keyStroke.withShift();
+    }
+    return keyStroke;
+  }
+
   private KeyStroke parseAngledBracketsText(String innerText) {
-    if (innerText.startsWith("C-")) {
-      return KeyStroke.fromControlChar(innerText.charAt(2));
-    } else if (innerText.startsWith("S-")) {
-      return parseAngledBracketsText(innerText.substring(2)).withShift();
+    boolean control = innerText.startsWith("C-");
+    boolean shift = innerText.startsWith("S-");
+    if (control || shift) {
+      String modifiedKeyStrokes = innerText.substring(2);
+      KeyStroke modified = parseAngledBracketsText(modifiedKeyStrokes);
+      if (modified != null) {
+        return modify(modified, control, shift);
+      }
+      List<KeyStroke> keys = KeyStroke.fromString(modifiedKeyStrokes);
+      if (keys.size() != 1) {
+        throw new IllegalStateException();
+      }
+      return modify(keys.get(0), control, shift);
     } else if (innerText.equals("ESC")) {
       return KeyStroke.escape();
     } else if (innerText.equals("CR")) {

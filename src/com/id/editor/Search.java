@@ -12,6 +12,8 @@ public class Search implements KeyStrokeHandler, Minibuffer.Listener {
     void onSearchCompleted();
     void onMoveTo(int y, int x);
     void onSearchCancelled();
+    void onSearchSoftExited();
+    void onRecenter();
   }
 
   private final Minibuffer minibuffer;
@@ -42,6 +44,16 @@ public class Search implements KeyStrokeHandler, Minibuffer.Listener {
         down();
       }
     });
+    shortcuts.setShortcut(KeyStroke.fromString("<LEFT>"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
+        left();
+      }
+    });
+  }
+
+  private void left() {
+    listener.onRecenter();
   }
 
   public void down() {
@@ -76,8 +88,12 @@ public class Search implements KeyStrokeHandler, Minibuffer.Listener {
   }
 
   @Override
-  public void onTextEntered() {
-    listener.onSearchCompleted();
+  public void onTextEntered(boolean controlPressed) {
+    if (controlPressed) {
+      listener.onSearchSoftExited();
+    } else {
+      listener.onSearchCompleted();
+    }
   }
 
   @Override

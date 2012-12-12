@@ -21,14 +21,14 @@ public class KeyStrokeTest {
   public void capitalC() {
     KeyStroke event = KeyStroke.fromChar('C');
     assertTrue(event.isShiftDown());
-    assertEquals(KeyEvent.VK_C, event.getKeyCode());
+    assertEquals('C', event.getKeyChar());
   }
 
   @Test
   public void lowercaseL() {
     KeyStroke event = KeyStroke.fromChar('l');
     assertFalse(event.isShiftDown());
-    assertEquals(KeyEvent.VK_L, event.getKeyCode());
+    assertEquals('l', event.getKeyChar());
   }
 
   @Test
@@ -36,5 +36,13 @@ public class KeyStrokeTest {
     KeyStroke event = KeyStroke.fromChar('l');
     KeyStroke event2 = KeyStroke.fromChar('m');
     assertNotSame(event.hashCode(), event2.hashCode());
+  }
+
+  @Test
+  public void controlCRDoesntEqualCR() {
+    KeyStroke ccr = KeyStroke.fromString("<C-CR>").get(0);
+    KeyStroke cr = KeyStroke.fromString("<CR>").get(0);
+
+    assertNotSame(ccr, cr);
   }
 }

@@ -48,6 +48,10 @@ public class EditorList extends ListModel<Editor> implements KeyStrokeHandler, P
     return -1;
   }
 
+  public Editor getFocusedEditor() {
+    return getFocusedItem();
+  }
+
   public void setFocusedEditor(Editor editor) {
     int index = getIndex(editor);
     if (index == -1) {

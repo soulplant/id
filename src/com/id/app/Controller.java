@@ -108,6 +108,12 @@ public class Controller implements KeyStrokeHandler {
     shortcuts.setShortcut(KeyStroke.fromString("@"), new ShortcutTree.Action() {
       @Override
       public void execute() {
+        openDeltasAsSnippetsForCurrentFile();
+      }
+    });
+    shortcuts.setShortcut(KeyStroke.fromString("#"), new ShortcutTree.Action() {
+      @Override
+      public void execute() {
         openDeltasAsSnippets();
       }
     });
@@ -173,6 +179,11 @@ public class Controller implements KeyStrokeHandler {
     for (Editor editor : editorList) {
       openDeltasAsSnippetsFromEditor(editor);
     }
+  }
+
+  private void openDeltasAsSnippetsForCurrentFile() {
+    Editor editor = editorList.getFocusedEditor();
+    openDeltasAsSnippetsFromEditor(editor);
   }
 
   private void closeCurrentStack() {

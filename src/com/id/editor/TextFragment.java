@@ -55,8 +55,4 @@ public class TextFragment {
   public String getLine(int y) {
     return lines.get(y);
   }
-
-  public Mode getMode() {
-    return mode;
-  }
 }

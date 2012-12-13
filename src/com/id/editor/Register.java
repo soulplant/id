@@ -16,8 +16,4 @@ public class Register {
   public boolean isEmpty() {
     return contents == null;
   }
-
-  public Mode getMode() {
-    return contents.getMode();
-  }
 }

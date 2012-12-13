@@ -299,31 +299,6 @@ public class EditorTypingTest extends EditorTestBase {
   }
 
   @Test
-  public void visualModePutReplacesCurrentLine() {
-    setFileContents("abc", "efg");
-    typeString("Vyj");
-    typeString("Vp");
-    assertFileContents("abc", "abc");
-    assertFalse(editor.isInVisual());
-  }
-
-  @Test
-  public void ddYankSingleLine() {
-    setFileContents("abc");
-    typeString("ddp");
-    assertFileContents("", "abc");
-    assertCursorPosition(1, 0);
-  }
-
-  @Test
-  public void cursorPositionAfterPut() {
-    setFileContents("abc", "cdf", "efg");
-    typeString("jjddp");
-    assertLineContents(2, "efg");
-    assertCursorPosition(2, 0);
-  }
-
-  @Test
   public void autoIndent() {
     setFileContents("  abc");
     typeString("o");
@@ -1207,6 +1182,13 @@ public class EditorTypingTest extends EditorTestBase {
   public void backspaceInNormalModeDoesNothing() {
     setFileContents("abc");
     typeString("$<BS>");
+    assertFileContents("abc");
+  }
+
+  @Test
+  public void pInVisualModeDoesNothing() {
+    setFileContents("abc");
+    typeString("vyvp");
     assertFileContents("abc");
   }
 }

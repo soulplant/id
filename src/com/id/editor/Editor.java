@@ -956,22 +956,12 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
   }
 
   public void put() {
-    if (register.isEmpty()) {
+    if (register.isEmpty() || isInVisual()) {
       return;
     }
 
     startPatch();
-    if (isInVisual()) {
-      file.removeLine(cursor.getY());
-      register.getContents().put(cursor.getY() - 1, cursor.getX(), file);
-      cursor.moveTo(cursor.getY(), 0);
-    } else {
-      register.getContents().put(cursor.getY(), cursor.getX(), file);
-    }
-
-    if (this.getLineCount() > 0 && !isInVisual() && register.getMode() == Mode.LINE) {
-      cursor.moveTo(cursor.getY() + 1, 0);
-    }
+    register.getContents().put(cursor.getY(), cursor.getX(), file);
 
     file.breakPatch();
     toggleVisual(Visual.Mode.NONE);

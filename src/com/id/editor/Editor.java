@@ -955,13 +955,21 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
     cursor.moveTo(y, x);
   }
 
+  public void moveCursorBy(int y, int x) {
+    moveCursorTo(cursor.getY() + y, cursor.getX() + x);
+  }
+
   public void put() {
     if (register.isEmpty() || isInVisual()) {
       return;
     }
 
     startPatch();
-    register.getContents().put(cursor.getY(), cursor.getX(), file);
+    TextFragment registerContents = register.getContents();
+    registerContents.put(cursor.getY(), cursor.getX(), file);
+    if (registerContents.getMode() == Visual.Mode.LINE) {
+      moveCursorBy(1, 0);
+    }
 
     file.breakPatch();
     toggleVisual(Visual.Mode.NONE);

@@ -1191,4 +1191,11 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("vyvp");
     assertFileContents("abc");
   }
+
+  @Test
+  public void pInLinewiseVisualMovesCursor() {
+    setFileContents("abc");
+    typeString("Vyp");
+    assertCursorPosition(1, 0);
+  }
 }

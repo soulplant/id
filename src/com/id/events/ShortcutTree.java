@@ -69,7 +69,7 @@ public class ShortcutTree {
     node.setAction(action);
   }
 
-  public boolean step(KeyStroke key) {
+  private boolean step(KeyStroke key) {
     boolean wasAtTop = isAtTop();
     currentNode = currentNode.lookupChild(key);
     if (currentNode == null) {

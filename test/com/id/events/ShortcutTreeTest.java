@@ -20,10 +20,9 @@ public class ShortcutTreeTest {
     ShortcutTree tree = new ShortcutTree();
     Action mockAction = mock(ShortcutTree.Action.class);
     tree.setShortcut(KeyStroke.fromString("gg"), mockAction);
-    tree.step(KeyStroke.fromChar('g'));
-    tree.step(KeyStroke.fromChar('g'));
-    Action action = tree.getCurrentAction();
-    assertEquals(mockAction, action);
+    tree.stepAndExecute(KeyStroke.fromChar('g'));
+    tree.stepAndExecute(KeyStroke.fromChar('g'));
+    verify(mockAction).execute();
   }
 
   @Test
@@ -33,10 +32,8 @@ public class ShortcutTreeTest {
     Action mockAction2 = mock(ShortcutTree.Action.class);
     tree.setShortcut(KeyStroke.fromString("gg"), mockAction1);
     tree.setShortcut(KeyStroke.fromString("gf"), mockAction2);
-    tree.step(KeyStroke.fromChar('g'));
-    assertNull(tree.getCurrentAction());
-    tree.step(KeyStroke.fromChar('f'));
-    tree.getCurrentAction().execute();
+    tree.stepAndExecute(KeyStroke.fromChar('g'));
+    tree.stepAndExecute(KeyStroke.fromChar('f'));
     verify(mockAction2).execute();
     assertFalse(tree.isAtTop());
     tree.reset();

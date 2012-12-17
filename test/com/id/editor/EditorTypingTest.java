@@ -1234,4 +1234,20 @@ public class EditorTypingTest extends EditorTestBase {
     assertFileContents("cdl");
     assertCursorPosition(0, 1);
   }
+
+  @Test
+  public void ct() {
+    setFileContents("abc");
+    typeString("ctc");
+    assertFileContents("c");
+    assertTrue(editor.isInInsertMode());
+  }
+
+  @Test
+  public void cf() {
+    setFileContents("abc");
+    typeString("cfc");
+    assertFileContents("");
+    assertTrue(editor.isInInsertMode());
+  }
 }

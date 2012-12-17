@@ -710,10 +710,22 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
 
   public void deleteTill(char letter) {
     deleteToSingleLetter(letter, false);
+    file.breakPatch();
   }
 
   public void deleteFind(char letter) {
     deleteToSingleLetter(letter, true);
+    file.breakPatch();
+  }
+
+  public void changeTill(char letter) {
+    deleteToSingleLetter(letter, false);
+    insert();
+  }
+
+  public void changeFind(char letter) {
+    deleteToSingleLetter(letter, true);
+    insert();
   }
 
   public void deleteToSingleLetter(char letter, boolean deleteMatch) {
@@ -727,7 +739,6 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
     Point lastDeletedPoint = point.offset(0, deleteMatch ? 0 : -1);
     startPatch();
     file.removeText(cursor.getPoint(), lastDeletedPoint);
-    file.breakPatch();
   }
 
   /**

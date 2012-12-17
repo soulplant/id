@@ -361,6 +361,18 @@ public class EditorKeyHandler {
         editor.changeToEndOfLine();
       }
     });
+    normalTree.setShortcut(KeyStroke.fromString("ct"), new KeyStrokeAction() {
+      @Override
+      public void execute(KeyStroke key) {
+        editor.changeTill(key.getLetter());
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("cf"), new KeyStrokeAction() {
+      @Override
+      public void execute(KeyStroke key) {
+        editor.changeFind(key.getLetter());
+      }
+    });
     normalTree.setShortcut(KeyStroke.fromString("D"), new ShortcutTree.Action() {
       @Override
       public void execute() {

@@ -7,6 +7,8 @@ import com.id.editor.Editor;
 import com.id.editor.Editor.FindMode;
 import com.id.editor.Visual;
 
+import static com.id.events.ShortcutTree.KeyStrokeAction;
+
 public class EditorKeyHandler {
   private final ShortcutTree normalTree;
   private final ShortcutTree visualTree;
@@ -339,6 +341,18 @@ public class EditorKeyHandler {
       @Override
       public void execute() {
         editor.deleteUp();
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("dt"), new KeyStrokeAction() {
+      @Override
+      public void execute(KeyStroke key) {
+        editor.deleteTill(key.getLetter());
+      }
+    });
+    normalTree.setShortcut(KeyStroke.fromString("df"), new KeyStrokeAction() {
+      @Override
+      public void execute(KeyStroke key) {
+        editor.deleteFind(key.getLetter());
       }
     });
     normalTree.setShortcut(KeyStroke.fromString("C"), new ShortcutTree.Action() {

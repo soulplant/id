@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import com.id.events.ShortcutTree.Action;
+import com.id.events.ShortcutTree.KeyStrokeAction;
 
 public class ShortcutTreeTest {
   @Test
@@ -91,5 +93,26 @@ public class ShortcutTreeTest {
     tree.setShortcut(Arrays.asList(KeyStroke.escape()), mockAction);
     tree.stepAndExecute(KeyStroke.escape());
     verify(mockAction, times(1)).execute();
+  }
+
+  @Test
+  public void keyStrokeAction() {
+    ShortcutTree tree = new ShortcutTree();
+    KeyStrokeAction mockAction = mock(KeyStrokeAction.class);
+    Action mockDAction = mock(Action.class);
+    tree.setShortcut(KeyStroke.fromString("D"), mockDAction);
+    tree.setShortcut(KeyStroke.fromString("f"), mockAction);
+    step(tree, "fl");
+    verify(mockAction, times(1)).execute(eq(KeyStroke.fromChar('l')));
+    step(tree, "D");
+    verify(mockDAction, times(1)).execute();
+  }
+
+  private boolean step(ShortcutTree tree, String keys) {
+    boolean result = false;
+    for (KeyStroke key : KeyStroke.fromString(keys)) {
+      result = tree.stepAndExecute(key);
+    }
+    return result;
   }
 }

@@ -52,9 +52,17 @@ public class ShortcutTree {
 
   private final Node rootNode = new Node();
   private Node currentNode = rootNode;
+  private KeyStrokeAction pendingKeyStrokeAction = null;
 
   public interface Action {
     void execute();
+  }
+
+  public static abstract class KeyStrokeAction implements Action {
+    public void execute() {
+      throw new UnsupportedOperationException();
+    }
+    public abstract void execute(KeyStroke keyStroke);
   }
 
   public void setShortcut(List<KeyStroke> keyStrokes, Action action) {
@@ -79,7 +87,7 @@ public class ShortcutTree {
     return true;
   }
 
-  public Action getCurrentAction() {
+  private Action getCurrentAction() {
     if (currentNode.isLeaf()) {
       return currentNode.getAction();
     }
@@ -87,9 +95,19 @@ public class ShortcutTree {
   }
 
   public boolean stepAndExecute(KeyStroke key) {
+    if (pendingKeyStrokeAction != null) {
+      pendingKeyStrokeAction.execute(key);
+      pendingKeyStrokeAction = null;
+      return true;
+    }
     boolean wasHandled = step(key);
     Action action = getCurrentAction();
     if (action != null) {
+      if (action instanceof KeyStrokeAction) {
+        pendingKeyStrokeAction = (KeyStrokeAction) action;
+        reset();
+        return true;
+      }
       action.execute();
       reset();
     }

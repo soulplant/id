@@ -575,6 +575,10 @@ public class FileView implements File.Listener, ModifiedListener {
     return null;
   }
 
+  public Point findNext(int y, int x, char target) {
+    return findChar(new ForwardFileCharIterator(y, x), target, target, 1);
+  }
+
   public Point findNext(int y, int x, char push, char pop) {
     return findChar(new ForwardFileCharIterator(y, x), push, pop, 0);
   }

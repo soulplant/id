@@ -708,6 +708,28 @@ public class Editor implements KeyStrokeHandler, HighlightState.Listener,
     deleteAdjacentLines(-1);
   }
 
+  public void deleteTill(char letter) {
+    deleteToSingleLetter(letter, false);
+  }
+
+  public void deleteFind(char letter) {
+    deleteToSingleLetter(letter, true);
+  }
+
+  public void deleteToSingleLetter(char letter, boolean deleteMatch) {
+    Point point = file.findNext(cursor.getY(), cursor.getX(), letter);
+    if (point == null) {
+      return;
+    }
+    if (point.equals(cursor.getPoint())) {
+      return;
+    }
+    Point lastDeletedPoint = point.offset(0, deleteMatch ? 0 : -1);
+    startPatch();
+    file.removeText(cursor.getPoint(), lastDeletedPoint);
+    file.breakPatch();
+  }
+
   /**
    * Deletes a range of lines from the current line to X lines from the current
    * line, inclusive.

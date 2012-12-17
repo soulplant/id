@@ -1198,4 +1198,40 @@ public class EditorTypingTest extends EditorTestBase {
     typeString("Vyp");
     assertCursorPosition(1, 0);
   }
+
+  @Test
+  public void dt() {
+    setFileContents("abc");
+    typeString("dtb");
+    assertFileContents("bc");
+  }
+
+  @Test
+  public void dtSameLetter() {
+    setFileContents("abc");
+    typeString("dta");
+    assertFileContents("abc");
+  }
+
+  @Test
+  public void df() {
+    setFileContents("abc");
+    typeString("dfb");
+    assertFileContents("c");
+  }
+
+  @Test
+  public void dfNotFound() {
+    setFileContents("abc");
+    typeString("dfz");
+    assertFileContents("abc");
+  }
+
+  @Test
+  public void dfThenOtherLetters() {
+    setFileContents("abcdl");
+    typeString("dfbl");
+    assertFileContents("cdl");
+    assertCursorPosition(0, 1);
+  }
 }
